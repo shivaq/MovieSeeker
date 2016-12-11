@@ -28,10 +28,9 @@ android {
             events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
         }
     }
-}
-
-buildTypes.each {
-    it.buildConfigField 'String', 'OPEN_MOVIE_DB_API_KEY', OpenMovieDbApiKey
+    buildTypes.each {
+        it.buildConfigField 'String', 'OPEN_MOVIE_DB_API_KEY', OpenMovieDbApiKey
+    }
 }
 
 dependencies {
