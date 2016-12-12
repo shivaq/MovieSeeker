@@ -157,7 +157,16 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        //TODO:(11)Toggle sort order and update thumbnail
+        switch(itemId){
+            case R.id.sort_popularity:
+                mSortOrder = NetworkUtils.getPopularitySort();
+                getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
+                return true;
+            case R.id.sort_rating:
+                mSortOrder = NetworkUtils.getHighRateSort();
+                getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
+                return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 

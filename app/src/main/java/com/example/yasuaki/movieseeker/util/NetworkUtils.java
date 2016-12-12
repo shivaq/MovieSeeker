@@ -37,27 +37,6 @@ public final class NetworkUtils {
 
     static String fetcheImageSize = "w185";
 
-
-
-//    //TODO:(10) Get param about sort order.
-//    public static URL buildUrl(){
-//
-//        Uri builtUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
-//                .appendQueryParameter(SORT_PARAM, mSortOrder)
-//                .appendQueryParameter(API_KEY, BuildConfig.OPEN_MOVIE_DB_API_KEY)
-//                .build();
-//
-//        URL url = null;
-//        try{
-//            url = new URL(builtUri.toString());
-//        } catch (MalformedURLException e){
-//            e.printStackTrace();
-//        }
-//
-//        Log.d(TAG, "Built URI " + url);
-//        return url;
-//    }
-
     public static URL buildUrl(String sortOrder){
         Uri builtUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
                 .appendQueryParameter(SORT_PARAM, sortOrder)

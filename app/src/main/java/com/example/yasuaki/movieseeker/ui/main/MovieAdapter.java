@@ -46,12 +46,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         return new MovieAdapterViewHolder(view);
     }
 
-    //TODO:(6-2)Rewrite javadoc after view turn to be imageview
     /**
      * This gets called by the RecyclerView to display the data at the specified position.
-     * In this method, we update the contents of the ViewHolder to display the weather
-     * details for this particular position, using the "position" argument
-     * that is conveniently passed into us.
+     * Download thumbnail image from server into imageView.
      */
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
