@@ -22,25 +22,45 @@ public final class NetworkUtils {
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
     private static final String MOVIE_DB_URL = "https://api.themoviedb.org/3/discover/movie?";
-
     private static final String MOVIE_BASE_URL = MOVIE_DB_URL;
+    private static final String IMAGE_FETCH_BASE_URL = "https://image.tmdb.org/t/p/";
 
     private static final String SORT_PARAM = "sort_by";
 
     private static final String API_KEY = "api_key";
 
-    static final String higestRated = "";//TODO
+    static final String highRateSort = "vote_average.desc";
 
-    static final String mostPopular = "popularity.desc";
+    static final String popularitySort = "popularity.desc";
 
-    static  String sortOrder = "popularity.desc";
+    static  String mSortOrder = "vote_average.desc";
 
-    //TODO: Get param about sort order
-    public static URL buildUrl(){
+    static String fetcheImageSize = "w185";
 
+
+
+//    //TODO:(10) Get param about sort order.
+//    public static URL buildUrl(){
+//
+//        Uri builtUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
+//                .appendQueryParameter(SORT_PARAM, mSortOrder)
+//                .appendQueryParameter(API_KEY, BuildConfig.OPEN_MOVIE_DB_API_KEY)
+//                .build();
+//
+//        URL url = null;
+//        try{
+//            url = new URL(builtUri.toString());
+//        } catch (MalformedURLException e){
+//            e.printStackTrace();
+//        }
+//
+//        Log.d(TAG, "Built URI " + url);
+//        return url;
+//    }
+
+    public static URL buildUrl(String sortOrder){
         Uri builtUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
                 .appendQueryParameter(SORT_PARAM, sortOrder)
-                .appendPath("&")
                 .appendQueryParameter(API_KEY, BuildConfig.OPEN_MOVIE_DB_API_KEY)
                 .build();
 
@@ -55,6 +75,16 @@ public final class NetworkUtils {
         return url;
     }
 
+    public static Uri buildUrlForThumbnail(String thumbnailPath){
+        Uri builtUriForImage = Uri.parse(IMAGE_FETCH_BASE_URL).buildUpon()
+                .appendPath(fetcheImageSize)
+                .appendEncodedPath(thumbnailPath)
+                .build();
+
+        Log.d(TAG, "Built URI for thumbnail " + builtUriForImage);
+        return builtUriForImage;
+    }
+
     /**
      * This method returns the entire result from the HTTP response.
      *
@@ -64,9 +94,6 @@ public final class NetworkUtils {
      */
     public static String getResponseFromHttpUrl(URL url) throws IOException{
         HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
-        //TODO:Check if .connect() need to connect.
-//        urlConnection.setRequestMethod("GET");
-//        urlConnection.connect();
 
         try{
             InputStream inputStream = urlConnection.getInputStream();
@@ -84,5 +111,18 @@ public final class NetworkUtils {
         } finally {
             urlConnection.disconnect();
         }
+    }
+
+
+    public static String getHighRateSort() {
+        return highRateSort;
+    }
+
+    public static String getPopularitySort() {
+        return popularitySort;
+    }
+
+    public static String getSortOrder() {
+        return mSortOrder;
     }
 }

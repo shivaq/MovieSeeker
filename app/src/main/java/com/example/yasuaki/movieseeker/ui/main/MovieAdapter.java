@@ -1,22 +1,29 @@
 package com.example.yasuaki.movieseeker.ui.main;
 
+import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import com.example.yasuaki.movieseeker.R;
+import com.example.yasuaki.movieseeker.data.Movie;
+import com.example.yasuaki.movieseeker.util.NetworkUtils;
+import com.squareup.picasso.Picasso;
 
-/**
- * Created by Yasuaki on 2016/12/10.
- */
+import java.util.ArrayList;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder>{
 
-    private String[] mTemporaryMovieData;
+    private final String TAG = MovieAdapter.class.getSimpleName();
+    private ArrayList<Movie> mTemporaryMovieData;
 
     private final MovieAdapterOnClickListener mClickListener;
+
+    private Context mContext;
 
     public MovieAdapter(MovieAdapterOnClickListener clickListener){
         mClickListener = clickListener;
@@ -32,13 +39,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     @Override
     public MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        mContext = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.main_list_item, parent, false);
 
         return new MovieAdapterViewHolder(view);
     }
 
-    //TODO:Rewrite javadoc after view turn to be imageview
+    //TODO:(6-2)Rewrite javadoc after view turn to be imageview
     /**
      * This gets called by the RecyclerView to display the data at the specified position.
      * In this method, we update the contents of the ViewHolder to display the weather
@@ -47,10 +55,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
-        //TODO: Exchange after view turn to be imageView
-        String temporaryUsedText = mTemporaryMovieData[position];
-        holder.mMovieTextView.setText(temporaryUsedText);
 
+        Movie movie = mTemporaryMovieData.get(position);
+        String thumbnailPath = movie.getThumbnailPath();
+
+        Uri thumbnailUri = NetworkUtils.buildUrlForThumbnail(thumbnailPath);
+        Log.d(TAG, "thumbnailPath is " + thumbnailPath);
+        Log.d(TAG, "thumbnailUrl is " + thumbnailUri);
+        Picasso.with(mContext).load(thumbnailUri).into(holder.mMovieImageView);
     }
 
     /**
@@ -60,14 +72,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public int getItemCount() {
         if(mTemporaryMovieData == null) return 0;
-        return mTemporaryMovieData.length;
+        return mTemporaryMovieData.size();
     }
 
     /**
      * Set new data from web on already created MovieAdapter.
      * This method is used to avoid recreating new MovieAdapter.
      */
-    public void setMoviewData(String[] movieData){
+    public void setMoviewData(ArrayList<Movie> movieData){
         mTemporaryMovieData = movieData;
         notifyDataSetChanged();
     }
@@ -76,22 +88,23 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        public final TextView mMovieTextView;
+        public final ImageView mMovieImageView;
 
         public MovieAdapterViewHolder(View itemView) {
             super(itemView);
-            mMovieTextView = (TextView) itemView.findViewById(R.id.text_tobe_imageview_later);
+            mMovieImageView = (ImageView) itemView.findViewById(R.id.image_movie_thumbnail);
+            itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
-            String clickedMovie = mTemporaryMovieData[adapterPosition];
+            Movie clickedMovie = mTemporaryMovieData.get(adapterPosition);
             mClickListener.onThumbnailClicked(clickedMovie);
         }
     }
 
     public interface MovieAdapterOnClickListener{
-        void onThumbnailClicked(String clickedMovie);
+        void onThumbnailClicked(Movie clickedMovie);
     }
 }
