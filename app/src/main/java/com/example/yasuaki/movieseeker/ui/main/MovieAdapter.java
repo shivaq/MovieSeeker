@@ -66,9 +66,9 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
         String thumbnailPath = movie.getThumbnailPath();
 
         if (thumbnailPath.equals("null")) {
+            movieTitle.setText(movie.getMovieTitle());
             movieTitle.setVisibility(View.VISIBLE);
             posterImage.setVisibility(View.INVISIBLE);
-            movieTitle.setText(movie.getMovieTitle());
 
         } else {
             movieTitle.setVisibility(View.INVISIBLE);
