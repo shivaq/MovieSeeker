@@ -17,7 +17,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder>{
+class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
     private final String TAG = MovieAdapter.class.getSimpleName();
     private ArrayList<Movie> mTemporaryMovieData;
@@ -26,7 +26,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     private Context mContext;
 
-    public MovieAdapter(MovieAdapterOnClickListener clickListener){
+    /**
+     * Creates a MovieAdapter.
+     *
+     * @param clickListener The on-click handler for this adapter. This single handler is called
+     *                      when an item is clicked.
+     */
+    MovieAdapter(MovieAdapterOnClickListener clickListener) {
         mClickListener = clickListener;
     }
 
@@ -34,7 +40,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      * This gets called when each new ViewHolder is created. This happens when the RecyclerView
      * is laid out. Enough ViewHolders will be created to fill the screen and allow for scrolling.
      *
-     * @param parent The ViewGroup that these ViewHolders are contained within.
+     * @param parent   The ViewGroup that these ViewHolders are contained within.
      * @param viewType You can use this viewType integer to provide a different layout.
      * @return A new MovieAdapterViewHolder that holds the View for each list item
      */
@@ -59,7 +65,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         Movie movie = mTemporaryMovieData.get(position);
         String thumbnailPath = movie.getThumbnailPath();
 
-        if(thumbnailPath.equals("null")){
+        if (thumbnailPath.equals("null")) {
             movieTitle.setVisibility(View.VISIBLE);
             posterImage.setVisibility(View.INVISIBLE);
             movieTitle.setText(movie.getMovieTitle());
@@ -80,7 +86,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     @Override
     public int getItemCount() {
-        if(mTemporaryMovieData == null) return 0;
+        if (mTemporaryMovieData == null) return 0;
         return mTemporaryMovieData.size();
     }
 
@@ -88,25 +94,33 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      * Set new data from web on already created MovieAdapter.
      * This method is used to avoid recreating new MovieAdapter.
      */
-    public void setMoviewData(ArrayList<Movie> movieData){
+    void setMoviewData(ArrayList<Movie> movieData) {
         mTemporaryMovieData = movieData;
         notifyDataSetChanged();
     }
 
-    /** MovieAdapterViewHolder **/
+    /************************** MovieAdapterViewHolder ****************************/
 
-    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    /**
+     * Cache of the children views for a main list item.
+     */
+    class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public final ImageView mMovieImageView;
-        public final TextView mMovieTitleText;
+        final ImageView mMovieImageView;
+        final TextView mMovieTitleText;
 
-        public MovieAdapterViewHolder(View itemView) {
+        MovieAdapterViewHolder(View itemView) {
             super(itemView);
             mMovieImageView = (ImageView) itemView.findViewById(R.id.image_movie_thumbnail);
             mMovieTitleText = (TextView) itemView.findViewById(R.id.text_null_poster);
             itemView.setOnClickListener(this);
         }
 
+        /**
+         * This gets called by the child views during a click.
+         *
+         * @param view The View that was clicked
+         */
         @Override
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
@@ -115,7 +129,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         }
     }
 
-    public interface MovieAdapterOnClickListener{
+    /**
+     * The interface that receives onClick messages.
+     */
+    interface MovieAdapterOnClickListener {
         void onThumbnailClicked(Movie clickedMovie);
     }
 }

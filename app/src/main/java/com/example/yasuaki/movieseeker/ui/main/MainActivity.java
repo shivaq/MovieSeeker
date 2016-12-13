@@ -6,15 +6,15 @@ import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.yasuaki.movieseeker.R;
 import com.example.yasuaki.movieseeker.data.Movie;
@@ -28,9 +28,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
+//Entry point of Movie Seeker app
 public class MainActivity extends AppCompatActivity implements
         MovieAdapter.MovieAdapterOnClickListener,
-        LoaderManager.LoaderCallbacks<ArrayList<Movie>>{
+        LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
 
     private final String TAG = MainActivity.class.getSimpleName();
 
@@ -55,14 +56,14 @@ public class MainActivity extends AppCompatActivity implements
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main);
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
 
-        //Use StaggeredGridLayout
-        // because some poster has different aspect ratio from others.
-        StaggeredGridLayoutManager gridLayoutManager
-                = new StaggeredGridLayoutManager(2, 1);
-        gridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
+//        //Use StaggeredGridLayout
+//        // because some poster has different aspect ratio from others.
+//        StaggeredGridLayoutManager gridLayoutManager
+//                = new StaggeredGridLayoutManager(2, 1);
+//        gridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
 
-//        GridLayoutManager gridLayoutManager
-//                = new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false );
+        GridLayoutManager gridLayoutManager
+                = new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false);
 
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setHasFixedSize(true);
@@ -77,12 +78,13 @@ public class MainActivity extends AppCompatActivity implements
         getLoaderManager().initLoader(loaderId, bundleForLoader, callback);
     }
 
+    //Check if preference is changed. If it is changed fetch data from the Movie DB
     @Override
     protected void onResume() {
         super.onResume();
 
         String prefSort = ActivityUtils.getPreferredSortOrder(this);
-        if(prefSort != null && !mSortOrder.equals(prefSort)){
+        if (prefSort != null && !mSortOrder.equals(prefSort)) {
             onSortOrderChanged();
         }
 
@@ -102,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements
              */
             @Override
             protected void onStartLoading() {
-                if(mMovieData != null){
+                if (mMovieData != null) {
                     deliverResult(mMovieData);
                 } else {
                     mProgressBar.setVisibility(View.VISIBLE);
@@ -111,12 +113,19 @@ public class MainActivity extends AppCompatActivity implements
                 super.onStartLoading();
             }
 
+            /**
+             * This is the method of the AsyncTaskLoader that will load and parse the JSON data
+             * from The Movie DB in the background.
+             *
+             * @return Movie data from The Movie DB as an ArrayList of Movie object.
+             *         null if an error occurs
+             */
             @Override
             public ArrayList<Movie> loadInBackground() {
 
                 URL movieDbUrl = NetworkUtils.buildUrl(mSortOrder);
 
-                try{
+                try {
                     String jsonMovieResponse = NetworkUtils
                             .getResponseFromHttpUrl(movieDbUrl);
 
@@ -124,10 +133,10 @@ public class MainActivity extends AppCompatActivity implements
                     mMovieList = OpenMovieDbJsonUtils.getMovieInfoFromJson(MainActivity.this, jsonMovieResponse);
 
                     return mMovieList;
-                } catch (IOException e){
+                } catch (IOException e) {
                     e.printStackTrace();
                     return null;
-                } catch (JSONException e){
+                } catch (JSONException e) {
                     e.printStackTrace();
                     return null;
                 }
@@ -146,27 +155,41 @@ public class MainActivity extends AppCompatActivity implements
         };
     }
 
+    /**
+     * Called when a previously created loader has finished its load.
+     *
+     * @param loader    The Loader that has finished.
+     * @param movieList The data generated by the Loader.
+     */
     @Override
     public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> movieList) {
         mProgressBar.setVisibility(View.INVISIBLE);
         mMovieAdapter.setMoviewData(movieList);
-        if(null == movieList){
+        if (null == movieList) {
             showErrorMessage();
         } else {
             showMovieDataView();
         }
     }
 
+    /**
+     * Called when a previously created loader is being reset, and thus
+     * making its data unavailable.  The application should at this point
+     * remove any references it has to the Loader's data.
+     *
+     * @param loader The Loader that is being reset.
+     */
     @Override
     public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
-
+        //When we use CursorLoader, we may implement here.
     }
 
-
+    //This get called when thumbnail is clickd. Move here to detailed Activity
     @Override
     public void onThumbnailClicked(Movie clickedMovie) {
-        //TODO: (2)intent to detailActivity
-        Toast.makeText(this, clickedMovie.getMovieTitle(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, DetailMovieActivity.class);
+        intent.putExtra("clicked_movie", clickedMovie);
+        startActivity(intent);
     }
 
     @Override
@@ -178,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        switch(itemId){
+        switch (itemId) {
             case R.id.pref_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
@@ -187,22 +210,31 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-
-    private void showMovieDataView(){
+    /**
+     * This method will make the View for the movie thumbnail visible and
+     * hide the error message.
+     */
+    private void showMovieDataView() {
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.VISIBLE);
     }
 
-    private void showErrorMessage(){
+    /**
+     * This method will make the View for the error message visible and
+     * movie thumbnail hide the .
+     */
+    private void showErrorMessage() {
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.INVISIBLE);
     }
 
-    void updateMovie(){
+    //Restart loading from the Movie DB
+    void updateMovie() {
         getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
     }
 
-    void onSortOrderChanged(){
+    //Get called if sort order preference is changed
+    void onSortOrderChanged() {
         updateMovie();
     }
 }

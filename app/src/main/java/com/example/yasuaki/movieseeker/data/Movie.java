@@ -3,13 +3,16 @@ package com.example.yasuaki.movieseeker.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * Data model to hold movie data
+ */
 public class Movie implements Parcelable {
 
-    String mThumbnailPath;
-    String mMovieOverView;
-    String mMovieTitle;
-    String mReleaseDate;
-    long mRating;
+    private String mThumbnailPath;
+    private String mMovieOverView;
+    private String mMovieTitle;
+    private String mReleaseDate;
+    private long mRating;
 
     public Movie(String thumbnailPath, String movieOverView, String movieTitle, String releaseDate, long rating) {
         mThumbnailPath = thumbnailPath;
@@ -19,7 +22,7 @@ public class Movie implements Parcelable {
         mRating = rating;
     }
 
-    protected Movie(Parcel in) {
+    private Movie(Parcel in) {
         mThumbnailPath = in.readString();
         mMovieOverView = in.readString();
         mMovieTitle = in.readString();
@@ -59,6 +62,18 @@ public class Movie implements Parcelable {
 
     public String getMovieTitle() {
         return mMovieTitle;
+    }
+
+    public String getMovieOverView() {
+        return mMovieOverView;
+    }
+
+    public String getReleaseDate() {
+        return mReleaseDate;
+    }
+
+    public long getRating() {
+        return mRating;
     }
 }
 

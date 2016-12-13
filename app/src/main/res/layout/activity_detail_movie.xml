@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--TODO:(1) design detail activity ui-->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,13 +11,12 @@
         android:id="@+id/text_detail_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/holo_green_dark"
-        android:elevation="12dp"
+        android:background="@color/colorPrimaryDark"
+        android:fontFamily="sans-serif-medium"
         android:padding="16dp"
         android:textColor="#FFFFFF"
-        android:textSize="34sp"
+        android:textSize="@dimen/text_headline"
         tools:text="Chappie"/>
-
 
 
     <LinearLayout
@@ -29,48 +26,33 @@
 
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/image_movie_poster"
+            style="@style/UiSmallElements"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
             tools:src="@android:drawable/zoom_plate"/>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/text_release_year"
+                style="@style/UiSmallElements"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="8dp"
-                android:textSize="22sp"
+                android:fontFamily="sans-serif-medium"
+                android:textSize="@dimen/text_subheading"
                 tools:text="1999"/>
 
             <TextView
-                android:id="@+id/text_movie_length"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="8dp"
-                android:textSize="22sp"
-                android:textStyle="italic"
-                tools:text="120min"/>
-
-            <TextView
                 android:id="@+id/text_movie_rating"
+                style="@style/UiSmallElements"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="8dp"
-                android:textSize="22sp"
+                android:fontFamily="sans-serif-medium"
+                android:textSize="@dimen/text_subheading"
                 tools:text="500000"/>
 
         </LinearLayout>
@@ -78,12 +60,12 @@
     </LinearLayout>
 
     <TextView
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
-        android:textSize="22sp"
-        tools:text="Super interesting!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        android:id="@+id/text_movie_synopsis"
+        style="@style/UiSmallElements"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:textSize="@dimen/text_body"
+        tools:text="Super interesting!!!!!!!!!!!!!!!!!!!!!!!!!!!"/>
 
 </LinearLayout>

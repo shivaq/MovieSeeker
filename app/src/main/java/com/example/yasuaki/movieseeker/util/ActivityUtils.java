@@ -6,13 +6,11 @@ import android.preference.PreferenceManager;
 
 import com.example.yasuaki.movieseeker.R;
 
-/**
- * Created by Yasuaki on 2016/12/12.
- */
-
+//Contains useful utilities for a movie seeker app
 public class ActivityUtils {
 
-    public static String getPreferredSortOrder(Context context){
+    //Get sort order preference
+    public static String getPreferredSortOrder(Context context) {
 
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(context);

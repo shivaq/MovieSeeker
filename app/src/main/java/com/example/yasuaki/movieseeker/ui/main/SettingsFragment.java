@@ -9,9 +9,11 @@ import android.support.v7.preference.PreferenceScreen;
 
 import com.example.yasuaki.movieseeker.R;
 
-/**The SettingsFragment serves as the display for all of the user's settings.**/
+/**
+ * The SettingsFragment serves as the display for all of the user's settings.
+ **/
 public class SettingsFragment extends PreferenceFragmentCompat implements
-        SharedPreferences.OnSharedPreferenceChangeListener{
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -22,7 +24,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
 
         //Set summaries for each preference.
         int count = preferenceScreen.getPreferenceCount();
-        for(int i = 0; i < count; i++){
+        for (int i = 0; i < count; i++) {
             Preference preference = preferenceScreen.getPreference(i);
             String value = sharedPreferences.getString(preference.getKey(), "");
             setPreferenceSummary(preference, value);
@@ -32,7 +34,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Preference preference = findPreference(key);
-        if(null != preference){
+        if (null != preference) {
             String value = sharedPreferences.getString(key, "");
             setPreferenceSummary(preference, value);
         }
@@ -52,12 +54,13 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
                 .unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    private void setPreferenceSummary(Preference preference, Object value){
+    //Display selected preferences on summary
+    private void setPreferenceSummary(Preference preference, Object value) {
         String stringValue = value.toString();
 
         ListPreference listPreference = (ListPreference) preference;
         int prefIndex = listPreference.findIndexOfValue(stringValue);
-        if(prefIndex >= 0){
+        if (prefIndex >= 0) {
             preference.setSummary(listPreference.getEntries()[prefIndex]);
         }
     }

@@ -14,9 +14,8 @@ import java.util.Scanner;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
- * Created by Yasuaki on 2016/12/11.
+ * These utilities will be used to communicate with the weather servers.
  */
-
 public final class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
@@ -29,18 +28,21 @@ public final class NetworkUtils {
 
     private static final String API_KEY = "api_key";
 
-    static String fetcheImageSize = "w185";
+    private static String fetcheImageSize = "w185";
 
-    public static URL buildUrl(String sortOrder){
+    /**
+     * Builds the URL to talk to the Movie DB server using a sort order.
+     */
+    public static URL buildUrl(String sortOrder) {
         Uri builtUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
                 .appendQueryParameter(SORT_PARAM, sortOrder)
                 .appendQueryParameter(API_KEY, BuildConfig.OPEN_MOVIE_DB_API_KEY)
                 .build();
 
         URL url = null;
-        try{
+        try {
             url = new URL(builtUri.toString());
-        } catch (MalformedURLException e){
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
 
@@ -48,7 +50,10 @@ public final class NetworkUtils {
         return url;
     }
 
-    public static Uri buildUrlForThumbnail(String thumbnailPath){
+    /**
+     * Builds the URL to fetch the movie thumbnail
+     */
+    public static Uri buildUrlForThumbnail(String thumbnailPath) {
         Uri builtUriForImage = Uri.parse(IMAGE_FETCH_BASE_URL).buildUpon()
                 .appendPath(fetcheImageSize)
                 .appendEncodedPath(thumbnailPath)
@@ -65,10 +70,10 @@ public final class NetworkUtils {
      * @return The contents of the HTTP response.
      * @throws IOException Related to network and stream reading
      */
-    public static String getResponseFromHttpUrl(URL url) throws IOException{
+    public static String getResponseFromHttpUrl(URL url) throws IOException {
         HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
 
-        try{
+        try {
             InputStream inputStream = urlConnection.getInputStream();
 
             Scanner scanner = new Scanner(inputStream);
@@ -76,7 +81,7 @@ public final class NetworkUtils {
 
             boolean hasInput = scanner.hasNext();
 
-            if(hasInput){
+            if (hasInput) {
                 return scanner.next();
             } else {
                 return null;

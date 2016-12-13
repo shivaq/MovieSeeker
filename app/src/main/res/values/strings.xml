@@ -3,8 +3,8 @@
     <string name="error_message">An error has occurred. Please try again by change sort order.</string>
 
     <!-- Preferences -->
-    <string name="pref_sort_by_popularity">Sort by popularity</string>
-    <string name="pref_sort_by_high_rating">Sort by high rating</string>
+    <string name="pref_sort_by_popularity">Sort by most popular</string>
+    <string name="pref_sort_by_high_rating">Sort by top rated</string>
     <string name="sort_order_popularity">popularity.desc</string>
     <string name="sort_order_rating">vote_average.desc</string>
     <string name="pref_sort_key">sort</string>

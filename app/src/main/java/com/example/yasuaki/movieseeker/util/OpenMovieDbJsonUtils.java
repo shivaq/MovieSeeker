@@ -11,8 +11,20 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+/**
+ * Utility functions to handle the Movie DB JSON data.
+ */
 public final class OpenMovieDbJsonUtils {
 
+    /**
+     * This method parses JSON from a web response and returns an array of Strings
+     * describing the weather over various days from the forecast.
+     *
+     * @param context      Callers context
+     * @param movieJsonStr JSON response from server
+     * @return ArrayList of Movie object
+     * @throws JSONException If JSON data cannot be properly parsed
+     */
     public static ArrayList<Movie> getMovieInfoFromJson(
             Context context, String movieJsonStr) throws JSONException {
 
