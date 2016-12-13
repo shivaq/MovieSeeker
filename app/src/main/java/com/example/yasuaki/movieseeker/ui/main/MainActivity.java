@@ -2,6 +2,7 @@ package com.example.yasuaki.movieseeker.ui.main;
 
 import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.yasuaki.movieseeker.R;
 import com.example.yasuaki.movieseeker.data.Movie;
+import com.example.yasuaki.movieseeker.util.ActivityUtils;
 import com.example.yasuaki.movieseeker.util.NetworkUtils;
 import com.example.yasuaki.movieseeker.util.OpenMovieDbJsonUtils;
 
@@ -41,12 +43,14 @@ public class MainActivity extends AppCompatActivity implements
 
     private final int MOVIE_LOADER_ID = 0;
 
-    private String mSortOrder = NetworkUtils.getSortOrder();
+    private String mSortOrder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mSortOrder = ActivityUtils.getPreferredSortOrder(this);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main);
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
@@ -55,6 +59,11 @@ public class MainActivity extends AppCompatActivity implements
         // because some poster has different aspect ratio from others.
         StaggeredGridLayoutManager gridLayoutManager
                 = new StaggeredGridLayoutManager(2, 1);
+        gridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
+
+//        GridLayoutManager gridLayoutManager
+//                = new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false );
+
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setHasFixedSize(true);
         mMovieAdapter = new MovieAdapter(this);
@@ -66,6 +75,18 @@ public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<ArrayList<Movie>> callback = MainActivity.this;
         Bundle bundleForLoader = null;
         getLoaderManager().initLoader(loaderId, bundleForLoader, callback);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        String prefSort = ActivityUtils.getPreferredSortOrder(this);
+        if(prefSort != null && !mSortOrder.equals(prefSort)){
+            onSortOrderChanged();
+        }
+
+        mSortOrder = prefSort;
     }
 
     @Override
@@ -144,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onThumbnailClicked(Movie clickedMovie) {
-        //TODO: (12)intent to detailActivity
+        //TODO: (2)intent to detailActivity
         Toast.makeText(this, clickedMovie.getMovieTitle(), Toast.LENGTH_SHORT).show();
     }
 
@@ -158,13 +179,9 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         switch(itemId){
-            case R.id.sort_popularity:
-                mSortOrder = NetworkUtils.getPopularitySort();
-                getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
-                return true;
-            case R.id.sort_rating:
-                mSortOrder = NetworkUtils.getHighRateSort();
-                getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
+            case R.id.pref_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -179,5 +196,13 @@ public class MainActivity extends AppCompatActivity implements
     private void showErrorMessage(){
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.INVISIBLE);
+    }
+
+    void updateMovie(){
+        getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
+    }
+
+    void onSortOrderChanged(){
+        updateMovie();
     }
 }

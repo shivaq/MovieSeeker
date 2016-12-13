@@ -1,6 +1,14 @@
 <resources>
     <string name="app_name">MovieSeeker</string>
     <string name="error_message">An error has occurred. Please try again by change sort order.</string>
-    <string name="menu_sort_by_popularity">Sort by popularity</string>
-    <string name="meny_sort_by_highrating">Sort by high rating</string>
+
+    <!-- Preferences -->
+    <string name="pref_sort_by_popularity">Sort by popularity</string>
+    <string name="pref_sort_by_high_rating">Sort by high rating</string>
+    <string name="sort_order_popularity">popularity.desc</string>
+    <string name="sort_order_rating">vote_average.desc</string>
+    <string name="pref_sort_key">sort</string>
+    <string name="pref_sort_label">Sort order</string>
+    <string name="menu_setting">Setting</string>
+
 </resources>

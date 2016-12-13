@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.yasuaki.movieseeker.R;
 import com.example.yasuaki.movieseeker.data.Movie;
@@ -53,13 +54,24 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
 
+        TextView movieTitle = holder.mMovieTitleText;
+        ImageView posterImage = holder.mMovieImageView;
         Movie movie = mTemporaryMovieData.get(position);
         String thumbnailPath = movie.getThumbnailPath();
 
-        Uri thumbnailUri = NetworkUtils.buildUrlForThumbnail(thumbnailPath);
-        Log.d(TAG, "thumbnailPath is " + thumbnailPath);
-        Log.d(TAG, "thumbnailUrl is " + thumbnailUri);
-        Picasso.with(mContext).load(thumbnailUri).into(holder.mMovieImageView);
+        if(thumbnailPath.equals("null")){
+            movieTitle.setVisibility(View.VISIBLE);
+            posterImage.setVisibility(View.INVISIBLE);
+            movieTitle.setText(movie.getMovieTitle());
+
+        } else {
+            movieTitle.setVisibility(View.INVISIBLE);
+            posterImage.setVisibility(View.VISIBLE);
+            Uri thumbnailUri = NetworkUtils.buildUrlForThumbnail(thumbnailPath);
+            Log.d(TAG, "thumbnailPath is " + thumbnailPath);
+            Log.d(TAG, "thumbnailUrl is " + thumbnailUri);
+            Picasso.with(mContext).load(thumbnailUri).into(posterImage);
+        }
     }
 
     /**
@@ -86,10 +98,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         public final ImageView mMovieImageView;
+        public final TextView mMovieTitleText;
 
         public MovieAdapterViewHolder(View itemView) {
             super(itemView);
             mMovieImageView = (ImageView) itemView.findViewById(R.id.image_movie_thumbnail);
+            mMovieTitleText = (TextView) itemView.findViewById(R.id.text_null_poster);
             itemView.setOnClickListener(this);
         }
 

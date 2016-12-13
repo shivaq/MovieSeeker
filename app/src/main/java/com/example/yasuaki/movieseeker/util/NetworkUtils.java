@@ -29,12 +29,6 @@ public final class NetworkUtils {
 
     private static final String API_KEY = "api_key";
 
-    static final String highRateSort = "vote_average.desc";
-
-    static final String popularitySort = "popularity.desc";
-
-    static  String mSortOrder = "vote_average.desc";
-
     static String fetcheImageSize = "w185";
 
     public static URL buildUrl(String sortOrder){
@@ -90,18 +84,5 @@ public final class NetworkUtils {
         } finally {
             urlConnection.disconnect();
         }
-    }
-
-
-    public static String getHighRateSort() {
-        return highRateSort;
-    }
-
-    public static String getPopularitySort() {
-        return popularitySort;
-    }
-
-    public static String getSortOrder() {
-        return mSortOrder;
     }
 }
