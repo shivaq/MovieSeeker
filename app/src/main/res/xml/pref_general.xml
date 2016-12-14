@@ -4,7 +4,7 @@
                   android:layout_height="match_parent">
 
     <ListPreference
-        android:defaultValue="@string/pref_sort_by_popularity"
+        android:defaultValue="@string/sort_order_popularity"
         android:entries="@array/pref_sort_options"
         android:entryValues="@array/pref_sort_values"
         android:key="@string/pref_sort_key"
