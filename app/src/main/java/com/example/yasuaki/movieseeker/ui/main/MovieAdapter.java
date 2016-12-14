@@ -17,10 +17,13 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
     private final String TAG = MovieAdapter.class.getSimpleName();
-    private ArrayList<Movie> mTemporaryMovieData;
+    private ArrayList<Movie> mMovieArrayList;
 
     private final MovieAdapterOnClickListener mClickListener;
 
@@ -62,7 +65,7 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
 
         TextView movieTitle = holder.mMovieTitleText;
         ImageView posterImage = holder.mMovieImageView;
-        Movie movie = mTemporaryMovieData.get(position);
+        Movie movie = mMovieArrayList.get(position);
         String thumbnailPath = movie.getThumbnailPath();
 
         if (thumbnailPath.equals("null")) {
@@ -86,8 +89,8 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
      */
     @Override
     public int getItemCount() {
-        if (mTemporaryMovieData == null) return 0;
-        return mTemporaryMovieData.size();
+        if (mMovieArrayList == null) return 0;
+        return mMovieArrayList.size();
     }
 
     /**
@@ -95,7 +98,7 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
      * This method is used to avoid recreating new MovieAdapter.
      */
     void setMoviewData(ArrayList<Movie> movieData) {
-        mTemporaryMovieData = movieData;
+        mMovieArrayList = movieData;
         notifyDataSetChanged();
     }
 
@@ -106,13 +109,12 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
      */
     class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        final ImageView mMovieImageView;
-        final TextView mMovieTitleText;
+        @BindView(R.id.image_movie_thumbnail_listitem) ImageView mMovieImageView;
+        @BindView(R.id.text_null_poster) TextView mMovieTitleText;
 
         MovieAdapterViewHolder(View itemView) {
             super(itemView);
-            mMovieImageView = (ImageView) itemView.findViewById(R.id.image_movie_thumbnail);
-            mMovieTitleText = (TextView) itemView.findViewById(R.id.text_null_poster);
+            ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
         }
 
@@ -124,7 +126,7 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
         @Override
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
-            Movie clickedMovie = mTemporaryMovieData.get(adapterPosition);
+            Movie clickedMovie = mMovieArrayList.get(adapterPosition);
             mClickListener.onThumbnailClicked(clickedMovie);
         }
     }

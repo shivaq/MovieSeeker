@@ -6,11 +6,10 @@
 
 
     <ImageView
-        android:id="@+id/image_movie_thumbnail"
+        android:id="@+id/image_movie_thumbnail_listitem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:background="#000000"
         android:scaleType="centerCrop"
         android:visibility="visible"
         tools:src="@mipmap/ic_launcher"/>
@@ -19,11 +18,12 @@
         android:id="@+id/text_null_poster"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/image_movie_thumbnail"
-        android:layout_alignLeft="@id/image_movie_thumbnail"
-        android:layout_alignRight="@id/image_movie_thumbnail"
-        android:layout_alignTop="@id/image_movie_thumbnail"
-        android:background="#000000"
+        android:layout_alignBottom="@id/image_movie_thumbnail_listitem"
+        android:layout_alignLeft="@id/image_movie_thumbnail_listitem"
+        android:layout_alignStart="@id/image_movie_thumbnail_listitem"
+        android:layout_alignEnd="@id/image_movie_thumbnail_listitem"
+        android:layout_alignRight="@id/image_movie_thumbnail_listitem"
+        android:layout_alignTop="@id/image_movie_thumbnail_listitem"
         android:fontFamily="serif-monospace"
         android:gravity="center"
         android:textColor="#FFFFFF"

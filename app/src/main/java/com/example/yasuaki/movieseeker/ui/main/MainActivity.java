@@ -28,6 +28,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 //Entry point of Movie Seeker app
 public class MainActivity extends AppCompatActivity implements
         MovieAdapter.MovieAdapterOnClickListener,
@@ -35,32 +38,25 @@ public class MainActivity extends AppCompatActivity implements
 
     private final String TAG = MainActivity.class.getSimpleName();
 
-    private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
 
-    private TextView mErrorMessageDisplay;
-    private ProgressBar mProgressBar;
     private ArrayList<Movie> mMovieList;
-
     private final int MOVIE_LOADER_ID = 0;
 
     private String mSortOrder;
+
+    @BindView(R.id.recyclerview_main) RecyclerView mRecyclerView;
+    @BindView(R.id.tv_error_message_display) TextView mErrorMessageDisplay;
+    @BindView(R.id.progress_loading) ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         mSortOrder = ActivityUtils.getPreferredSortOrder(this);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main);
-        mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
-
-//        //Use StaggeredGridLayout
-//        // because some poster has different aspect ratio from others.
-//        StaggeredGridLayoutManager gridLayoutManager
-//                = new StaggeredGridLayoutManager(2, 1);
-//        gridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
 
         GridLayoutManager gridLayoutManager
                 = new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false);
@@ -69,8 +65,6 @@ public class MainActivity extends AppCompatActivity implements
         mRecyclerView.setHasFixedSize(true);
         mMovieAdapter = new MovieAdapter(this);
         mRecyclerView.setAdapter(mMovieAdapter);
-
-        mProgressBar = (ProgressBar) findViewById(R.id.progress_loading);
 
         int loaderId = MOVIE_LOADER_ID;
         LoaderManager.LoaderCallbacks<ArrayList<Movie>> callback = MainActivity.this;
@@ -91,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements
         mSortOrder = prefSort;
     }
 
+    //todo: check
     @Override
     public Loader<ArrayList<Movie>> onCreateLoader(int id, final Bundle loaderArgs) {
 
