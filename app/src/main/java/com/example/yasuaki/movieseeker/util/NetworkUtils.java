@@ -20,11 +20,9 @@ public final class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
-    private static final String MOVIE_DB_URL = "https://api.themoviedb.org/3/discover/movie?";
+    private static final String MOVIE_DB_URL = "https://api.themoviedb.org/3/movie";
     private static final String MOVIE_BASE_URL = MOVIE_DB_URL;
     private static final String IMAGE_FETCH_BASE_URL = "https://image.tmdb.org/t/p/";
-
-    private static final String SORT_PARAM = "sort_by";
 
     private static final String API_KEY = "api_key";
 
@@ -34,8 +32,9 @@ public final class NetworkUtils {
      * Builds the URL to talk to the Movie DB server using a sort order.
      */
     public static URL buildUrl(String sortOrder) {
+
         Uri builtUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
-                .appendQueryParameter(SORT_PARAM, sortOrder)
+                .appendEncodedPath(sortOrder)
                 .appendQueryParameter(API_KEY, BuildConfig.OPEN_MOVIE_DB_API_KEY)
                 .build();
 
