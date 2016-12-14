@@ -14,6 +14,7 @@ public class Movie implements Parcelable {
     private String mReleaseDate;
     private long mRating;
 
+
     public Movie(String thumbnailPath, String movieOverView, String movieTitle, String releaseDate, long rating) {
         mThumbnailPath = thumbnailPath;
         mMovieOverView = movieOverView;
