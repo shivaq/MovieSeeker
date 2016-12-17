@@ -1,4 +1,4 @@
-package com.example.yasuaki.movieseeker.ui.main;
+package com.example.yasuaki.movieseeker.ui;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -35,7 +35,6 @@ public class DetailMovieActivity extends AppCompatActivity {
 
         tvTitle.setText(movie.getMovieTitle());
 
-        //TODO:ピカソとRetrofit 連携できる？
         Uri thumbnailUri = NetworkUtils.buildUrlForThumbnail(movie.getThumbnailPath());
         Picasso.with(this).load(thumbnailUri).into(moviePoster);
 

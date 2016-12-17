@@ -1,11 +1,11 @@
-package com.example.yasuaki.movieseeker.ui.main;
+package com.example.yasuaki.movieseeker.ui;
 
 import com.example.yasuaki.movieseeker.base.BasePresenter;
 import com.example.yasuaki.movieseeker.data.model.Movie;
 
 import java.util.ArrayList;
 
-public interface MovieContract {
+interface MovieContract {
 
     interface Presenter extends BasePresenter{
 

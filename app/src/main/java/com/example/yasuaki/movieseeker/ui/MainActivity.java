@@ -1,4 +1,4 @@
-package com.example.yasuaki.movieseeker.ui.main;
+package com.example.yasuaki.movieseeker.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,7 +15,6 @@ import android.widget.TextView;
 
 import com.example.yasuaki.movieseeker.R;
 import com.example.yasuaki.movieseeker.data.model.Movie;
-import com.example.yasuaki.movieseeker.data.remote.ServiceFactory;
 import com.example.yasuaki.movieseeker.util.ActivityUtils;
 
 import java.util.ArrayList;
@@ -29,9 +29,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private final String TAG = MainActivity.class.getSimpleName();
 
-    private MovieAdapter mMovieAdapter;
     private MoviePresenter mMoviePresenter;
-
     private String mSortOrder;
 
     @BindView(R.id.recyclerview_main)
@@ -56,9 +54,8 @@ public class MainActivity extends AppCompatActivity implements
         mRecyclerView.setHasFixedSize(true);
 
         //TODO:ここがDIできるとこかな？
-        mMoviePresenter = new MoviePresenter(this, new ServiceFactory());
-        mMoviePresenter.getMovies();
-
+        mMoviePresenter = new MoviePresenter(this);
+        mMoviePresenter.getMovies(this);
     }
 
     //Check if preference is changed. If it is changed fetch data from the Movie DB
@@ -70,11 +67,10 @@ public class MainActivity extends AppCompatActivity implements
         if (prefSort != null && !mSortOrder.equals(prefSort)) {
             onSortOrderChanged();
         }
-
         mSortOrder = prefSort;
     }
 
-    //This get called when thumbnail is clickd. Move here to detailed Activity
+    //This get called when thumbnail is clicked. Move here to detailed Activity
     @Override
     public void onThumbnailClicked(Movie clickedMovie) {
         Intent intent = new Intent(this, DetailMovieActivity.class);
@@ -84,9 +80,9 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadData(ArrayList movieList) {
-        mMovieAdapter = new MovieAdapter(this);
-        mMovieAdapter.setMovieData(movieList);
-        mRecyclerView.setAdapter(mMovieAdapter);
+        MovieAdapter movieAdapter = new MovieAdapter(this);
+        movieAdapter.setMovieData(movieList);
+        mRecyclerView.setAdapter(movieAdapter);
     }
 
     @Override
@@ -130,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void showProgressBar() {
         mProgressBar.setVisibility(View.VISIBLE);
+        Log.d(TAG, "inside showProgressBar");
     }
 
     @Override
@@ -137,10 +134,9 @@ public class MainActivity extends AppCompatActivity implements
         mProgressBar.setVisibility(View.INVISIBLE);
     }
 
-
     //Restart loading from the Movie DB
     void updateMovie() {
-        mMoviePresenter.getMovies();
+        mMoviePresenter.getMovies(this);
     }
 
     //Get called if sort order preference is changed

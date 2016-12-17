@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.main.MainActivity"
+            android:name=".ui.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop">
             <intent-filter>
@@ -21,13 +21,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.main.DetailMovieActivity">
+            android:name=".ui.DetailMovieActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.main.MainActivity"/>
+                android:value=".ui.MainActivity"/>
         </activity>
         <activity
-            android:name=".ui.main.SettingsActivity"/>
+            android:name=".ui.SettingsActivity"/>
     </application>
 
 </manifest>

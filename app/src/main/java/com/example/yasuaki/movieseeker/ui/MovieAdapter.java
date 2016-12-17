@@ -1,4 +1,4 @@
-package com.example.yasuaki.movieseeker.ui.main;
+package com.example.yasuaki.movieseeker.ui;
 
 import android.content.Context;
 import android.net.Uri;
@@ -76,7 +76,6 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
             movieTitle.setText(movie.getMovieTitle());
 
         } else {
-            //TODO：ピカソとRetrofit とを連携させる
             movieTitle.setVisibility(View.INVISIBLE);
             posterImage.setVisibility(View.VISIBLE);
             Uri thumbnailUri = ServiceFactory.buildUrlForThumbnail(thumbnailPath);
