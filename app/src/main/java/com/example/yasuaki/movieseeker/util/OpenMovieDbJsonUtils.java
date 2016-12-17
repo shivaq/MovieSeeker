@@ -3,7 +3,7 @@ package com.example.yasuaki.movieseeker.util;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.example.yasuaki.movieseeker.data.Movie;
+import com.example.yasuaki.movieseeker.model.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;

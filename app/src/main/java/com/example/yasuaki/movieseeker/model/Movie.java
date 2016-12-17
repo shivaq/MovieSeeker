@@ -1,18 +1,30 @@
-package com.example.yasuaki.movieseeker.data;
+package com.example.yasuaki.movieseeker.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Data model to hold movie data
  */
 public class Movie implements Parcelable {
 
+    //TODO: JSON 変換を完全に GSON に任せる
+    @SerializedName("poster_path")
     private String mThumbnailPath;
+
+    @SerializedName("overview")
     private String mMovieOverView;
+
+    @SerializedName("original_title")
     private String mMovieTitle;
+
+    @SerializedName("release_date")
     private String mReleaseDate;
-    private long mRating;
+
+    @SerializedName("vote_average")
+    private double mRating;
 
     public Movie(String thumbnailPath, String movieOverView, String movieTitle, String releaseDate, long rating) {
         mThumbnailPath = thumbnailPath;
@@ -41,7 +53,7 @@ public class Movie implements Parcelable {
         parcel.writeString(mMovieOverView);
         parcel.writeString(mMovieTitle);
         parcel.writeString(mReleaseDate);
-        parcel.writeLong(mRating);
+        parcel.writeDouble(mRating);
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -72,7 +84,7 @@ public class Movie implements Parcelable {
         return mReleaseDate;
     }
 
-    public long getRating() {
+    public double getRating() {
         return mRating;
     }
 }

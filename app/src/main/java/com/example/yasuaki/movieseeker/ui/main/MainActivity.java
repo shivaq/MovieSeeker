@@ -17,7 +17,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.yasuaki.movieseeker.R;
-import com.example.yasuaki.movieseeker.data.Movie;
+import com.example.yasuaki.movieseeker.model.Movie;
+import com.example.yasuaki.movieseeker.remote.ServiceFactory;
 import com.example.yasuaki.movieseeker.util.ActivityUtils;
 import com.example.yasuaki.movieseeker.util.NetworkUtils;
 import com.example.yasuaki.movieseeker.util.OpenMovieDbJsonUtils;
@@ -34,20 +35,25 @@ import butterknife.ButterKnife;
 //Entry point of Movie Seeker app
 public class MainActivity extends AppCompatActivity implements
         MovieAdapter.MovieAdapterOnClickListener,
-        LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
+        LoaderManager.LoaderCallbacks<ArrayList<Movie>>,
+        MovieContract.MvpView {
 
     private final String TAG = MainActivity.class.getSimpleName();
 
     private MovieAdapter mMovieAdapter;
+    private MoviePresenter mMoviePresenter;
 
     private ArrayList<Movie> mMovieList;
     private final int MOVIE_LOADER_ID = 0;
 
     private String mSortOrder;
 
-    @BindView(R.id.recyclerview_main) RecyclerView mRecyclerView;
-    @BindView(R.id.tv_error_message_display) TextView mErrorMessageDisplay;
-    @BindView(R.id.progress_loading) ProgressBar mProgressBar;
+    @BindView(R.id.recyclerview_main)
+    RecyclerView mRecyclerView;
+    @BindView(R.id.tv_error_message_display)
+    TextView mErrorMessageDisplay;
+    @BindView(R.id.progress_loading)
+    ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,14 +69,21 @@ public class MainActivity extends AppCompatActivity implements
 
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setHasFixedSize(true);
-        mMovieAdapter = new MovieAdapter(this);
-        mRecyclerView.setAdapter(mMovieAdapter);
 
-        int loaderId = MOVIE_LOADER_ID;
-        LoaderManager.LoaderCallbacks<ArrayList<Movie>> callback = MainActivity.this;
-        Bundle bundleForLoader = null;
-        getLoaderManager().initLoader(loaderId, bundleForLoader, callback);
+
+        //TODO:ここがDIできるとこかな？
+        mMoviePresenter = new MoviePresenter(this, new ServiceFactory());
+        mMoviePresenter.getMovies();
+
+        //TODO：データロードをRetrofit に任せる
+
+//        int loaderId = MOVIE_LOADER_ID;
+//        LoaderManager.LoaderCallbacks<ArrayList<Movie>> callback = MainActivity.this;
+//        Bundle bundleForLoader = null;
+//        getLoaderManager().initLoader(loaderId, bundleForLoader, callback);
     }
+
+
 
     //Check if preference is changed. If it is changed fetch data from the Movie DB
     @Override
@@ -126,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements
 
                     Log.d(TAG, "fetched response is " + jsonMovieResponse);
                     mMovieList = OpenMovieDbJsonUtils.getMovieInfoFromJson(MainActivity.this, jsonMovieResponse);
+//                    mMovieList = MovieResponse.getResults();
 
                     return mMovieList;
                 } catch (IOException e) {
@@ -159,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> movieList) {
         mProgressBar.setVisibility(View.INVISIBLE);
-        mMovieAdapter.setMoviewData(movieList);
+        mMovieAdapter.setMovieData(movieList);
         if (null == movieList) {
             showErrorMessage();
         } else {
@@ -187,6 +201,19 @@ public class MainActivity extends AppCompatActivity implements
         startActivity(intent);
     }
 
+    public void openDetail(Movie clickedMovie){
+        Intent intent = new Intent(this, DetailMovieActivity.class);
+        intent.putExtra("clicked_movie", clickedMovie);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onLoadData(ArrayList movieList) {
+        mMovieAdapter = new MovieAdapter(this);
+        mMovieAdapter.setMovieData(movieList);
+        mRecyclerView.setAdapter(mMovieAdapter);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -209,7 +236,8 @@ public class MainActivity extends AppCompatActivity implements
      * This method will make the View for the movie thumbnail visible and
      * hide the error message.
      */
-    private void showMovieDataView() {
+    @Override
+    public void showMovieDataView() {
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.VISIBLE);
     }
@@ -218,7 +246,8 @@ public class MainActivity extends AppCompatActivity implements
      * This method will make the View for the error message visible and
      * movie thumbnail hide the .
      */
-    private void showErrorMessage() {
+    @Override
+    public void showErrorMessage() {
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.INVISIBLE);
     }

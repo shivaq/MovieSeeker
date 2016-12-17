@@ -11,8 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.yasuaki.movieseeker.R;
-import com.example.yasuaki.movieseeker.data.Movie;
-import com.example.yasuaki.movieseeker.util.NetworkUtils;
+import com.example.yasuaki.movieseeker.model.Movie;
+import com.example.yasuaki.movieseeker.remote.ServiceFactory;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -36,6 +36,7 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
      *                      when an item is clicked.
      */
     MovieAdapter(MovieAdapterOnClickListener clickListener) {
+        Log.d(TAG, "inside MovieAdapter constructor");
         mClickListener = clickListener;
     }
 
@@ -49,6 +50,7 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
      */
     @Override
     public MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.d(TAG, "inside onCreateViewHolder");
         mContext = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.main_list_item, parent, false);
@@ -74,9 +76,10 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
             movieTitle.setText(movie.getMovieTitle());
 
         } else {
+            //TODO：ピカソとRetrofit とを連携させる
             movieTitle.setVisibility(View.INVISIBLE);
             posterImage.setVisibility(View.VISIBLE);
-            Uri thumbnailUri = NetworkUtils.buildUrlForThumbnail(thumbnailPath);
+            Uri thumbnailUri = ServiceFactory.buildUrlForThumbnail(thumbnailPath);
             Log.d(TAG, "thumbnailPath is " + thumbnailPath);
             Log.d(TAG, "thumbnailUrl is " + thumbnailUri);
             Picasso.with(mContext).load(thumbnailUri).into(posterImage);
@@ -97,9 +100,17 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
      * Set new data from web on already created MovieAdapter.
      * This method is used to avoid recreating new MovieAdapter.
      */
-    void setMoviewData(ArrayList<Movie> movieData) {
+    void setMovieData(ArrayList<Movie> movieData) {
         mMovieArrayList = movieData;
         notifyDataSetChanged();
+    }
+
+    /**********************OnClickListene interface**********************************/
+    /**
+     * The interface that receives onClick messages.
+     */
+    interface MovieAdapterOnClickListener {
+        void onThumbnailClicked(Movie clickedMovie);
     }
 
     /************************** MovieAdapterViewHolder ****************************/
@@ -131,10 +142,4 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
         }
     }
 
-    /**
-     * The interface that receives onClick messages.
-     */
-    interface MovieAdapterOnClickListener {
-        void onThumbnailClicked(Movie clickedMovie);
-    }
 }

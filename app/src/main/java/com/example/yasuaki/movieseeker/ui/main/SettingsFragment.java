@@ -15,6 +15,7 @@ import com.example.yasuaki.movieseeker.R;
 public class SettingsFragment extends PreferenceFragmentCompat implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
+    //TODO：プレファレンスによって、コールするフェッチメソッドを切り替える
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.pref_general);

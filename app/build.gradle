@@ -81,4 +81,18 @@ dependencies {
     androidTestCompile "com.android.support:design:$rootProject.supportLibraryVersion"
 
     compile 'com.squareup.picasso:picasso:2.5.2'
+
+    //gson, retrofit, rx, butterknife, dagger
+    compile 'com.google.code.gson:gson:2.6.2'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.retrofit2:converter-scalars:2.1.0'
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex:rxjava:1.1.6'
+    compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
+    apt "com.jakewharton:butterknife-compiler:$rootProject.butterknifeVersion"
+
+    apt 'com.google.dagger:dagger-compiler:2.5'
+    compile 'com.google.dagger:dagger:2.5'
 }

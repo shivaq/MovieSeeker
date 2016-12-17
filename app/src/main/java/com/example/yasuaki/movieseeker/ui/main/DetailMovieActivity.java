@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.yasuaki.movieseeker.R;
-import com.example.yasuaki.movieseeker.data.Movie;
+import com.example.yasuaki.movieseeker.model.Movie;
 import com.example.yasuaki.movieseeker.util.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
@@ -35,6 +35,7 @@ public class DetailMovieActivity extends AppCompatActivity {
 
         tvTitle.setText(movie.getMovieTitle());
 
+        //TODO:ピカソとRetrofit 連携できる？
         Uri thumbnailUri = NetworkUtils.buildUrlForThumbnail(movie.getThumbnailPath());
         Picasso.with(this).load(thumbnailUri).into(moviePoster);
 
