@@ -11,8 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.yasuaki.movieseeker.R;
-import com.example.yasuaki.movieseeker.model.Movie;
-import com.example.yasuaki.movieseeker.remote.ServiceFactory;
+import com.example.yasuaki.movieseeker.data.model.Movie;
+import com.example.yasuaki.movieseeker.data.remote.ServiceFactory;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

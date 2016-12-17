@@ -1,4 +1,4 @@
-package com.example.yasuaki.movieseeker.model;
+package com.example.yasuaki.movieseeker.data.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,7 +10,6 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Movie implements Parcelable {
 
-    //TODO: JSON 変換を完全に GSON に任せる
     @SerializedName("poster_path")
     private String mThumbnailPath;
 

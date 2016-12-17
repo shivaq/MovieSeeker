@@ -1,4 +1,4 @@
-package com.example.yasuaki.movieseeker.model;
+package com.example.yasuaki.movieseeker.data.model;
 
 import com.google.gson.annotations.SerializedName;
 

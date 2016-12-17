@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.yasuaki.movieseeker.R;
-import com.example.yasuaki.movieseeker.model.Movie;
+import com.example.yasuaki.movieseeker.data.model.Movie;
 import com.example.yasuaki.movieseeker.util.NetworkUtils;
 import com.squareup.picasso.Picasso;
 

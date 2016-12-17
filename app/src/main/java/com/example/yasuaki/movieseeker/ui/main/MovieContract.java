@@ -1,13 +1,9 @@
 package com.example.yasuaki.movieseeker.ui.main;
 
 import com.example.yasuaki.movieseeker.base.BasePresenter;
-import com.example.yasuaki.movieseeker.model.Movie;
+import com.example.yasuaki.movieseeker.data.model.Movie;
 
 import java.util.ArrayList;
-
-/**
- * Created by Yasuaki on 2016/12/17.
- */
 
 public interface MovieContract {
 
@@ -16,13 +12,15 @@ public interface MovieContract {
     }
 
     interface MvpView<Presenter>{
-        void showMovieDataView();
+        void showFetchedData();
 
         void showErrorMessage();
 
-        void openDetail(Movie clickedMovie);
-
         void onLoadData(ArrayList<Movie> movieList);
+
+        void showProgressBar();
+
+        void hideProgressBar();
 
     }
 }

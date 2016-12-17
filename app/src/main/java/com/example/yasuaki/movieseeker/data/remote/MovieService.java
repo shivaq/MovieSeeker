@@ -1,6 +1,6 @@
-package com.example.yasuaki.movieseeker.remote;
+package com.example.yasuaki.movieseeker.data.remote;
 
-import com.example.yasuaki.movieseeker.model.MovieResponse;
+import com.example.yasuaki.movieseeker.data.model.MovieResponse;
 
 import retrofit2.http.GET;
 import retrofit2.http.Query;

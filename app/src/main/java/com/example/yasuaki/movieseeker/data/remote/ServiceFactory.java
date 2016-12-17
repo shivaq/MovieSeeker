@@ -1,4 +1,4 @@
-package com.example.yasuaki.movieseeker.remote;
+package com.example.yasuaki.movieseeker.data.remote;
 
 import android.net.Uri;
 import android.util.Log;
