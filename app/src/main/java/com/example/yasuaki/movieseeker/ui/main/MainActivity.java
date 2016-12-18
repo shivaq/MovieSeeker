@@ -1,4 +1,4 @@
-package com.example.yasuaki.movieseeker.ui;
+package com.example.yasuaki.movieseeker.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.example.yasuaki.movieseeker.R;
 import com.example.yasuaki.movieseeker.data.model.Movie;
+import com.example.yasuaki.movieseeker.ui.detail.DetailMovieActivity;
+import com.example.yasuaki.movieseeker.ui.preference.SettingsActivity;
 import com.example.yasuaki.movieseeker.util.ActivityUtils;
 
 import java.util.ArrayList;
@@ -28,15 +30,15 @@ public class MainActivity extends AppCompatActivity
 
     private final String TAG = MainActivity.class.getSimpleName();
 
-    private MoviePresenter mMoviePresenter;
-    private String mSortOrder;
-
     @BindView(R.id.recyclerview_main)
     RecyclerView mRecyclerView;
     @BindView(R.id.tv_error_message_display)
     TextView mErrorMessageDisplay;
     @BindView(R.id.progress_loading)
     ProgressBar mProgressBar;
+
+    private MoviePresenter mMoviePresenter;
+    private String mSortOrder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity
 
         //TODO:ここがDIできるとこかな？
         mMoviePresenter = new MoviePresenter(this);
-        mMoviePresenter.getMovies(this);
+        loadMovies();
     }
 
     //Check if preference is changed. If it is changed fetch data from the Movie DB
@@ -69,19 +71,10 @@ public class MainActivity extends AppCompatActivity
         mSortOrder = prefSort;
     }
 
-    //This get called when thumbnail is clicked. Move here to detailed Activity
     @Override
-    public void onThumbnailClicked(Movie clickedMovie) {
-        Intent intent = new Intent(this, DetailMovieActivity.class);
-        intent.putExtra("clicked_movie", clickedMovie);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onLoadData(ArrayList movieList) {
-        MovieAdapter movieAdapter = new MovieAdapter(this);
-        movieAdapter.setMovieData(movieList);
-        mRecyclerView.setAdapter(movieAdapter);
+    protected void onDestroy() {
+        super.onDestroy();
+        mMoviePresenter.clearSubscription();
     }
 
     @Override
@@ -100,6 +93,14 @@ public class MainActivity extends AppCompatActivity
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /********   MVP View methods implementation   ***********/
+    @Override
+    public void onLoadData(ArrayList movieList) {
+        MovieAdapter movieAdapter = new MovieAdapter(this);
+        movieAdapter.setMovieData(movieList);
+        mRecyclerView.setAdapter(movieAdapter);
     }
 
     /**
@@ -133,13 +134,28 @@ public class MainActivity extends AppCompatActivity
         mProgressBar.setVisibility(View.INVISIBLE);
     }
 
-    //Restart loading from the Movie DB
-    void updateMovie() {
-        mMoviePresenter.getMovies(this);
+
+    /*********** MovieAdapter callback ******************/
+    //This get called when thumbnail is clicked. Move from here to detailed Activity
+    @Override
+    public void onThumbnailClicked(Movie clickedMovie) {
+        Intent intent = new Intent(this, DetailMovieActivity.class);
+        intent.putExtra("clicked_movie", clickedMovie);
+        startActivity(intent);
+    }
+
+    //Fetch movie data
+    private void loadMovies(){
+        String sortOrder = ActivityUtils.getPreferredSortOrder(this);
+        if (sortOrder.equals("top_rated")) {
+            mMoviePresenter.getTopRatedMovies();
+        } else {
+            mMoviePresenter.getPopularMovies();
+        }
     }
 
     //Get called if sort order preference is changed
-    void onSortOrderChanged() {
-        updateMovie();
+    private void onSortOrderChanged() {
+        loadMovies();
     }
 }
