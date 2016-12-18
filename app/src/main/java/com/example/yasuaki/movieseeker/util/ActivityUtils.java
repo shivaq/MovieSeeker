@@ -15,10 +15,8 @@ public class ActivityUtils {
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(context);
 
-        String prefSortOrder = sharedPreferences.getString(
+        return sharedPreferences.getString(
                 context.getString(R.string.pref_sort_key),
                 context.getString(R.string.sort_order_popularity));
-
-        return prefSortOrder;
     }
 }

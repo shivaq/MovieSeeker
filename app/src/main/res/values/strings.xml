@@ -5,8 +5,8 @@
     <!-- Preferences -->
     <string name="pref_sort_by_popularity">Sort by most popular</string>
     <string name="pref_sort_by_high_rating">Sort by top rated</string>
-    <string name="sort_order_popularity">popularity.desc</string>
-    <string name="sort_order_rating">vote_average.desc</string>
+    <string name="sort_order_popularity">popular</string>
+    <string name="sort_order_rating">top_rated</string>
     <string name="pref_sort_key">sort</string>
     <string name="pref_sort_label">Sort order</string>
     <string name="menu_setting">Setting</string>

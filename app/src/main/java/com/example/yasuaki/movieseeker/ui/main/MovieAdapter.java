@@ -11,16 +11,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.yasuaki.movieseeker.R;
-import com.example.yasuaki.movieseeker.data.Movie;
+import com.example.yasuaki.movieseeker.data.model.Movie;
 import com.example.yasuaki.movieseeker.util.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
     private final String TAG = MovieAdapter.class.getSimpleName();
-    private ArrayList<Movie> mTemporaryMovieData;
+    private ArrayList<Movie> mMovieArrayList;
 
     private final MovieAdapterOnClickListener mClickListener;
 
@@ -33,6 +37,7 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
      *                      when an item is clicked.
      */
     MovieAdapter(MovieAdapterOnClickListener clickListener) {
+        Log.d(TAG, "inside MovieAdapter constructor");
         mClickListener = clickListener;
     }
 
@@ -46,6 +51,7 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
      */
     @Override
     public MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.d(TAG, "inside onCreateViewHolder");
         mContext = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.main_list_item, parent, false);
@@ -60,9 +66,9 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
 
+        Movie movie = mMovieArrayList.get(position);
         TextView movieTitle = holder.mMovieTitleText;
         ImageView posterImage = holder.mMovieImageView;
-        Movie movie = mTemporaryMovieData.get(position);
         String thumbnailPath = movie.getThumbnailPath();
 
         if (thumbnailPath.equals("null")) {
@@ -86,17 +92,25 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
      */
     @Override
     public int getItemCount() {
-        if (mTemporaryMovieData == null) return 0;
-        return mTemporaryMovieData.size();
+        if (mMovieArrayList == null) return 0;
+        return mMovieArrayList.size();
     }
 
     /**
      * Set new data from web on already created MovieAdapter.
      * This method is used to avoid recreating new MovieAdapter.
      */
-    void setMoviewData(ArrayList<Movie> movieData) {
-        mTemporaryMovieData = movieData;
+    void setMovieData(ArrayList<Movie> movieData) {
+        mMovieArrayList = movieData;
         notifyDataSetChanged();
+    }
+
+    /**********************OnClickListene interface**********************************/
+    /**
+     * The interface that receives onClick messages.
+     */
+    interface MovieAdapterOnClickListener {
+        void onThumbnailClicked(Movie clickedMovie);
     }
 
     /************************** MovieAdapterViewHolder ****************************/
@@ -104,35 +118,26 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
     /**
      * Cache of the children views for a main list item.
      */
-    class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class MovieAdapterViewHolder extends RecyclerView.ViewHolder{
 
-        final ImageView mMovieImageView;
-        final TextView mMovieTitleText;
+        @BindView(R.id.image_movie_thumbnail_listitem) ImageView mMovieImageView;
+        @BindView(R.id.text_null_poster) TextView mMovieTitleText;
 
         MovieAdapterViewHolder(View itemView) {
             super(itemView);
-            mMovieImageView = (ImageView) itemView.findViewById(R.id.image_movie_thumbnail);
-            mMovieTitleText = (TextView) itemView.findViewById(R.id.text_null_poster);
-            itemView.setOnClickListener(this);
+            ButterKnife.bind(this, itemView);
         }
 
-        /**
-         * This gets called by the child views during a click.
-         *
-         * @param view The View that was clicked
-         */
-        @Override
-        public void onClick(View view) {
+        //Set onClickListener on RecyclerView
+        @OnClick(R.id.recycler_item)
+        void onItemClicked(){
+
             int adapterPosition = getAdapterPosition();
-            Movie clickedMovie = mTemporaryMovieData.get(adapterPosition);
-            mClickListener.onThumbnailClicked(clickedMovie);
-        }
-    }
+            Movie clickedMovie = mMovieArrayList.get(adapterPosition);
 
-    /**
-     * The interface that receives onClick messages.
-     */
-    interface MovieAdapterOnClickListener {
-        void onThumbnailClicked(Movie clickedMovie);
+            if(mClickListener != null){
+                mClickListener.onThumbnailClicked(clickedMovie);
+            }
+        }
     }
 }

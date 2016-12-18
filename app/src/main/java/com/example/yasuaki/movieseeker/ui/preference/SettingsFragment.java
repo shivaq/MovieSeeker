@@ -1,4 +1,4 @@
-package com.example.yasuaki.movieseeker.ui.main;
+package com.example.yasuaki.movieseeker.ui.preference;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;

@@ -21,13 +21,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.main.DetailMovieActivity">
+            android:name=".ui.detail.DetailMovieActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.main.MainActivity"/>
         </activity>
         <activity
-            android:name=".ui.main.SettingsActivity"/>
+            android:name=".ui.preference.SettingsActivity"/>
     </application>
 
 </manifest>
