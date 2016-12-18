@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
+//Data model to fetch and hold List of Movies
 public class MovieResponse {
 
     @SerializedName("results")

@@ -1,8 +1,5 @@
 package com.example.yasuaki.movieseeker.data.remote;
 
-import android.net.Uri;
-import android.util.Log;
-
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -15,14 +12,15 @@ public class ServiceFactory {
 
     private static final String BASE_URL = "http://api.themoviedb.org/3/";
 
-    private static final String IMAGE_FETCH_BASE_URL = "https://image.tmdb.org/t/p/";
-    private static String fetchedImageSize = "w185";
-
     public ServiceFactory(){}
 
+    /**
+     * Generate MovieService implementation with Retrofit
+     * @return implemented MovieService interface
+     */
     public static MovieService makeMovieService(){
 
-
+        //Create logging interceptor
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -31,6 +29,7 @@ public class ServiceFactory {
                 .addInterceptor(logging)
                 .build();
 
+        //Create Retrofit instance with base url
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(okHttpClient)
@@ -38,19 +37,7 @@ public class ServiceFactory {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
 
+        //Generate MovieService implementation with Retrofit
         return retrofit.create(MovieService.class);
-    }
-
-    /**
-     * Builds the URL to fetch the movie thumbnail
-     */
-    public static Uri buildUrlForThumbnail(String thumbnailPath) {
-        Uri builtUriForImage = Uri.parse(IMAGE_FETCH_BASE_URL).buildUpon()
-                .appendPath(fetchedImageSize)
-                .appendEncodedPath(thumbnailPath)
-                .build();
-
-        Log.d(TAG, "Built URI for thumbnail " + builtUriForImage);
-        return builtUriForImage;
     }
 }

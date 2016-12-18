@@ -15,6 +15,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+/**
+ * As a MVP patterns Presenter, retrieve data and updates the UI
+ */
 class MoviePresenter implements MovieContract.Presenter {
 
     private static final String TAG = MoviePresenter.class.getSimpleName();
@@ -39,8 +42,14 @@ class MoviePresenter implements MovieContract.Presenter {
         return ServiceFactory.makeMovieService();
     }
 
+    /**
+     * Request web server for top rated movie data and watch the process.
+     * Operate completion or error of the process.
+     */
     void getTopRatedMovies() {
+
         mMovieMvpView.showProgressBar();
+
         mCompositeSubscription.add(makeMovieService()
                 .getTopRatedMovies(BuildConfig.OPEN_MOVIE_DB_API_KEY)
                 .subscribeOn(Schedulers.io())
@@ -57,6 +66,10 @@ class MoviePresenter implements MovieContract.Presenter {
                         Log.e(TAG, e.toString());
                     }
 
+                    /**
+                     * Pass fetched data to MainActivity
+                     * @param movieResponse fetched Movie data list
+                     */
                     @Override
                     public void onNext(MovieResponse movieResponse) {
                         Log.d(TAG, "inside onNext");
@@ -69,6 +82,10 @@ class MoviePresenter implements MovieContract.Presenter {
                 }));
     }
 
+    /**
+     * Request web server for most popular movie data and watch the process.
+     * Operate completion or error of the process.
+     */
     void getPopularMovies() {
         mMovieMvpView.showProgressBar();
         mCompositeSubscription.add(makeMovieService()

@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.example.yasuaki.movieseeker.R;
 import com.example.yasuaki.movieseeker.data.model.Movie;
-import com.example.yasuaki.movieseeker.data.remote.ServiceFactory;
+import com.example.yasuaki.movieseeker.util.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -79,7 +79,7 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
         } else {
             movieTitle.setVisibility(View.INVISIBLE);
             posterImage.setVisibility(View.VISIBLE);
-            Uri thumbnailUri = ServiceFactory.buildUrlForThumbnail(thumbnailPath);
+            Uri thumbnailUri = NetworkUtils.buildUrlForThumbnail(thumbnailPath);
             Log.d(TAG, "thumbnailPath is " + thumbnailPath);
             Log.d(TAG, "thumbnailUrl is " + thumbnailUri);
             Picasso.with(mContext).load(thumbnailUri).into(posterImage);

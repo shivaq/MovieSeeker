@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +23,10 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-//Entry point of Movie Seeker app
+/**
+ * Entry point of Movie Seeker app.
+ * Responsible for UI display mechanism as a MVP patterns View
+ */
 public class MainActivity extends AppCompatActivity
         implements MovieAdapter.MovieAdapterOnClickListener, MovieContract.MvpView {
 
@@ -54,7 +56,6 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        //TODO:ここがDIできるとこかな？
         mMoviePresenter = new MoviePresenter(this);
         loadMovies();
     }
@@ -96,6 +97,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     /********   MVP View methods implementation   ***********/
+    /**
+     * Set fetched data on movieAdapter. Then set the adapter on recyclerView
+     * @param movieList fetched movie data list
+     */
     @Override
     public void onLoadData(ArrayList movieList) {
         MovieAdapter movieAdapter = new MovieAdapter(this);
@@ -126,14 +131,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void showProgressBar() {
         mProgressBar.setVisibility(View.VISIBLE);
-        Log.d(TAG, "inside showProgressBar");
     }
 
     @Override
     public void hideProgressBar() {
         mProgressBar.setVisibility(View.INVISIBLE);
     }
-
 
     /*********** MovieAdapter callback ******************/
     //This get called when thumbnail is clicked. Move from here to detailed Activity
@@ -144,7 +147,7 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
-    //Fetch movie data
+    //Request for movie data depends on sharedPreference
     private void loadMovies(){
         String sortOrder = ActivityUtils.getPreferredSortOrder(this);
         if (sortOrder.equals("top_rated")) {
