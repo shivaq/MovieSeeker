@@ -1,4 +1,4 @@
-package com.example.yasuaki.movieseeker.ui;
+package com.example.yasuaki.movieseeker.ui.preference;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

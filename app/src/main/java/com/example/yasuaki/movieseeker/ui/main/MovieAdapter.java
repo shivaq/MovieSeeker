@@ -1,4 +1,4 @@
-package com.example.yasuaki.movieseeker.ui;
+package com.example.yasuaki.movieseeker.ui.main;
 
 import android.content.Context;
 import android.net.Uri;
