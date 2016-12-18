@@ -23,9 +23,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 //Entry point of Movie Seeker app
-public class MainActivity extends AppCompatActivity implements
-        MovieAdapter.MovieAdapterOnClickListener,
-        MovieContract.MvpView {
+public class MainActivity extends AppCompatActivity
+        implements MovieAdapter.MovieAdapterOnClickListener, MovieContract.MvpView {
 
     private final String TAG = MainActivity.class.getSimpleName();
 

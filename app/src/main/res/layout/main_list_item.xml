@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/recycler_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -19,10 +20,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/image_movie_thumbnail_listitem"
-        android:layout_alignLeft="@id/image_movie_thumbnail_listitem"
-        android:layout_alignStart="@id/image_movie_thumbnail_listitem"
         android:layout_alignEnd="@id/image_movie_thumbnail_listitem"
+        android:layout_alignLeft="@id/image_movie_thumbnail_listitem"
         android:layout_alignRight="@id/image_movie_thumbnail_listitem"
+        android:layout_alignStart="@id/image_movie_thumbnail_listitem"
         android:layout_alignTop="@id/image_movie_thumbnail_listitem"
         android:fontFamily="serif-monospace"
         android:gravity="center"

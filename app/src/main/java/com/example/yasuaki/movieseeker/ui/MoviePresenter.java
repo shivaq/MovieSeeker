@@ -43,7 +43,6 @@ class MoviePresenter implements MovieContract.Presenter {
             observable = makeMovieService().getPopularMovies(BuildConfig.OPEN_MOVIE_DB_API_KEY);
         }
 
-
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
 

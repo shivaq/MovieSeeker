@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
@@ -65,9 +66,9 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
 
+        Movie movie = mMovieArrayList.get(position);
         TextView movieTitle = holder.mMovieTitleText;
         ImageView posterImage = holder.mMovieImageView;
-        Movie movie = mMovieArrayList.get(position);
         String thumbnailPath = movie.getThumbnailPath();
 
         if (thumbnailPath.equals("null")) {
@@ -117,7 +118,7 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
     /**
      * Cache of the children views for a main list item.
      */
-    class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class MovieAdapterViewHolder extends RecyclerView.ViewHolder{
 
         @BindView(R.id.image_movie_thumbnail_listitem) ImageView mMovieImageView;
         @BindView(R.id.text_null_poster) TextView mMovieTitleText;
@@ -125,20 +126,18 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
         MovieAdapterViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(this);
         }
 
-        /**
-         * This gets called by the child views during a click.
-         *
-         * @param view The View that was clicked
-         */
-        @Override
-        public void onClick(View view) {
+        //Set onClickListener on RecyclerView
+        @OnClick(R.id.recycler_item)
+        void onItemClicked(){
+
             int adapterPosition = getAdapterPosition();
             Movie clickedMovie = mMovieArrayList.get(adapterPosition);
-            mClickListener.onThumbnailClicked(clickedMovie);
+
+            if(mClickListener != null){
+                mClickListener.onThumbnailClicked(clickedMovie);
+            }
         }
     }
-
 }
