@@ -19,6 +19,8 @@ interface MovieContract {
 
         void onLoadData(ArrayList<Movie> movieList);
 
+        void setMovieData();
+
         void showFetchedData();
 
         void showErrorMessage();

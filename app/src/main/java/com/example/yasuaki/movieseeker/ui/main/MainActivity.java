@@ -32,7 +32,9 @@ public class MainActivity extends AppCompatActivity
         implements MovieAdapter.MovieAdapterOnClickListener, MovieContract.MvpView {
 
     private final String TAG = MainActivity.class.getSimpleName();
-    private static final String STORED_MOVIE_LIST = "movie_list";
+
+    private final String TOP_RATED = "top_rated";
+    private final String MOST_POPULAR = "popular";
 
     @BindView(R.id.recyclerview_main)
     RecyclerView mRecyclerView;
@@ -43,7 +45,8 @@ public class MainActivity extends AppCompatActivity
 
     private MoviePresenter mMoviePresenter;
     private MovieAdapter mMovieAdapter;
-    private ArrayList<Movie> mMovieList;
+    private ArrayList<Movie> mTopRatedMovieList;
+    private ArrayList<Movie> mMostPopularMovieList;
     private String mSortOrder;
 
     @Override
@@ -62,23 +65,14 @@ public class MainActivity extends AppCompatActivity
 
         mMoviePresenter = new MoviePresenter(this);
 
-        if(savedInstanceState != null
-                && savedInstanceState.getParcelableArrayList(STORED_MOVIE_LIST) != null){
+        checkSavedInstanceState(savedInstanceState);
+    }
 
-            Log.d(TAG, "Inside of onCreate before getParcelableArrayList. mMovieList is " + mMovieList );
-            mMovieList = savedInstanceState.getParcelableArrayList(STORED_MOVIE_LIST);
-            Log.d(TAG, "Inside of onCreate after getParcelableArrayList. mMovieList is " + mMovieList );
-
-            if(mMovieAdapter == null){
-                mMovieAdapter = new MovieAdapter(this);
-            }
-
-            mMovieAdapter.setMovieData(mMovieList);
-            mRecyclerView.setAdapter(mMovieAdapter);
-        } else {
-            Log.d(TAG, "Inside of onCreate before loadMovies(). mMovieList is " + mMovieList );
-            loadMovies();
-        }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(TOP_RATED, mTopRatedMovieList);
+        outState.putParcelableArrayList(MOST_POPULAR, mMostPopularMovieList);
+        super.onSaveInstanceState(outState);
     }
 
     //If preference is changed, re-fetch data from the Movie DB
@@ -88,9 +82,9 @@ public class MainActivity extends AppCompatActivity
 
         String prefSort = ActivityUtils.getPreferredSortOrder(this);
         if (prefSort != null && !mSortOrder.equals(prefSort)) {
-            onSortOrderChanged();
+            mSortOrder = prefSort;
+            setMovieData();
         }
-        mSortOrder = prefSort;
     }
 
     @Override
@@ -105,6 +99,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    //TODO:Add Get new rank
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
@@ -117,28 +112,60 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+
+    /*************************************
+     * MVP View methods implementation
+     **************************************/
+
+    /**
+     * Set movie data to adapter according to preferences
+     */
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        Log.d(TAG, "Inside of onSaveInstanceState. mMovieList is " + mMovieList );
-        outState.putParcelableArrayList(STORED_MOVIE_LIST, mMovieList);
-        super.onSaveInstanceState(outState);
+    public void setMovieData() {
+
+        ArrayList<Movie> movieList = null;
+
+        switch (mSortOrder) {
+            case TOP_RATED:
+                movieList = mTopRatedMovieList;
+                break;
+            case MOST_POPULAR:
+                movieList = mMostPopularMovieList;
+                break;
+            default:
+                mSortOrder = ActivityUtils.getPreferredSortOrder(this);
+        }
+
+        //Check if Movie data was loaded
+        if (movieList == null) {
+            loadMovies();
+        } else {
+            //Movie data is loaded. So set them to adapter
+            if (mMovieAdapter == null) {
+                mMovieAdapter = new MovieAdapter(this);
+            }
+            mMovieAdapter.setMovieData(movieList);
+            mRecyclerView.setAdapter(mMovieAdapter);
+        }
     }
 
-    /********   MVP View methods implementation   ***********/
     /**
-     * Set fetched data on movieAdapter. Then set the adapter on recyclerView
+     * Store fetched data to fields. Then set movie data to adapter
+     *
      * @param movieList fetched movie data list
      */
     @Override
     public void onLoadData(ArrayList movieList) {
-        mMovieList = movieList;
-        if(mMovieAdapter == null){
-            mMovieAdapter = new MovieAdapter(this);
+
+        Log.d(TAG, "inside onLoadData");
+        if (mSortOrder.equals(TOP_RATED)) {
+            mTopRatedMovieList = movieList;
+        } else {
+            mMostPopularMovieList = movieList;
         }
-        Log.d(TAG, "Inside of onLoadData. mMovieList is " + mMovieList );
-        mMovieAdapter.setMovieData(mMovieList);
-        mRecyclerView.setAdapter(mMovieAdapter);
+        setMovieData();
     }
+
 
     /**
      * This method will make the View for the movie thumbnail visible and
@@ -170,7 +197,9 @@ public class MainActivity extends AppCompatActivity
         mProgressBar.setVisibility(View.INVISIBLE);
     }
 
-    /*********** MovieAdapter callback ******************/
+    /*****************************
+     * MovieAdapter callback
+     *****************************/
     //This get called when thumbnail is clicked. Move from here to detailed Activity
     @Override
     public void onThumbnailClicked(Movie clickedMovie) {
@@ -179,18 +208,35 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
+    /*****************************
+     * Other methods
+     *****************************/
+
     //Request for movie data depends on sharedPreference
-    private void loadMovies(){
-        String sortOrder = ActivityUtils.getPreferredSortOrder(this);
-        if (sortOrder.equals("top_rated")) {
+    private void loadMovies() {
+
+        if (mSortOrder.equals(TOP_RATED)) {
             mMoviePresenter.getTopRatedMovies();
         } else {
             mMoviePresenter.getPopularMovies();
         }
     }
 
-    //Get called if sort order preference is changed
-    private void onSortOrderChanged() {
-        loadMovies();
+    /**
+     * Check and store savedInstanceState to fields
+     */
+    private void checkSavedInstanceState(Bundle savedInstanceState) {
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getParcelableArrayList(TOP_RATED) != null) {
+                mTopRatedMovieList = savedInstanceState.getParcelableArrayList(TOP_RATED);
+            }
+            if (savedInstanceState.getParcelableArrayList(MOST_POPULAR) != null) {
+                mMostPopularMovieList = savedInstanceState.getParcelableArrayList(MOST_POPULAR);
+            }
+            setMovieData();
+        } else {
+            loadMovies();
+        }
     }
 }
