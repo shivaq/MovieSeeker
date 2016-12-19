@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity
         implements MovieAdapter.MovieAdapterOnClickListener, MovieContract.MvpView {
 
     private final String TAG = MainActivity.class.getSimpleName();
+    private static final String STORED_MOVIE_LIST = "movie_list";
 
     @BindView(R.id.recyclerview_main)
     RecyclerView mRecyclerView;
@@ -40,6 +42,8 @@ public class MainActivity extends AppCompatActivity
     ProgressBar mProgressBar;
 
     private MoviePresenter mMoviePresenter;
+    private MovieAdapter mMovieAdapter;
+    private ArrayList<Movie> mMovieList;
     private String mSortOrder;
 
     @Override
@@ -57,10 +61,27 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView.setHasFixedSize(true);
 
         mMoviePresenter = new MoviePresenter(this);
-        loadMovies();
+
+        if(savedInstanceState != null
+                && savedInstanceState.getParcelableArrayList(STORED_MOVIE_LIST) != null){
+
+            Log.d(TAG, "Inside of onCreate before getParcelableArrayList. mMovieList is " + mMovieList );
+            mMovieList = savedInstanceState.getParcelableArrayList(STORED_MOVIE_LIST);
+            Log.d(TAG, "Inside of onCreate after getParcelableArrayList. mMovieList is " + mMovieList );
+
+            if(mMovieAdapter == null){
+                mMovieAdapter = new MovieAdapter(this);
+            }
+
+            mMovieAdapter.setMovieData(mMovieList);
+            mRecyclerView.setAdapter(mMovieAdapter);
+        } else {
+            Log.d(TAG, "Inside of onCreate before loadMovies(). mMovieList is " + mMovieList );
+            loadMovies();
+        }
     }
 
-    //Check if preference is changed. If it is changed fetch data from the Movie DB
+    //If preference is changed, re-fetch data from the Movie DB
     @Override
     protected void onResume() {
         super.onResume();
@@ -96,6 +117,13 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Log.d(TAG, "Inside of onSaveInstanceState. mMovieList is " + mMovieList );
+        outState.putParcelableArrayList(STORED_MOVIE_LIST, mMovieList);
+        super.onSaveInstanceState(outState);
+    }
+
     /********   MVP View methods implementation   ***********/
     /**
      * Set fetched data on movieAdapter. Then set the adapter on recyclerView
@@ -103,9 +131,13 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void onLoadData(ArrayList movieList) {
-        MovieAdapter movieAdapter = new MovieAdapter(this);
-        movieAdapter.setMovieData(movieList);
-        mRecyclerView.setAdapter(movieAdapter);
+        mMovieList = movieList;
+        if(mMovieAdapter == null){
+            mMovieAdapter = new MovieAdapter(this);
+        }
+        Log.d(TAG, "Inside of onLoadData. mMovieList is " + mMovieList );
+        mMovieAdapter.setMovieData(mMovieList);
+        mRecyclerView.setAdapter(mMovieAdapter);
     }
 
     /**
