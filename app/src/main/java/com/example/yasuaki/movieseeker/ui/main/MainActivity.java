@@ -99,7 +99,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    //TODO:Add Get new rank
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
@@ -107,6 +106,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.pref_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
+                return true;
+            case R.id.refresh:
+                loadMovies();
                 return true;
         }
         return super.onOptionsItemSelected(item);
