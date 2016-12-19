@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +33,9 @@ public class MainActivity extends AppCompatActivity
 
     private final String TAG = MainActivity.class.getSimpleName();
 
+    private final String TOP_RATED = "top_rated";
+    private final String MOST_POPULAR = "popular";
+
     @BindView(R.id.recyclerview_main)
     RecyclerView mRecyclerView;
     @BindView(R.id.tv_error_message_display)
@@ -40,6 +44,9 @@ public class MainActivity extends AppCompatActivity
     ProgressBar mProgressBar;
 
     private MoviePresenter mMoviePresenter;
+    private MovieAdapter mMovieAdapter;
+    private ArrayList<Movie> mTopRatedMovieList;
+    private ArrayList<Movie> mMostPopularMovieList;
     private String mSortOrder;
 
     @Override
@@ -57,19 +64,27 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView.setHasFixedSize(true);
 
         mMoviePresenter = new MoviePresenter(this);
-        loadMovies();
+
+        checkSavedInstanceState(savedInstanceState);
     }
 
-    //Check if preference is changed. If it is changed fetch data from the Movie DB
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(TOP_RATED, mTopRatedMovieList);
+        outState.putParcelableArrayList(MOST_POPULAR, mMostPopularMovieList);
+        super.onSaveInstanceState(outState);
+    }
+
+    //If preference is changed, re-fetch data from the Movie DB
     @Override
     protected void onResume() {
         super.onResume();
 
         String prefSort = ActivityUtils.getPreferredSortOrder(this);
         if (prefSort != null && !mSortOrder.equals(prefSort)) {
-            onSortOrderChanged();
+            mSortOrder = prefSort;
+            setMovieData();
         }
-        mSortOrder = prefSort;
     }
 
     @Override
@@ -92,21 +107,67 @@ public class MainActivity extends AppCompatActivity
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
                 return true;
+            case R.id.refresh:
+                loadMovies();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    /********   MVP View methods implementation   ***********/
+
+    /*************************************
+     * MVP View methods implementation
+     **************************************/
+
     /**
-     * Set fetched data on movieAdapter. Then set the adapter on recyclerView
+     * Set movie data to adapter according to preferences
+     */
+    @Override
+    public void setMovieData() {
+
+        ArrayList<Movie> movieList = null;
+
+        switch (mSortOrder) {
+            case TOP_RATED:
+                movieList = mTopRatedMovieList;
+                break;
+            case MOST_POPULAR:
+                movieList = mMostPopularMovieList;
+                break;
+            default:
+                mSortOrder = ActivityUtils.getPreferredSortOrder(this);
+        }
+
+        //Check if Movie data was loaded
+        if (movieList == null) {
+            loadMovies();
+        } else {
+            //Movie data is loaded. So set them to adapter
+            if (mMovieAdapter == null) {
+                mMovieAdapter = new MovieAdapter(this);
+            }
+            mMovieAdapter.setMovieData(movieList);
+            mRecyclerView.setAdapter(mMovieAdapter);
+        }
+    }
+
+    /**
+     * Store fetched data to fields. Then set movie data to adapter
+     *
      * @param movieList fetched movie data list
      */
     @Override
     public void onLoadData(ArrayList movieList) {
-        MovieAdapter movieAdapter = new MovieAdapter(this);
-        movieAdapter.setMovieData(movieList);
-        mRecyclerView.setAdapter(movieAdapter);
+
+        Log.d(TAG, "inside onLoadData");
+        if (mSortOrder.equals(TOP_RATED)) {
+            mTopRatedMovieList = movieList;
+        } else {
+            mMostPopularMovieList = movieList;
+        }
+        setMovieData();
     }
+
 
     /**
      * This method will make the View for the movie thumbnail visible and
@@ -138,7 +199,9 @@ public class MainActivity extends AppCompatActivity
         mProgressBar.setVisibility(View.INVISIBLE);
     }
 
-    /*********** MovieAdapter callback ******************/
+    /*****************************
+     * MovieAdapter callback
+     *****************************/
     //This get called when thumbnail is clicked. Move from here to detailed Activity
     @Override
     public void onThumbnailClicked(Movie clickedMovie) {
@@ -147,18 +210,35 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
+    /*****************************
+     * Other methods
+     *****************************/
+
     //Request for movie data depends on sharedPreference
-    private void loadMovies(){
-        String sortOrder = ActivityUtils.getPreferredSortOrder(this);
-        if (sortOrder.equals("top_rated")) {
+    private void loadMovies() {
+
+        if (mSortOrder.equals(TOP_RATED)) {
             mMoviePresenter.getTopRatedMovies();
         } else {
             mMoviePresenter.getPopularMovies();
         }
     }
 
-    //Get called if sort order preference is changed
-    private void onSortOrderChanged() {
-        loadMovies();
+    /**
+     * Check and store savedInstanceState to fields
+     */
+    private void checkSavedInstanceState(Bundle savedInstanceState) {
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getParcelableArrayList(TOP_RATED) != null) {
+                mTopRatedMovieList = savedInstanceState.getParcelableArrayList(TOP_RATED);
+            }
+            if (savedInstanceState.getParcelableArrayList(MOST_POPULAR) != null) {
+                mMostPopularMovieList = savedInstanceState.getParcelableArrayList(MOST_POPULAR);
+            }
+            setMovieData();
+        } else {
+            loadMovies();
+        }
     }
 }

@@ -34,67 +34,89 @@ android {
 }
 
 dependencies {
+    final SUPPORT_LIBRARY_VERSION = '25.1.0'
+    final HAMCREST_VERSION = '1.3'
+    final DEXMAKER_VERSION = '1.2'
+    final JUNIT_VERSION = '4.12'
+    final MOCKITO_VERSION = '1.10.19'
+    final RUNNER_VERSION = '0.5'
+    final ESPRESSO_VERSION = '2.2.2'
+    final DAGGER_VERSION = '2.5'
+    final UI_AUTOMATOR_VERSION = '2.1.2'
+
+    final RETROFIT2_VERSION = '2.1.0'
+    final OKHTTP_VERSION = '3.3.0'
+    final PICASSO_VERSION = '2.5.2'
+
+    final BUTTERKNIFE_VERSION = '8.4.0'
+    final GSON_VERSION = '2.6.2'
+
+    final RXANDROID_VERSION = '1.2.1'
+    final RXJAVA_VERSION = '1.1.6'
+
+    final PLAY_SERVICES_VERSION = '8.4.0'
 
     // App's dependencies, including test
-    compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
-    compile "com.android.support:cardview-v7:$rootProject.supportLibraryVersion"
-    compile "com.android.support:design:$rootProject.supportLibraryVersion"
-    compile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
-    compile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
-    compile "com.android.support:preference-v7:$rootProject.supportLibraryVersion"
-    compile "com.android.support.test.espresso:espresso-idling-resource:$rootProject.espressoVersion"
-
-    compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
-    apt "com.jakewharton:butterknife-compiler:$rootProject.butterknifeVersion"
+    compile "com.android.support:appcompat-v7:$SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support:cardview-v7:$SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support:design:$SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support:recyclerview-v7:$SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support:support-v4:$SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support:preference-v7:$SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support.test.espresso:espresso-idling-resource:$ESPRESSO_VERSION"
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestCompile("com.android.support.test.espresso:espresso-core:$ESPRESSO_VERSION", {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
     // Dependencies for local unit tests
-    testCompile "junit:junit:$rootProject.ext.junitVersion"
-    testCompile "org.mockito:mockito-all:$rootProject.ext.mockitoVersion"
-    testCompile "org.hamcrest:hamcrest-all:$rootProject.ext.hamcrestVersion"
+    testCompile "junit:junit:$JUNIT_VERSION"
+    testCompile "org.mockito:mockito-all:$MOCKITO_VERSION"
+    testCompile "org.hamcrest:hamcrest-all:$HAMCREST_VERSION"
 
     // Android Testing Support Library's runner and rules
-    androidTestCompile "com.android.support.test:runner:$rootProject.ext.runnerVersion"
-    androidTestCompile "com.android.support.test:rules:$rootProject.ext.runnerVersion"
+    androidTestCompile "com.android.support.test:runner:$RUNNER_VERSION"
+    androidTestCompile "com.android.support.test:rules:$RUNNER_VERSION"
 
     // Dependencies for Android unit tests
-    androidTestCompile "junit:junit:$rootProject.ext.junitVersion"
-    androidTestCompile "org.mockito:mockito-core:$rootProject.ext.mockitoVersion"
-    androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
-    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2'
+    androidTestCompile "junit:junit:$JUNIT_VERSION"
+    androidTestCompile "org.mockito:mockito-core:$MOCKITO_VERSION"
+    androidTestCompile "com.google.dexmaker:dexmaker:$DEXMAKER_VERSION"
+    androidTestCompile "com.google.dexmaker:dexmaker-mockito:$DEXMAKER_VERSION"
 
     // Espresso UI Testing
-    androidTestCompile "com.android.support.test.espresso:espresso-core:$rootProject.espressoVersion"
-    androidTestCompile "com.android.support.test.espresso:espresso-contrib:$rootProject.espressoVersion"
-    androidTestCompile "com.android.support.test.espresso:espresso-intents:$rootProject.espressoVersion"
+    androidTestCompile "com.android.support.test.espresso:espresso-core:$ESPRESSO_VERSION"
+    androidTestCompile "com.android.support.test.espresso:espresso-contrib:$ESPRESSO_VERSION"
+    androidTestCompile "com.android.support.test.espresso:espresso-intents:$ESPRESSO_VERSION"
+
+    //Dagger for dependency injection
+    apt "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
+    compile "com.google.dagger:dagger:$DAGGER_VERSION"
 
     // Resolve conflicts between main and test APK:
-    androidTestCompile "com.android.support:support-annotations:$rootProject.supportLibraryVersion"
-    androidTestCompile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
-    androidTestCompile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
-    androidTestCompile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
-    androidTestCompile "com.android.support:design:$rootProject.supportLibraryVersion"
+    androidTestCompile "com.android.support:support-annotations:$SUPPORT_LIBRARY_VERSION"
+    androidTestCompile "com.android.support:support-v4:$SUPPORT_LIBRARY_VERSION"
+    androidTestCompile "com.android.support:recyclerview-v7:$SUPPORT_LIBRARY_VERSION"
+    androidTestCompile "com.android.support:appcompat-v7:$SUPPORT_LIBRARY_VERSION"
+    androidTestCompile "com.android.support:design:$SUPPORT_LIBRARY_VERSION"
 
-    compile 'com.squareup.picasso:picasso:2.5.2'
+    // gson, retrofit, okhttp, picasso
+    compile "com.google.code.gson:gson:$GSON_VERSION"
 
-    //gson, retrofit,okhttp,  rx, butterknife, dagger
-    compile 'com.google.code.gson:gson:2.6.2'
-    compile 'com.squareup.retrofit2:retrofit:2.1.0'
-    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-    compile 'com.squareup.retrofit2:converter-scalars:2.1.0'
-    compile "com.squareup.okhttp3:okhttp:$rootProject.okhttpVersion"
-    compile "com.squareup.okhttp3:logging-interceptor:$rootProject.okhttpVersion"
-    compile 'io.reactivex:rxandroid:1.2.1'
-    compile 'io.reactivex:rxjava:1.1.6'
-    compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
-    apt "com.jakewharton:butterknife-compiler:$rootProject.butterknifeVersion"
+    compile "com.squareup.retrofit2:retrofit:$RETROFIT2_VERSION"
+    compile "com.squareup.retrofit2:adapter-rxjava:$RETROFIT2_VERSION"
+    compile "com.squareup.retrofit2:converter-gson:$RETROFIT2_VERSION"
+    compile "com.squareup.retrofit2:converter-scalars:$RETROFIT2_VERSION"
 
-    apt 'com.google.dagger:dagger-compiler:2.5'
-    compile 'com.google.dagger:dagger:2.5'
+    compile "com.squareup.okhttp3:okhttp:$OKHTTP_VERSION"
+    compile "com.squareup.okhttp3:logging-interceptor:$OKHTTP_VERSION"
+    compile "com.squareup.picasso:picasso:$PICASSO_VERSION"
+
+    // rx, butterknife
+    compile "io.reactivex:rxandroid:$RXANDROID_VERSION"
+    compile "io.reactivex:rxjava:$RXJAVA_VERSION"
+    compile "com.jakewharton:butterknife:$BUTTERKNIFE_VERSION"
+    apt "com.jakewharton:butterknife-compiler:$BUTTERKNIFE_VERSION"
 }

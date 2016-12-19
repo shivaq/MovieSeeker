@@ -17,8 +17,8 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimaryDark"
         android:fontFamily="sans-serif-medium"
-        android:padding="16dp"
-        android:textColor="#FFFFFF"
+        android:padding="@dimen/activity_padding"
+        android:textColor="@android:color/white"
         android:textSize="@dimen/text_headline"
         tools:text="Chappie"/>
 
