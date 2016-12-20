@@ -21,6 +21,8 @@ interface MovieContract {
 
         void setMovieData();
 
+        void setSortOrder();
+
         void showFetchedData();
 
         void showErrorMessage();

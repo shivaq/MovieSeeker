@@ -1,8 +1,10 @@
 package com.example.yasuaki.movieseeker.ui.main;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,7 +31,7 @@ import butterknife.ButterKnife;
  * Responsible for UI display mechanism as a MVP patterns View
  */
 public class MainActivity extends AppCompatActivity
-        implements MovieAdapter.MovieAdapterOnClickListener, MovieContract.MvpView {
+        implements MovieAdapter.MovieAdapterOnClickListener, SharedPreferences.OnSharedPreferenceChangeListener,MovieContract.MvpView {
 
     private final String TAG = MainActivity.class.getSimpleName();
 
@@ -55,7 +57,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        mSortOrder = ActivityUtils.getPreferredSortOrder(this);
+        setSortOrder();
 
         GridLayoutManager gridLayoutManager
                 = new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false);
@@ -66,6 +68,9 @@ public class MainActivity extends AppCompatActivity
         mMoviePresenter = new MoviePresenter(this);
 
         checkSavedInstanceState(savedInstanceState);
+
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -75,14 +80,11 @@ public class MainActivity extends AppCompatActivity
         super.onSaveInstanceState(outState);
     }
 
-    //If preference is changed, re-fetch data from the Movie DB
     @Override
-    protected void onResume() {
-        super.onResume();
-
-        String prefSort = ActivityUtils.getPreferredSortOrder(this);
-        if (prefSort != null && !mSortOrder.equals(prefSort)) {
-            mSortOrder = prefSort;
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Log.d(TAG, "inside onSharedPreferenceChanged");
+        if(key.equals(getString(R.string.pref_sort_key))){
+            setSortOrder();
             setMovieData();
         }
     }
@@ -91,6 +93,8 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         mMoviePresenter.clearSubscription();
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -135,7 +139,7 @@ public class MainActivity extends AppCompatActivity
                 movieList = mMostPopularMovieList;
                 break;
             default:
-                mSortOrder = ActivityUtils.getPreferredSortOrder(this);
+                setSortOrder();
         }
 
         //Check if Movie data was loaded
@@ -197,6 +201,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void hideProgressBar() {
         mProgressBar.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * Get sort order preference and set it to field
+     */
+    @Override
+    public void setSortOrder(){
+        mSortOrder = ActivityUtils.getPreferredSortOrder(this);
     }
 
     /*****************************
