@@ -11,5 +11,6 @@
     <string name="pref_sort_label">Sort order</string>
     <string name="menu_setting">Setting</string>
     <string name="menu_get_latest_data">Get the latest data</string>
+    <string name="error_no_trailer">No trailer</string>
 
 </resources>

@@ -38,7 +38,6 @@ class MoviePresenter implements MovieContract.Presenter {
     }
 
     private MovieService makeMovieService() {
-        Log.d(TAG, "inside makeMovieService");
         return ServiceFactory.makeMovieService();
     }
 
@@ -115,4 +114,5 @@ class MoviePresenter implements MovieContract.Presenter {
                     }
                 }));
     }
+
 }
