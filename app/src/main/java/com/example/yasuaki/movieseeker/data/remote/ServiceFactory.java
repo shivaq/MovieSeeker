@@ -10,7 +10,8 @@ public class ServiceFactory {
 
     private static final String TAG = ServiceFactory.class.getSimpleName();
 
-    private static final String BASE_URL = "http://api.themoviedb.org/3/";
+    private static final String BASE_MOVIE_DB_URL = "http://api.themoviedb.org/3/";
+//    private static final String BASE_YOUTUBE_URL = "https://img.youtube.com/";
 
     public ServiceFactory(){}
 
@@ -19,6 +20,8 @@ public class ServiceFactory {
      * @return implemented MovieService interface
      */
     public static MovieService makeMovieService(){
+
+        String baseUrl;
 
         //Create logging interceptor
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -29,9 +32,15 @@ public class ServiceFactory {
                 .addInterceptor(logging)
                 .build();
 
+//        if(isMovieDbRequest){
+//            baseUrl = BASE_MOVIE_DB_URL;
+//        } else {
+//            baseUrl =BASE_YOUTUBE_URL;
+//        }
+
         //Create Retrofit instance with base url
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(BASE_MOVIE_DB_URL)
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())

@@ -1,5 +1,7 @@
 package com.example.yasuaki.movieseeker.ui.detail;
 
+import android.util.Log;
+
 import com.example.yasuaki.movieseeker.BuildConfig;
 import com.example.yasuaki.movieseeker.data.model.Trailer;
 import com.example.yasuaki.movieseeker.data.model.TrailerResponse;
@@ -13,13 +15,13 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter{
+public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter {
 
     private static final String TAG = DetailMoviePresenter.class.getSimpleName();
     private DetailMovieContract.DetailMvpView mDetailedMovieMvpView;
     private CompositeSubscription mCompositeSubscription;
 
-    DetailMoviePresenter(DetailMovieContract.DetailMvpView detailedMovieMvpView){
+    DetailMoviePresenter(DetailMovieContract.DetailMvpView detailedMovieMvpView) {
         mDetailedMovieMvpView = detailedMovieMvpView;
         mCompositeSubscription = new CompositeSubscription();
     }
@@ -36,16 +38,16 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
         return ServiceFactory.makeMovieService();
     }
 
-    void getMovieTrailer(){
+    void getMovieTrailer() {
 
         mDetailedMovieMvpView.showProgressBar();
 
         mCompositeSubscription.add(makeMovieService()
-                .getMovieTrailer(BuildConfig.OPEN_MOVIE_DB_API_KEY,
-                        mDetailedMovieMvpView.getMovie().getId())
+                .getMovieTrailer(mDetailedMovieMvpView.getMovie().getId(),
+                        BuildConfig.OPEN_MOVIE_DB_API_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<TrailerResponse>(){
+                .subscribe(new Subscriber<TrailerResponse>() {
 
                     @Override
                     public void onCompleted() {
@@ -59,8 +61,9 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
                     @Override
                     public void onNext(TrailerResponse trailerResponse) {
                         ArrayList<Trailer> trailerList = trailerResponse.getResults();
-                        //TODO：Activity にて Adapter を new
-                        //TODO: Adapter にて各 アイテムに、URL を紐付けていく
+                        Log.d(TAG, "inside getMovieTrailer");
+
+                        mDetailedMovieMvpView.onLoadData(trailerList);
                         mDetailedMovieMvpView.hideTrailerProgress();
                     }
                 })

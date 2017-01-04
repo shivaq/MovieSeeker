@@ -37,6 +37,7 @@ class MoviePresenter implements MovieContract.Presenter {
         mCompositeSubscription.clear();
     }
 
+
     private MovieService makeMovieService() {
         return ServiceFactory.makeMovieService();
     }

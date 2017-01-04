@@ -151,9 +151,11 @@ public class MainActivity extends AppCompatActivity
             //Movie data is loaded. So set them to adapter
             if (mMovieAdapter == null) {
                 mMovieAdapter = new MovieAdapter(this);
+                //TODO：onCreateViewHolder が new されるタイミングを知る
             }
             mMovieAdapter.setMovieData(movieList);
             mRecyclerView.setAdapter(mMovieAdapter);
+            Log.d(TAG, "inside setMovieData");
         }
     }
 

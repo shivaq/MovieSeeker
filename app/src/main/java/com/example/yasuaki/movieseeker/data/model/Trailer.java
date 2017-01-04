@@ -17,4 +17,15 @@ public class Trailer {
 
     }
 
+    public String getTrailerKey() {
+        return mTrailerKey;
+    }
+
+    public String getTrailerTitle() {
+        return mTrailerTitle;
+    }
+
+    public int getTrailerSize() {
+        return mTrailerSize;
+    }
 }

@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.yasuaki.movieseeker.R;
 import com.example.yasuaki.movieseeker.data.model.Movie;
@@ -25,23 +27,35 @@ import butterknife.ButterKnife;
 
 //Display detailed movie data
 public class DetailMovieActivity extends AppCompatActivity
-        implements DetailMovieContract.DetailMvpView{
+        implements DetailMovieContract.DetailMvpView,
+        DetailMovieAdapter.DetailMovieAdapterOnClickListener {
 
     private final static String TAG = DetailMovieActivity.class.getSimpleName();
 
-    @BindView(R.id.text_detail_title) TextView tvTitle;
-    @BindView(R.id.image_movie_thumbnail) ImageView moviePoster;
-    @BindView(R.id.text_release_year) TextView tvReleaseDate;
-    @BindView(R.id.text_movie_rating) TextView tvUserRating;
-    @BindView(R.id.text_movie_synopsis) TextView tvSynopsis;
+    @BindView(R.id.text_detail_title)
+    TextView tvTitle;
+    @BindView(R.id.image_movie_thumbnail)
+    ImageView moviePoster;
+    @BindView(R.id.text_release_year)
+    TextView tvReleaseDate;
+    @BindView(R.id.text_movie_rating)
+    TextView tvUserRating;
+    @BindView(R.id.text_movie_synopsis)
+    TextView tvSynopsis;
+
+
     @BindView(R.id.recycler_view_trailer)
-    RecyclerView mRecyclerTrailer;
-    @BindView(R.id.tv_error_message_trailer) TextView mErrorMessageTrailer;
+    RecyclerView mRecyclerTrailerView;
+
+
+    @BindView(R.id.tv_error_message_trailer)
+    TextView mErrorMessageTrailer;
     @BindView(R.id.progress_trailer)
     ProgressBar mProgressTrailer;
 
     DetailMoviePresenter mDetailMoviePresenter;
     Movie mMovie;
+    DetailMovieAdapter mDetailMovieAdapter;
 
 
     @Override
@@ -57,8 +71,6 @@ public class DetailMovieActivity extends AppCompatActivity
 
         tvTitle.setText(mMovie.getMovieTitle());
         Uri thumbnailUri = NetworkUtils.buildUriForThumbnail(mMovie.getThumbnailPath());
-        Log.d(TAG, "thumbnailPath is " + mMovie.getThumbnailPath());
-        Log.d(TAG, "thumbnailUrl is " + thumbnailUri);
         Picasso.with(this).load(thumbnailUri).resize(800, 800).centerInside().into(moviePoster);
 
         String releaseDate = "Release Date \n" + mMovie.getReleaseDate();
@@ -69,7 +81,18 @@ public class DetailMovieActivity extends AppCompatActivity
 
         tvSynopsis.setText(mMovie.getMovieOverView());
 
-        loadTrailers();
+        //Set up RecyclerView for trailer
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+
+        mRecyclerTrailerView.setLayoutManager(layoutManager);
+        mRecyclerTrailerView.setHasFixedSize(true);
+
+        mDetailMovieAdapter = new DetailMovieAdapter(this);
+        mRecyclerTrailerView.setAdapter(mDetailMovieAdapter);
+
+        //Request trailer data with movie id
+        mDetailMoviePresenter.getMovieTrailer();
     }
 
     @Override
@@ -79,38 +102,44 @@ public class DetailMovieActivity extends AppCompatActivity
 
     @Override
     public void onLoadData(ArrayList<Trailer> trailerResults) {
+        if (trailerResults == null) {
+            mDetailMoviePresenter.getMovieTrailer();
+        }
 
+        mDetailMovieAdapter.setTrailerData(trailerResults);
     }
 
     @Override
     public void showErrorMessage() {
-        mRecyclerTrailer.setVisibility(View.INVISIBLE);
+        mRecyclerTrailerView.setVisibility(View.INVISIBLE);
         mErrorMessageTrailer.setVisibility(View.VISIBLE);
 
     }
 
     @Override
     public void showProgressBar() {
-        mRecyclerTrailer.setVisibility(View.INVISIBLE);
+        mRecyclerTrailerView.setVisibility(View.INVISIBLE);
         mProgressTrailer.setVisibility(View.VISIBLE);
+        Log.d(TAG, "showProgressBar");
     }
 
     @Override
     public void hideTrailerProgress() {
         mProgressTrailer.setVisibility(View.INVISIBLE);
-        mRecyclerTrailer.setVisibility(View.VISIBLE);
-    }
-
-    private void loadTrailers(){
-        mDetailMoviePresenter.getMovieTrailer();
-    }
-
-    private void setTrailer(){
-        //TODO:Adapter を new して Trailer を渡す
+        mRecyclerTrailerView.setVisibility(View.VISIBLE);
+        Log.d(TAG, "hideTrailerProgress");
     }
 
     //TODO:load reviews
-    private void loadReviews(){
+    private void loadReviews() {
 
+    }
+
+    @Override
+    public void onYoutubeClicked(Trailer clickedTrailer) {
+        String trailerKey = clickedTrailer.getTrailerKey();
+        Uri trailerUri = NetworkUtils.buildUriForTrailer(trailerKey);
+        Toast.makeText(this, "Uri is " + trailerUri, Toast.LENGTH_SHORT).show();
+        //TODO:取得したUri をもとに、暗黙的 Intent
     }
 }

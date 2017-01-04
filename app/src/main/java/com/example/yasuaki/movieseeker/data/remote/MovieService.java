@@ -20,7 +20,7 @@ public interface MovieService {
     @GET("movie/popular")
     Observable<MovieResponse> getPopularMovies(@Query("api_key") String apiKey);
 
-    @GET("/movie/{id}/videos")
-    Observable<TrailerResponse> getMovieTrailer(@Query("api_key") String apiKey,
-                                                @Path("id") int id);
+    @GET("movie/{id}/videos")
+    Observable<TrailerResponse> getMovieTrailer(@Path("id") int id,
+                                                @Query("api_key") String apiKey);
 }

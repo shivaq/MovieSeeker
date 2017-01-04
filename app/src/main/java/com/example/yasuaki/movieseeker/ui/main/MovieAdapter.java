@@ -128,6 +128,7 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
         MovieAdapterViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            Log.d(TAG, "inside ViewHolder");
         }
 
         //Set onClickListener on RecyclerView
