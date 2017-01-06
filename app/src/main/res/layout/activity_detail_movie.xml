@@ -18,7 +18,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimaryDark"
-            android:fontFamily="sans-serif-medium"
             android:padding="@dimen/activity_padding"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_headline"
@@ -33,24 +32,15 @@
             style="@style/UiSmallElements"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_detail_title"
             tools:src="@android:drawable/zoom_plate"/>
-
 
         <TextView
             android:id="@+id/text_release_year"
             style="@style/UiSmallElements"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:fontFamily="sans-serif-medium"
-            android:textSize="@dimen/text_subheading"
             app:layout_constraintLeft_toRightOf="@+id/image_movie_thumbnail"
             app:layout_constraintTop_toBottomOf="@+id/text_detail_title"
             tools:text="1999"/>
@@ -60,11 +50,6 @@
             style="@style/UiSmallElements"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:fontFamily="sans-serif-medium"
-            android:textSize="@dimen/text_subheading"
             app:layout_constraintLeft_toRightOf="@+id/image_movie_thumbnail"
             app:layout_constraintTop_toBottomOf="@+id/text_release_year"
             tools:text="500000"/>
@@ -75,11 +60,6 @@
             style="@style/UiSmallElements"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
             android:fontFamily="sans-serif"
             android:textSize="@dimen/text_body"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -95,23 +75,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_top_bottom"
             android:background="@android:color/black"
-            android:text="Trailers"
+            android:fontFamily="sans-serif-medium"
+            android:paddingLeft="16dp"
+            android:text="@string/text_trailers_label"
             android:textColor="@android:color/white"
-            android:textSize="24sp"
+            android:textSize="@dimen/textsize_middle"
             android:textStyle="normal|bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_movie_synopsis"
-            />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view_trailer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/trailer_label"
-            tools:src="@mipmap/ic_launcher"/>
+            app:layout_constraintTop_toBottomOf="@+id/text_movie_synopsis"/>
 
         <TextView
             android:id="@+id/tv_error_message_trailer"
@@ -128,15 +100,26 @@
             app:layout_constraintRight_toLeftOf="@+id/text_movie_rating"
             app:layout_constraintTop_toBottomOf="@+id/text_movie_synopsis"/>
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_trailer"
+            android:layout_width="0dp"
+            android:background="@android:color/black"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/trailer_label"
+            tools:src="@mipmap/ic_launcher"/>
+
         <ProgressBar
             android:id="@+id/progress_trailer"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center"
             android:visibility="invisible"
-            tools:layout_editor_absoluteX="33dp"
-            tools:layout_editor_absoluteY="165dp"/>
-
+            app:layout_constraintBottom_toBottomOf="@+id/recycler_view_trailer"
+            app:layout_constraintLeft_toLeftOf="@+id/recycler_view_trailer"
+            app:layout_constraintRight_toRightOf="@+id/recycler_view_trailer"
+            app:layout_constraintTop_toTopOf="@+id/recycler_view_trailer"/>
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

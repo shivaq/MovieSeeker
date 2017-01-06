@@ -80,6 +80,8 @@ class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.Trailer
 
         @BindView(R.id.image_trailer)
         ImageView mTrailerThumbnail;
+        @BindView(R.id.image_play_icon)
+        ImageView mPlayIcon;
 
         TrailerViewHolder(View itemView) {
             super(itemView);

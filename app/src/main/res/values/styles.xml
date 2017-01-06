@@ -14,6 +14,8 @@
         <item name="android:layout_marginTop">@dimen/margin_top_bottom</item>
         <item name="android:layout_marginBottom">@dimen/margin_top_bottom</item>
         <item name="android:layout_marginLeft">@dimen/margin_right_left</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">@dimen/text_subheading</item>
     </style>
 
 </resources>

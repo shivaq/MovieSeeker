@@ -1,17 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:id="@+id/recycler_detail_item"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             xmlns:tools="http://schemas.android.com/tools">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/recycler_detail_item"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center">
 
-    <ImageView
-        android:id="@+id/image_trailer"
-        android:scaleType="centerCrop"
-        android:padding="1dp"
-        android:background="@android:color/background_dark"
-        tools:src="@mipmap/ic_launcher"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-</FrameLayout>
+        <ImageView
+            android:id="@+id/image_trailer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:background="@android:color/background_dark"
+            android:padding="1dp"
+            android:scaleType="centerCrop"
+            tools:src="@mipmap/ic_launcher"/>
+
+        <ImageView
+            android:id="@+id/image_play_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_play_circle_filled_white_48dp"/>
+    </FrameLayout>
+</RelativeLayout>

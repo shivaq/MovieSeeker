@@ -12,5 +12,6 @@
     <string name="menu_setting">Setting</string>
     <string name="menu_get_latest_data">Get the latest data</string>
     <string name="error_no_trailer">No trailer</string>
+    <string name="text_trailers_label">Trailers</string>
 
 </resources>
