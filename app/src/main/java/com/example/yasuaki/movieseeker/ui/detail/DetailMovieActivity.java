@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.yasuaki.movieseeker.R;
 import com.example.yasuaki.movieseeker.data.model.Movie;
@@ -138,8 +137,9 @@ public class DetailMovieActivity extends AppCompatActivity
     @Override
     public void onYoutubeClicked(Trailer clickedTrailer) {
         String trailerKey = clickedTrailer.getTrailerKey();
+
         Uri trailerUri = NetworkUtils.buildUriForTrailer(trailerKey);
-        Toast.makeText(this, "Uri is " + trailerUri, Toast.LENGTH_SHORT).show();
-        //TODO:取得したUri をもとに、暗黙的 Intent
+        Intent youtubeIntent = new Intent(Intent.ACTION_VIEW, trailerUri);
+        startActivity(youtubeIntent);
     }
 }
