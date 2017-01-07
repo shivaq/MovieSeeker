@@ -79,7 +79,7 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
         } else {
             movieTitle.setVisibility(View.INVISIBLE);
             posterImage.setVisibility(View.VISIBLE);
-            Uri thumbnailUri = NetworkUtils.buildUrlForThumbnail(thumbnailPath);
+            Uri thumbnailUri = NetworkUtils.buildUriForThumbnail(thumbnailPath);
             Log.d(TAG, "thumbnailPath is " + thumbnailPath);
             Log.d(TAG, "thumbnailUrl is " + thumbnailUri);
             Picasso.with(mContext).load(thumbnailUri).into(posterImage);
@@ -118,24 +118,27 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
     /**
      * Cache of the children views for a main list item.
      */
-    class MovieAdapterViewHolder extends RecyclerView.ViewHolder{
+    class MovieAdapterViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.image_movie_thumbnail_listitem) ImageView mMovieImageView;
-        @BindView(R.id.text_null_poster) TextView mMovieTitleText;
+        @BindView(R.id.image_movie_thumbnail_listitem)
+        ImageView mMovieImageView;
+        @BindView(R.id.text_null_poster)
+        TextView mMovieTitleText;
 
         MovieAdapterViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            Log.d(TAG, "inside ViewHolder");
         }
 
         //Set onClickListener on RecyclerView
         @OnClick(R.id.recycler_item)
-        void onItemClicked(){
+        void onItemClicked() {
 
             int adapterPosition = getAdapterPosition();
             Movie clickedMovie = mMovieArrayList.get(adapterPosition);
 
-            if(mClickListener != null){
+            if (mClickListener != null) {
                 mClickListener.onThumbnailClicked(clickedMovie);
             }
         }

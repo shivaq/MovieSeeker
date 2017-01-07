@@ -1,8 +1,11 @@
 package com.example.yasuaki.movieseeker.data.remote;
 
 import com.example.yasuaki.movieseeker.data.model.MovieResponse;
+import com.example.yasuaki.movieseeker.data.model.ReviewResponse;
+import com.example.yasuaki.movieseeker.data.model.TrailerResponse;
 
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
@@ -18,4 +21,11 @@ public interface MovieService {
     @GET("movie/popular")
     Observable<MovieResponse> getPopularMovies(@Query("api_key") String apiKey);
 
+    @GET("movie/{id}/videos")
+    Observable<TrailerResponse> getMovieTrailer(@Path("id") int id,
+                                                @Query("api_key") String apiKey);
+
+    @GET("movie/{id}/reviews")
+    Observable<ReviewResponse> getReview(@Path("id") int id,
+                                          @Query("api_key") String apiKey);
 }

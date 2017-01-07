@@ -25,6 +25,14 @@ public class Movie implements Parcelable{
     @SerializedName("vote_average")
     private float mRating;
 
+    @SerializedName("id")
+    private int mId;
+
+    private Trailer myTrailer;
+
+    private boolean myFavorite;
+
+    private Review mReview;
 
     protected Movie(Parcel in) {
         mThumbnailPath = in.readString();
@@ -32,6 +40,8 @@ public class Movie implements Parcelable{
         mMovieTitle = in.readString();
         mReleaseDate = in.readString();
         mRating = in.readFloat();
+        mId = in.readInt();
+        myFavorite = in.readByte() != 0;
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -58,6 +68,8 @@ public class Movie implements Parcelable{
         parcel.writeString(mMovieTitle);
         parcel.writeString(mReleaseDate);
         parcel.writeFloat(mRating);
+        parcel.writeInt(mId);
+        parcel.writeByte((byte) (myFavorite ? 1 : 0));
     }
 
     public String getThumbnailPath() {
@@ -78,6 +90,23 @@ public class Movie implements Parcelable{
 
     public float getRating() {
         return mRating;
+    }
+
+    public int getId() {
+        return mId;
+    }
+
+    //TODO:Make setter for Trailer, Favorite, Review
+    public Trailer getMyTrailer() {
+        return myTrailer;
+    }
+
+    public boolean isMyFavorite() {
+        return myFavorite;
+    }
+
+    public Review getReview() {
+        return mReview;
     }
 }
 

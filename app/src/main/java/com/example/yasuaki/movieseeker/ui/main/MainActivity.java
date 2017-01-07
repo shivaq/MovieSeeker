@@ -31,7 +31,9 @@ import butterknife.ButterKnife;
  * Responsible for UI display mechanism as a MVP patterns View
  */
 public class MainActivity extends AppCompatActivity
-        implements MovieAdapter.MovieAdapterOnClickListener, SharedPreferences.OnSharedPreferenceChangeListener,MovieContract.MvpView {
+        implements MovieAdapter.MovieAdapterOnClickListener,
+        SharedPreferences.OnSharedPreferenceChangeListener,
+        MovieContract.MvpView {
 
     private final String TAG = MainActivity.class.getSimpleName();
 
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity
 
     @BindView(R.id.recyclerview_main)
     RecyclerView mRecyclerView;
-    @BindView(R.id.tv_error_message_display)
+    @BindView(R.id.tv_error_message_trailer)
     TextView mErrorMessageDisplay;
     @BindView(R.id.progress_loading)
     ProgressBar mProgressBar;
@@ -152,6 +154,7 @@ public class MainActivity extends AppCompatActivity
             }
             mMovieAdapter.setMovieData(movieList);
             mRecyclerView.setAdapter(mMovieAdapter);
+            Log.d(TAG, "inside setMovieData");
         }
     }
 
@@ -163,7 +166,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoadData(ArrayList movieList) {
 
-        Log.d(TAG, "inside onLoadData");
+        Log.d(TAG, "inside onLoadTrailer");
         if (mSortOrder.equals(TOP_RATED)) {
             mTopRatedMovieList = movieList;
         } else {
@@ -189,18 +192,20 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void showErrorMessage() {
-        mErrorMessageDisplay.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.INVISIBLE);
+        mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showProgressBar() {
+        mRecyclerView.setVisibility(View.INVISIBLE);
         mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgressBar() {
         mProgressBar.setVisibility(View.INVISIBLE);
+        mRecyclerView.setVisibility(View.VISIBLE);
     }
 
     /**
