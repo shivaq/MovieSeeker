@@ -96,6 +96,7 @@ public class Movie implements Parcelable{
         return mId;
     }
 
+    //TODO:Make setter for Trailer, Favorite, Review
     public Trailer getMyTrailer() {
         return myTrailer;
     }

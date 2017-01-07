@@ -9,9 +9,16 @@
     <string name="sort_order_rating">top_rated</string>
     <string name="pref_sort_key">sort</string>
     <string name="pref_sort_label">Sort order</string>
+
     <string name="menu_setting">Setting</string>
     <string name="menu_get_latest_data">Get the latest data</string>
-    <string name="error_no_trailer">No trailer</string>
+
     <string name="text_trailers_label">Trailers</string>
+    <string name="text_no_trailer">Sorry, there is no trailer.</string>
+    <string name="error_loading_trailer">There is a problem loading trailers.</string>
+
+    <string name="text_reviews_label">Reviews</string>
+    <string name="text_no_review">Sorry, there is no review.</string>
+    <string name="error_loading_reviews">There is a problem loading reviews.</string>
 
 </resources>

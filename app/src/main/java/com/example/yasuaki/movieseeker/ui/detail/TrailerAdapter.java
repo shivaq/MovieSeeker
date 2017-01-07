@@ -20,16 +20,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.TrailerViewHolder> {
+class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerViewHolder> {
 
-    private final String TAG = DetailMovieAdapter.class.getSimpleName();
+    private final String TAG = TrailerAdapter.class.getSimpleName();
 
-    private final DetailMovieAdapterOnClickListener mYoutubeOnClickListener;
+    private final TrailerAdapterOnClickListener mTrailerAdapterOnClickListener;
     private Context mContext;
     private ArrayList<Trailer> mTrailerArrayList;
 
-    DetailMovieAdapter(DetailMovieAdapterOnClickListener clickListener) {
-        mYoutubeOnClickListener = clickListener;
+    TrailerAdapter(TrailerAdapterOnClickListener clickListener) {
+        mTrailerAdapterOnClickListener = clickListener;
     }
 
     @Override
@@ -37,7 +37,7 @@ class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.Trailer
 
         mContext = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.detail_list_item, parent, false);
+        View view = inflater.inflate(R.layout.trailer_list_item, parent, false);
 
         return new TrailerViewHolder(view);
     }
@@ -52,12 +52,12 @@ class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.Trailer
                 buildTrailerThumbnailUri(trailer.getTrailerKey());
         Picasso.with(mContext).load(trailerThumbnailUri)
                 .resize(400, 400).centerInside().into(trailerThumbnailView);
+        Log.d(TAG, "trailer  uri is " + trailerThumbnailUri);
     }
 
     @Override
     public int getItemCount() {
         if (mTrailerArrayList == null) return 0;
-        Log.d(TAG, "item size is " + mTrailerArrayList.size());
         return mTrailerArrayList.size();
     }
 
@@ -69,7 +69,7 @@ class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.Trailer
     /**********************
      * OnClickListener interface
      **********************************/
-    interface DetailMovieAdapterOnClickListener {
+    interface TrailerAdapterOnClickListener {
         void onYoutubeClicked(Trailer clickedTrailer);
     }
 
@@ -85,7 +85,6 @@ class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.Trailer
 
         TrailerViewHolder(View itemView) {
             super(itemView);
-            Log.d(TAG, "inside TrailerViewHolder constructor");
             ButterKnife.bind(this, itemView);
         }
 
@@ -94,8 +93,8 @@ class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.Trailer
             int adapterPosition = getAdapterPosition();
             Trailer clickedTrailer = mTrailerArrayList.get(adapterPosition);
 
-            if (mYoutubeOnClickListener != null) {
-                mYoutubeOnClickListener.onYoutubeClicked(clickedTrailer);
+            if (mTrailerAdapterOnClickListener != null) {
+                mTrailerAdapterOnClickListener.onYoutubeClicked(clickedTrailer);
             }
         }
     }

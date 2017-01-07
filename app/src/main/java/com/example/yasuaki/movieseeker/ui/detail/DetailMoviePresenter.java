@@ -3,6 +3,8 @@ package com.example.yasuaki.movieseeker.ui.detail;
 import android.util.Log;
 
 import com.example.yasuaki.movieseeker.BuildConfig;
+import com.example.yasuaki.movieseeker.data.model.Review;
+import com.example.yasuaki.movieseeker.data.model.ReviewResponse;
 import com.example.yasuaki.movieseeker.data.model.Trailer;
 import com.example.yasuaki.movieseeker.data.model.TrailerResponse;
 import com.example.yasuaki.movieseeker.data.remote.MovieService;
@@ -40,7 +42,7 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
 
     void getMovieTrailer() {
 
-        mDetailedMovieMvpView.showProgressBar();
+        mDetailedMovieMvpView.showTrailerProgressBar();
 
         mCompositeSubscription.add(makeMovieService()
                 .getMovieTrailer(mDetailedMovieMvpView.getMovie().getId(),
@@ -49,24 +51,60 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<TrailerResponse>() {
 
-                    @Override
-                    public void onCompleted() {
-                    }
+                               @Override
+                               public void onCompleted() {
+                               }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        mDetailedMovieMvpView.showErrorMessage();
-                    }
+                               @Override
+                               public void onError(Throwable e) {
+                                   mDetailedMovieMvpView.showTrailerErrorMessage();
+                               }
 
-                    @Override
-                    public void onNext(TrailerResponse trailerResponse) {
-                        ArrayList<Trailer> trailerList = trailerResponse.getResults();
-                        Log.d(TAG, "inside getMovieTrailer");
+                               @Override
+                               public void onNext(TrailerResponse trailerResponse) {
+                                   ArrayList<Trailer> trailerList = trailerResponse.getResults();
+                                   Log.d(TAG, "TrailerList is " + trailerList.toString());
+                                   if(trailerList.size() == 0){
+                                       mDetailedMovieMvpView.showNoTrailerMessage();
+                                       mDetailedMovieMvpView.changeConstraintLayout();
+                                   } else {
+                                       mDetailedMovieMvpView.onLoadTrailer(trailerList);
+                                       mDetailedMovieMvpView.hideTrailerProgress();
+                                   }
+                               }
+                           }
+                ));
+    }
 
-                        mDetailedMovieMvpView.onLoadData(trailerList);
-                        mDetailedMovieMvpView.hideTrailerProgress();
-                    }
-                })
-        );
+    void getReview() {
+        mDetailedMovieMvpView.showReviewProgressBar();
+
+        mCompositeSubscription.add(makeMovieService()
+                .getReview(mDetailedMovieMvpView.getMovie().getId(),
+                        BuildConfig.OPEN_MOVIE_DB_API_KEY)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ReviewResponse>() {
+
+                               @Override
+                               public void onCompleted() {
+                               }
+
+                               @Override
+                               public void onError(Throwable e) {
+                                   mDetailedMovieMvpView.showReviewErrorMessage();
+                               }
+
+                               @Override
+                               public void onNext(ReviewResponse reviewResponse) {
+                                   ArrayList<Review> reviewList = reviewResponse.getReviewResults();
+                                   if(reviewList.size() == 0){
+                                       mDetailedMovieMvpView.showNoReviewMessage();
+                                   }
+                                   mDetailedMovieMvpView.onLoadReview(reviewList);
+                                   mDetailedMovieMvpView.hideReviewProgress();
+                               }
+                           }
+                ));
     }
 }

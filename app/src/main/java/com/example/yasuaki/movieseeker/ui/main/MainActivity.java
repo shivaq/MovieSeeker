@@ -151,7 +151,6 @@ public class MainActivity extends AppCompatActivity
             //Movie data is loaded. So set them to adapter
             if (mMovieAdapter == null) {
                 mMovieAdapter = new MovieAdapter(this);
-                //TODO：onCreateViewHolder が new されるタイミングを知る
             }
             mMovieAdapter.setMovieData(movieList);
             mRecyclerView.setAdapter(mMovieAdapter);
@@ -167,7 +166,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoadData(ArrayList movieList) {
 
-        Log.d(TAG, "inside onLoadData");
+        Log.d(TAG, "inside onLoadTrailer");
         if (mSortOrder.equals(TOP_RATED)) {
             mTopRatedMovieList = movieList;
         } else {
