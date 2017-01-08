@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 //Display detailed movie data
@@ -61,6 +63,8 @@ public class DetailMovieActivity extends AppCompatActivity
     TextView mErrorMessageReview;
     @BindView(R.id.text_no_reviews)
     TextView mTextViewNoReviews;
+    @BindView(R.id.button_favorite)
+    ImageView mFavoriteButton;
 
     DetailMoviePresenter mDetailMoviePresenter;
     Movie mMovie;
@@ -116,7 +120,6 @@ public class DetailMovieActivity extends AppCompatActivity
         mReviewAdapter = new ReviewAdapter();
         mRecyclerReviewView.setAdapter(mReviewAdapter);
         mDetailMoviePresenter.getReview();
-
     }
 
     /**
@@ -199,6 +202,10 @@ public class DetailMovieActivity extends AppCompatActivity
         mTextViewNoReviews.setVisibility(View.VISIBLE);
     }
 
+    /***************
+     * implementation for TrailerAdapterOnClickListener
+     */
+
     @Override
     public void onYoutubeClicked(Trailer clickedTrailer) {
         String trailerKey = clickedTrailer.getTrailerKey();
@@ -206,5 +213,20 @@ public class DetailMovieActivity extends AppCompatActivity
         Uri trailerUri = NetworkUtils.buildUriForTrailer(trailerKey);
         Intent youtubeIntent = new Intent(Intent.ACTION_VIEW, trailerUri);
         startActivity(youtubeIntent);
+    }
+
+    /***********
+     * set onClick
+     ************/
+    //TODO:クリック時にトースト title + " is added to your favorite" "is not your favorite anymore"
+    @OnClick(R.id.button_favorite)
+    void onItemClicked() {
+        if (mMovie.isMyFavorite()) {
+            mMovie.setMyFavorite(false);
+            mFavoriteButton.setColorFilter(ContextCompat.getColor(this, R.color.grayColor));
+        } else if (!mMovie.isMyFavorite()) {
+            mMovie.setMyFavorite(true);
+            mFavoriteButton.setColorFilter(ContextCompat.getColor(this, R.color.colorAccent));
+        }
     }
 }

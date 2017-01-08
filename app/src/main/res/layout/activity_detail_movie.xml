@@ -49,12 +49,35 @@
         <TextView
             android:id="@+id/text_movie_rating"
             style="@style/UiSmallElements"
+            android:layout_marginLeft="0dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintLeft_toRightOf="@+id/image_movie_thumbnail"
             app:layout_constraintTop_toBottomOf="@+id/text_release_year"
-            tools:text="500000"/>
+            tools:text="500000"
+            app:layout_constraintLeft_toLeftOf="@+id/text_release_year"/>
 
+        <ImageView
+            android:id="@+id/button_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:src="@drawable/ic_star_pink_500_24dp"
+            android:tint="@color/grayColor"
+            app:layout_constraintLeft_toLeftOf="@+id/text_click"
+            app:layout_constraintRight_toRightOf="@+id/text_click"
+
+            app:layout_constraintTop_toBottomOf="@+id/text_movie_rating"/>
+
+        <TextView
+            android:id="@+id/text_click"
+            style="@style/UiSmallElements"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:text="@string/text_message_favorite"
+            app:layout_constraintLeft_toLeftOf="@+id/text_movie_rating"
+            app:layout_constraintTop_toBottomOf="@+id/button_favorite"/>
 
         <TextView
             android:id="@+id/text_movie_synopsis"
@@ -98,7 +121,6 @@
             app:layout_constraintTop_toBottomOf="@+id/trailer_label"
             tools:src="@mipmap/ic_launcher"/>
 
-        <!--TODO:add message for no trailer-->
         <TextView
             android:id="@+id/tv_error_message_trailer"
             android:layout_width="wrap_content"

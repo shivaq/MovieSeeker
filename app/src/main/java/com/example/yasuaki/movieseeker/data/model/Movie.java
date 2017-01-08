@@ -108,6 +108,10 @@ public class Movie implements Parcelable{
     public Review getReview() {
         return mReview;
     }
+
+    public void setMyFavorite(boolean myFavorite) {
+        this.myFavorite = myFavorite;
+    }
 }
 
 
