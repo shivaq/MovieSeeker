@@ -9,7 +9,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -66,17 +65,6 @@ public class DetailMovieActivity extends AppCompatActivity
     TextView mTextViewNoReviews;
     @BindView(R.id.button_favorite)
     ImageView mFavoriteButton;
-
-    @OnClick(R.id.button_favorite)
-    void onItemClicked(){
-        if(mMovie.isMyFavorite()){
-            mMovie.setMyFavorite(false);
-            mFavoriteButton.setColorFilter(ContextCompat.getColor(this, R.color.grayColor));
-        } else if(!mMovie.isMyFavorite()){
-            mMovie.setMyFavorite(true);
-            mFavoriteButton.setColorFilter(ContextCompat.getColor(this, R.color.colorAccent));
-        }
-    }
 
     DetailMoviePresenter mDetailMoviePresenter;
     Movie mMovie;
@@ -227,8 +215,18 @@ public class DetailMovieActivity extends AppCompatActivity
         startActivity(youtubeIntent);
     }
 
-    /***********************/
-    //TODO:Toggle favorite
-
-
+    /***********
+     * set onClick
+     ************/
+    //TODO:クリック時にトースト title + " is added to your favorite" "is not your favorite anymore"
+    @OnClick(R.id.button_favorite)
+    void onItemClicked() {
+        if (mMovie.isMyFavorite()) {
+            mMovie.setMyFavorite(false);
+            mFavoriteButton.setColorFilter(ContextCompat.getColor(this, R.color.grayColor));
+        } else if (!mMovie.isMyFavorite()) {
+            mMovie.setMyFavorite(true);
+            mFavoriteButton.setColorFilter(ContextCompat.getColor(this, R.color.colorAccent));
+        }
+    }
 }

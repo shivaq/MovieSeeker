@@ -23,5 +23,6 @@
     <string name="text_reviews_label">Reviews</string>
     <string name="text_no_review">Sorry, there is no review.</string>
     <string name="error_loading_reviews">There is a problem loading reviews.</string>
+    <string name="text_message_favorite">Click me!!</string>
 
 </resources>
