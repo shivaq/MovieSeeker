@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.yasuaki.movieseeker.R;
 import com.example.yasuaki.movieseeker.data.model.Movie;
@@ -73,6 +74,7 @@ public class DetailMovieActivity extends AppCompatActivity
 
     ConstraintLayout mConstraintLayout;
     ConstraintSet mNoTrailerConstraintSet = new ConstraintSet();
+    private Toast mToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,15 +220,25 @@ public class DetailMovieActivity extends AppCompatActivity
     /***********
      * set onClick
      ************/
-    //TODO:クリック時にトースト title + " is added to your favorite" "is not your favorite anymore"
     @OnClick(R.id.button_favorite)
     void onItemClicked() {
         if (mMovie.isMyFavorite()) {
             mMovie.setMyFavorite(false);
             mFavoriteButton.setColorFilter(ContextCompat.getColor(this, R.color.grayColor));
+            if (mToast != null) {
+                mToast.cancel();
+            }
+            mToast = Toast.makeText(this, mMovie.getMovieTitle() + "\nis not your favorite anymore.", Toast.LENGTH_SHORT);
+            mToast.show();
         } else if (!mMovie.isMyFavorite()) {
             mMovie.setMyFavorite(true);
             mFavoriteButton.setColorFilter(ContextCompat.getColor(this, R.color.colorAccent));
+
+            if (mToast != null) {
+                mToast.cancel();
+            }
+            mToast = Toast.makeText(this, mMovie.getMovieTitle() + "\nis added to your favorite.", Toast.LENGTH_SHORT);
+            mToast.show();
         }
     }
 }
