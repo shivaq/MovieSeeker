@@ -30,6 +30,16 @@ public class MoviePersistenceContract {
         public static final String COLUMN_VOTE_AVERAGE = "vote_average";
         public static final String COLUMN_FAVORITE = "is_favorite";
 
+//        public static String[] MOVIE_COLUMNS = new String[]{
+//                MoviePersistenceContract.MovieEntry.COLUMN_MOVIE_ID,
+//                MoviePersistenceContract.MovieEntry.COLUMN_TITLE,
+//                MoviePersistenceContract.MovieEntry.COLUMN_POSTER_PATH,
+//                MoviePersistenceContract.MovieEntry.COLUMN_OVERVIEW,
+//                MoviePersistenceContract.MovieEntry.COLUMN_RELEASE_DATE,
+//                MoviePersistenceContract.MovieEntry.COLUMN_VOTE_AVERAGE,
+//                MoviePersistenceContract.MovieEntry.COLUMN_FAVORITE
+//        };
+
         public static Uri buildMovieUri(long id) {
             return CONTENT_URI.buildUpon().appendPath(Long.toString(id)).build();
         }
