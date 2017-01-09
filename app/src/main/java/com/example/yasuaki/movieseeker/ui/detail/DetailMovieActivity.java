@@ -82,7 +82,7 @@ public class DetailMovieActivity extends AppCompatActivity
         setContentView(R.layout.activity_detail_movie);
         ButterKnife.bind(this);
 
-        mDetailMoviePresenter = new DetailMoviePresenter(this);
+        mDetailMoviePresenter = new DetailMoviePresenter(this, this);
 
         Intent intentFromMain = getIntent();
         mMovie = intentFromMain.getParcelableExtra("clicked_movie");
@@ -96,7 +96,6 @@ public class DetailMovieActivity extends AppCompatActivity
 
         String userRating = "User rating \n" + String.valueOf(mMovie.getRating());
         tvUserRating.setText(userRating + "/10");
-
         tvSynopsis.setText(mMovie.getMovieOverView());
 
         //Set up RecyclerView for trailers
@@ -108,12 +107,6 @@ public class DetailMovieActivity extends AppCompatActivity
         mRecyclerTrailerView.setAdapter(mTrailerAdapter);
         mDetailMoviePresenter.getMovieTrailer();
 
-        //Prepare ConstraintSet in case there is no trailer.
-        mConstraintLayout = (ConstraintLayout) findViewById(R.id.activity_detail);
-        mNoTrailerConstraintSet.constrainHeight(R.id.review_label, ConstraintSet.WRAP_CONTENT);
-        mNoTrailerConstraintSet.constrainWidth(R.id.review_label, 2000);
-        mNoTrailerConstraintSet.connect(R.id.review_label, ConstraintSet.TOP, R.id.text_no_trailers, ConstraintSet.BOTTOM, 0);
-
         //Set up RecyclerView for reviews
         LinearLayoutManager reviewLayoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -122,6 +115,13 @@ public class DetailMovieActivity extends AppCompatActivity
         mReviewAdapter = new ReviewAdapter();
         mRecyclerReviewView.setAdapter(mReviewAdapter);
         mDetailMoviePresenter.getReview();
+
+        //Prepare ConstraintSet in case there is no trailer.
+        mConstraintLayout = (ConstraintLayout) findViewById(R.id.activity_detail);
+        mNoTrailerConstraintSet.constrainHeight(R.id.review_label, ConstraintSet.WRAP_CONTENT);
+        mNoTrailerConstraintSet.constrainWidth(R.id.review_label, 2000);
+        mNoTrailerConstraintSet.connect(R.id.review_label, ConstraintSet.TOP, R.id.text_no_trailers, ConstraintSet.BOTTOM, 0);
+
     }
 
     /**
@@ -136,6 +136,7 @@ public class DetailMovieActivity extends AppCompatActivity
     public Movie getMovie() {
         return mMovie;
     }
+
 
     @Override
     public void onLoadTrailer(ArrayList<Trailer> trailerResults) {
@@ -222,18 +223,19 @@ public class DetailMovieActivity extends AppCompatActivity
      ************/
     @OnClick(R.id.button_favorite)
     void onItemClicked() {
-        if (mMovie.isMyFavorite()) {
-            mMovie.setMyFavorite(false);
+        if (mMovie.isFavorite()) {//If it's favorite
+            mMovie.setFavorite(false);
+
             mFavoriteButton.setColorFilter(ContextCompat.getColor(this, R.color.grayColor));
             if (mToast != null) {
                 mToast.cancel();
             }
             mToast = Toast.makeText(this, mMovie.getMovieTitle() + "\nis not your favorite anymore.", Toast.LENGTH_SHORT);
             mToast.show();
-        } else if (!mMovie.isMyFavorite()) {
-            mMovie.setMyFavorite(true);
+        } else if (!mMovie.isFavorite()) {//If it&s not favorite
+            mMovie.setFavorite(true);
             mFavoriteButton.setColorFilter(ContextCompat.getColor(this, R.color.colorAccent));
-
+            mDetailMoviePresenter.saveMovie(mMovie);
             if (mToast != null) {
                 mToast.cancel();
             }

@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Data model to hold movie data
  */
-public class Movie implements Parcelable{
+public class Movie implements Parcelable {
 
     @SerializedName("poster_path")
     private String mThumbnailPath;
@@ -28,11 +28,10 @@ public class Movie implements Parcelable{
     @SerializedName("id")
     private int mId;
 
-    private Trailer myTrailer;
+    private String mTrailerKey;
 
-    private boolean myFavorite;
 
-    private Review mReview;
+    private boolean mIsFavorite;
 
     protected Movie(Parcel in) {
         mThumbnailPath = in.readString();
@@ -41,7 +40,7 @@ public class Movie implements Parcelable{
         mReleaseDate = in.readString();
         mRating = in.readFloat();
         mId = in.readInt();
-        myFavorite = in.readByte() != 0;
+        mIsFavorite = in.readByte() != 0;
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -69,7 +68,7 @@ public class Movie implements Parcelable{
         parcel.writeString(mReleaseDate);
         parcel.writeFloat(mRating);
         parcel.writeInt(mId);
-        parcel.writeByte((byte) (myFavorite ? 1 : 0));
+        parcel.writeByte((byte) (mIsFavorite ? 1 : 0));
     }
 
     public String getThumbnailPath() {
@@ -96,21 +95,21 @@ public class Movie implements Parcelable{
         return mId;
     }
 
-    //TODO:Make setter for Trailer, Favorite, Review
-    public Trailer getMyTrailer() {
-        return myTrailer;
+
+    public boolean isFavorite() {
+        return mIsFavorite;
     }
 
-    public boolean isMyFavorite() {
-        return myFavorite;
+    public void setFavorite(boolean favorite) {
+        this.mIsFavorite = favorite;
     }
 
-    public Review getReview() {
-        return mReview;
+    public String getTrailerKey() {
+        return mTrailerKey;
     }
 
-    public void setMyFavorite(boolean myFavorite) {
-        this.myFavorite = myFavorite;
+    public void setTrailerKey(String trailerKey) {
+        mTrailerKey = trailerKey;
     }
 }
 

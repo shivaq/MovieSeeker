@@ -1,8 +1,12 @@
 package com.example.yasuaki.movieseeker.ui.detail;
 
+import android.content.ContentResolver;
+import android.content.Context;
 import android.util.Log;
 
 import com.example.yasuaki.movieseeker.BuildConfig;
+import com.example.yasuaki.movieseeker.data.local.MovieLocalDataSource;
+import com.example.yasuaki.movieseeker.data.model.Movie;
 import com.example.yasuaki.movieseeker.data.model.Review;
 import com.example.yasuaki.movieseeker.data.model.ReviewResponse;
 import com.example.yasuaki.movieseeker.data.model.Trailer;
@@ -23,10 +27,18 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
     private DetailMovieContract.DetailMvpView mDetailedMovieMvpView;
     private CompositeSubscription mCompositeSubscription;
 
-    DetailMoviePresenter(DetailMovieContract.DetailMvpView detailedMovieMvpView) {
+    private ContentResolver mContentResolver;
+    private MovieLocalDataSource mMovieLocalDataSource;
+    private Context mContext;
+
+    DetailMoviePresenter(DetailMovieContract.DetailMvpView detailedMovieMvpView, Context context) {
         mDetailedMovieMvpView = detailedMovieMvpView;
         mCompositeSubscription = new CompositeSubscription();
+        mContentResolver = mDetailedMovieMvpView.getContentResolver();
+        mMovieLocalDataSource = MovieLocalDataSource.getInstance(mContentResolver);
+        mContext = context;
     }
+
 
     /**
      * Unsubscribe CompositeSubscription and its reusable
@@ -64,7 +76,7 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
                                public void onNext(TrailerResponse trailerResponse) {
                                    ArrayList<Trailer> trailerList = trailerResponse.getResults();
                                    Log.d(TAG, "TrailerList is " + trailerList.toString());
-                                   if(trailerList.size() == 0){
+                                   if (trailerList.size() == 0) {
                                        mDetailedMovieMvpView.showNoTrailerMessage();
                                        mDetailedMovieMvpView.changeConstraintLayout();
                                    } else {
@@ -98,7 +110,7 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
                                @Override
                                public void onNext(ReviewResponse reviewResponse) {
                                    ArrayList<Review> reviewList = reviewResponse.getReviewResults();
-                                   if(reviewList.size() == 0){
+                                   if (reviewList.size() == 0) {
                                        mDetailedMovieMvpView.showNoReviewMessage();
                                    }
                                    mDetailedMovieMvpView.onLoadReview(reviewList);
@@ -107,4 +119,12 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
                            }
                 ));
     }
+
+
+    public void saveMovie(Movie movie) {
+        Log.d(TAG, "inside saveMovie");
+        mMovieLocalDataSource.saveMovie(movie);
+    }
+
+    //TODO:DB から データを取得し、UI に反映
 }
