@@ -1,5 +1,7 @@
 package com.example.yasuaki.movieseeker.data.remote;
 
+import com.facebook.stetho.okhttp3.StethoInterceptor;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -28,6 +30,7 @@ public class ServiceFactory {
 
         //Create OkHttpClient and add interceptor just for http logging.
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addNetworkInterceptor(new StethoInterceptor())
                 .addInterceptor(logging)
                 .build();
 

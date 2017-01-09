@@ -4,7 +4,6 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.Nullable;
@@ -19,7 +18,6 @@ public class MovieContentProvider extends ContentProvider {
     private final String TAG = MovieContentProvider.class.getSimpleName();
 
     public static final int CODE_MOVIES = 100;
-
 
     private MovieDbHelper mOpenHelper;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
@@ -63,11 +61,12 @@ public class MovieContentProvider extends ContentProvider {
 
         switch(match){
             case CODE_MOVIES:
-                long id = db.insert(MovieEntry.TABLE_NAME, null, values);
+                long id = db.insertWithOnConflict(MovieEntry.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_IGNORE);
                 if(id > 0){
                     returnUri = MovieEntry.buildMovieUri();
                 } else {
-                    throw new SQLException("Failed to insert row into " + uri);
+                    Log.d(TAG, "Failed to insert row into " + uri);
+                    returnUri = null;
                 }
                 break;
             default:
