@@ -35,9 +35,16 @@ public class MovieLocalDataSource {
     }
 
 
-    //TODO:Delete Movies from DB
-    public void deleteMovie(long movieId){
-
+    public void deleteMovie(String movieId){
+        String selection = MoviePersistenceContract.MovieEntry.COLUMN_MOVIE_ID + " LIKE ?";
+        String[] selectionArgs = {movieId};
+        Log.d(TAG, movieId);
+        mContentResolver.delete(
+                MoviePersistenceContract.MovieEntry.buildMovieUri(),
+                selection,
+                selectionArgs);
     }
+
+    //TODO:Get Movie from DB
 
 }

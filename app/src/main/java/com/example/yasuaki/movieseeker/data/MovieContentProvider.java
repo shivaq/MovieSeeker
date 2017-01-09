@@ -22,7 +22,7 @@ public class MovieContentProvider extends ContentProvider {
     private MovieDbHelper mOpenHelper;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
-    public static UriMatcher buildUriMatcher(){
+    public static UriMatcher buildUriMatcher() {
 
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = MoviePersistenceContract.CONTENT_AUTHORITY;
@@ -59,10 +59,10 @@ public class MovieContentProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         Uri returnUri;
 
-        switch(match){
+        switch (match) {
             case CODE_MOVIES:
                 long id = db.insertWithOnConflict(MovieEntry.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_IGNORE);
-                if(id > 0){
+                if (id > 0) {
                     returnUri = MovieEntry.buildMovieUri();
                 } else {
                     Log.d(TAG, "Failed to insert row into " + uri);
@@ -73,12 +73,31 @@ public class MovieContentProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
+        getContext().getContentResolver().notifyChange(uri, null);
         return returnUri;
     }
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        int numRowsDeleted;
+
+        if (selection == null) {
+            selection = "1";
+        }
+
+        switch (sUriMatcher.match(uri)) {
+            case CODE_MOVIES:
+                numRowsDeleted = mOpenHelper.getWritableDatabase().delete(
+                        MovieEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        if(numRowsDeleted != 0){
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return numRowsDeleted;
     }
 
     @Override

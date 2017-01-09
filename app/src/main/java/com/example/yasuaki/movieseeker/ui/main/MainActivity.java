@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity
 
     private final String TOP_RATED = "top_rated";
     private final String MOST_POPULAR = "popular";
+    private final String FAVORITE = "favorite";
 
     @BindView(R.id.recyclerview_main)
     RecyclerView mRecyclerView;
@@ -69,6 +70,7 @@ public class MainActivity extends AppCompatActivity
 
         mMoviePresenter = new MoviePresenter(this);
 
+        //If there is no savedInstanceState, load data
         checkSavedInstanceState(savedInstanceState);
 
         PreferenceManager.getDefaultSharedPreferences(this)
@@ -79,6 +81,7 @@ public class MainActivity extends AppCompatActivity
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList(TOP_RATED, mTopRatedMovieList);
         outState.putParcelableArrayList(MOST_POPULAR, mMostPopularMovieList);
+        //TODO:Add list for favorite
         super.onSaveInstanceState(outState);
     }
 
@@ -133,6 +136,8 @@ public class MainActivity extends AppCompatActivity
 
         ArrayList<Movie> movieList = null;
 
+        //TODO:Add sort for favorite
+        //TODO:Pass  movieList data from DB
         switch (mSortOrder) {
             case TOP_RATED:
                 movieList = mTopRatedMovieList;
@@ -166,7 +171,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoadData(ArrayList movieList) {
 
-        Log.d(TAG, "inside onLoadTrailer");
         if (mSortOrder.equals(TOP_RATED)) {
             mTopRatedMovieList = movieList;
         } else {
@@ -234,11 +238,13 @@ public class MainActivity extends AppCompatActivity
     //Request for movie data depends on sharedPreference
     private void loadMovies() {
 
+        //TODO:get data for favorite
         if (mSortOrder.equals(TOP_RATED)) {
             mMoviePresenter.getTopRatedMovies();
         } else {
             mMoviePresenter.getPopularMovies();
         }
+        //TODO:mMovieMvpView.onLoadData(movieList); に、DB のデータを渡す
     }
 
     /**
@@ -246,6 +252,7 @@ public class MainActivity extends AppCompatActivity
      */
     private void checkSavedInstanceState(Bundle savedInstanceState) {
 
+        //TODO:Add condition for favorite
         if (savedInstanceState != null) {
             if (savedInstanceState.getParcelableArrayList(TOP_RATED) != null) {
                 mTopRatedMovieList = savedInstanceState.getParcelableArrayList(TOP_RATED);

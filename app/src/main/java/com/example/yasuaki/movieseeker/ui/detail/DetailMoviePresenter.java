@@ -126,5 +126,11 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
         mMovieLocalDataSource.saveMovie(movie);
     }
 
-    //TODO:DB から データを取得し、UI に反映
+    public void deleteMovie(String movieId){
+        mMovieLocalDataSource.deleteMovie(movieId);
+    }
+
+    //TODO:Get Movie from DB
+
+
 }

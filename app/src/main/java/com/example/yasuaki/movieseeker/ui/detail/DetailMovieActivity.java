@@ -82,6 +82,8 @@ public class DetailMovieActivity extends AppCompatActivity
         setContentView(R.layout.activity_detail_movie);
         ButterKnife.bind(this);
 
+        //TODO:DB があるかどうかクエリ
+        //TODO:isFavorite か確認 →星の色をカエル
         mDetailMoviePresenter = new DetailMoviePresenter(this, this);
 
         Intent intentFromMain = getIntent();
@@ -226,12 +228,17 @@ public class DetailMovieActivity extends AppCompatActivity
         if (mMovie.isFavorite()) {//If it's favorite
             mMovie.setFavorite(false);
 
+            //Change icon color
             mFavoriteButton.setColorFilter(ContextCompat.getColor(this, R.color.grayColor));
+
+            mDetailMoviePresenter.deleteMovie(Integer.toString(mMovie.getId()));
             if (mToast != null) {
                 mToast.cancel();
             }
+            //Tell it's out of your favorite
             mToast = Toast.makeText(this, mMovie.getMovieTitle() + "\nis not your favorite anymore.", Toast.LENGTH_SHORT);
             mToast.show();
+
         } else if (!mMovie.isFavorite()) {//If it&s not favorite
             mMovie.setFavorite(true);
             mFavoriteButton.setColorFilter(ContextCompat.getColor(this, R.color.colorAccent));
