@@ -29,5 +29,4 @@ public interface MovieService {
     Observable<ReviewResponse> getReview(@Path("id") int id,
                                           @Query("api_key") String apiKey);
 
-    //TODO:ask for data from local db
 }

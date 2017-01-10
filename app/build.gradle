@@ -55,6 +55,7 @@ dependencies {
 
     final RXANDROID_VERSION = '1.2.1'
     final RXJAVA_VERSION = '1.1.6'
+    final SQLBRITE_VERSION = '1.1.1'
 
     final PLAY_SERVICES_VERSION = '8.4.0'
 
@@ -123,9 +124,10 @@ dependencies {
 
     compile "com.squareup.picasso:picasso:$PICASSO_VERSION"
 
-    // rx, butterknife
+    // rx, sqlbrite, butterknife
     compile "io.reactivex:rxandroid:$RXANDROID_VERSION"
     compile "io.reactivex:rxjava:$RXJAVA_VERSION"
+    compile "com.squareup.sqlbrite:sqlbrite:$SQLBRITE_VERSION"
     compile "com.jakewharton:butterknife:$BUTTERKNIFE_VERSION"
     apt "com.jakewharton:butterknife-compiler:$BUTTERKNIFE_VERSION"
 }

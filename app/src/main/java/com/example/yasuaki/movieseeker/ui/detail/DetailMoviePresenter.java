@@ -1,10 +1,10 @@
 package com.example.yasuaki.movieseeker.ui.detail;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.util.Log;
 
 import com.example.yasuaki.movieseeker.BuildConfig;
+import com.example.yasuaki.movieseeker.data.local.MovieDbHelper;
 import com.example.yasuaki.movieseeker.data.local.MovieLocalDataSource;
 import com.example.yasuaki.movieseeker.data.model.Movie;
 import com.example.yasuaki.movieseeker.data.model.Review;
@@ -27,16 +27,14 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
     private DetailMovieContract.DetailMvpView mDetailedMovieMvpView;
     private CompositeSubscription mCompositeSubscription;
 
-    private ContentResolver mContentResolver;
     private MovieLocalDataSource mMovieLocalDataSource;
-    private Context mContext;
+    private MovieDbHelper mOpenHelper;
 
     DetailMoviePresenter(DetailMovieContract.DetailMvpView detailedMovieMvpView, Context context) {
         mDetailedMovieMvpView = detailedMovieMvpView;
         mCompositeSubscription = new CompositeSubscription();
-        mContentResolver = mDetailedMovieMvpView.getContentResolver();
-        mMovieLocalDataSource = MovieLocalDataSource.getInstance(mContentResolver);
-        mContext = context;
+        mMovieLocalDataSource = MovieLocalDataSource.getInstance(context);
+        mOpenHelper = new MovieDbHelper(context);
     }
 
 
@@ -120,17 +118,42 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
                 ));
     }
 
+    //TODO:Get Movie from DB
+//    public void queryMovie(String movieId) {
+//
+//        mCompositeSubscription.add(mMovieLocalDataSource.queriedMovie)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Subscriber<Movie>() {
+//
+//                               @Override
+//                               public void onCompleted() {
+//
+//                               }
+//
+//                               @Override
+//                               public void onError(Throwable e) {
+//
+//                               }
+//
+//                               @Override
+//                               public void onNext(Movie movie) {
+//
+//                               }
+//                           }
+//                );
+//
+//
+//    }
 
     public void saveMovie(Movie movie) {
         Log.d(TAG, "inside saveMovie");
         mMovieLocalDataSource.saveMovie(movie);
     }
 
-    public void deleteMovie(String movieId){
+    public void deleteMovie(String movieId) {
         mMovieLocalDataSource.deleteMovie(movieId);
     }
-
-    //TODO:Get Movie from DB
 
 
 }

@@ -23,6 +23,8 @@ public class MovieDbHelper extends SQLiteOpenHelper {
             MovieEntry.COLUMN_FAVORITE + " BOOLEAN DEFAULT 'FALSE'" +
             " )";
 
+    public static final String SQL_QUERY_MOVIE_TABLE = "SELECT * FROM movie";
+
     public MovieDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
