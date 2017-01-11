@@ -8,7 +8,13 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Data model to hold movie data
  */
-public class Movie implements Parcelable {
+public final class Movie implements Parcelable {
+
+    @SerializedName("id")
+    private int mMovieId;
+
+    @SerializedName("original_title")
+    private String mMovieTitle;
 
     @SerializedName("poster_path")
     private String mThumbnailPath;
@@ -16,30 +22,32 @@ public class Movie implements Parcelable {
     @SerializedName("overview")
     private String mMovieOverView;
 
-    @SerializedName("original_title")
-    private String mMovieTitle;
-
     @SerializedName("release_date")
     private String mReleaseDate;
 
     @SerializedName("vote_average")
-    private float mRating;
-
-    @SerializedName("id")
-    private int mId;
-
-    private String mTrailerKey;
-
+    private float mVoteAverage;
 
     private boolean mIsFavorite;
 
+    public Movie(int movieId, String title, String thumbnailPath, String overView,
+                 String releaseDate, float voteAverage, boolean isFavorite) {
+        mMovieId = movieId;
+        mMovieTitle = title;
+        mThumbnailPath = thumbnailPath;
+        mMovieOverView = overView;
+        mReleaseDate = releaseDate;
+        mVoteAverage = voteAverage;
+        mIsFavorite = isFavorite;
+    }
+
     protected Movie(Parcel in) {
+        mMovieId = in.readInt();
+        mMovieTitle = in.readString();
         mThumbnailPath = in.readString();
         mMovieOverView = in.readString();
-        mMovieTitle = in.readString();
         mReleaseDate = in.readString();
-        mRating = in.readFloat();
-        mId = in.readInt();
+        mVoteAverage = in.readFloat();
         mIsFavorite = in.readByte() != 0;
     }
 
@@ -54,22 +62,6 @@ public class Movie implements Parcelable {
             return new Movie[size];
         }
     };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(mThumbnailPath);
-        parcel.writeString(mMovieOverView);
-        parcel.writeString(mMovieTitle);
-        parcel.writeString(mReleaseDate);
-        parcel.writeFloat(mRating);
-        parcel.writeInt(mId);
-        parcel.writeByte((byte) (mIsFavorite ? 1 : 0));
-    }
 
     public String getThumbnailPath() {
         return mThumbnailPath;
@@ -87,14 +79,13 @@ public class Movie implements Parcelable {
         return mReleaseDate;
     }
 
-    public float getRating() {
-        return mRating;
+    public float getVoteAverage() {
+        return mVoteAverage;
     }
 
-    public int getId() {
-        return mId;
+    public int getMovieId() {
+        return mMovieId;
     }
-
 
     public boolean isFavorite() {
         return mIsFavorite;
@@ -104,12 +95,20 @@ public class Movie implements Parcelable {
         this.mIsFavorite = favorite;
     }
 
-    public String getTrailerKey() {
-        return mTrailerKey;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public void setTrailerKey(String trailerKey) {
-        mTrailerKey = trailerKey;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(mMovieId);
+        dest.writeString(mMovieTitle);
+        dest.writeString(mThumbnailPath);
+        dest.writeString(mMovieOverView);
+        dest.writeString(mReleaseDate);
+        dest.writeFloat(mVoteAverage);
+        dest.writeByte((byte) (mIsFavorite ? 1 : 0));
     }
 }
 

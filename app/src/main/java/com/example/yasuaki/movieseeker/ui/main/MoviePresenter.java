@@ -1,14 +1,12 @@
 package com.example.yasuaki.movieseeker.ui.main;
 
+import android.content.Context;
 import android.util.Log;
 
-import com.example.yasuaki.movieseeker.BuildConfig;
+import com.example.yasuaki.movieseeker.data.MovieRepository;
 import com.example.yasuaki.movieseeker.data.model.Movie;
-import com.example.yasuaki.movieseeker.data.model.MovieResponse;
-import com.example.yasuaki.movieseeker.data.remote.MovieService;
-import com.example.yasuaki.movieseeker.data.remote.ServiceFactory;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -22,10 +20,12 @@ class MoviePresenter implements MovieContract.Presenter {
 
     private static final String TAG = MoviePresenter.class.getSimpleName();
     private final MovieContract.MvpView mMovieMvpView;
+    private final MovieRepository mMovieRepository;
     private CompositeSubscription mCompositeSubscription;
 
-    MoviePresenter(MovieContract.MvpView movieMvpView) {
+    MoviePresenter(MovieContract.MvpView movieMvpView, Context context) {
         mMovieMvpView = movieMvpView;
+        mMovieRepository = MovieRepository.getInstance(context);
         mCompositeSubscription = new CompositeSubscription();
     }
 
@@ -37,11 +37,6 @@ class MoviePresenter implements MovieContract.Presenter {
         mCompositeSubscription.clear();
     }
 
-
-    private MovieService makeMovieService() {
-        return ServiceFactory.makeMovieService();
-    }
-
     /**
      * Request web server for top rated movie data and watch the process.
      * Operate completion or error of the process.
@@ -50,11 +45,10 @@ class MoviePresenter implements MovieContract.Presenter {
 
         mMovieMvpView.showProgressBar();
 
-        mCompositeSubscription.add(makeMovieService()
-                .getTopRatedMovies(BuildConfig.OPEN_MOVIE_DB_API_KEY)
+        mCompositeSubscription.add(mMovieRepository.getTopMovies()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<MovieResponse>() {
+                .subscribe(new Subscriber<List<Movie>>() {
 
                     @Override
                     public void onCompleted() {
@@ -68,14 +62,12 @@ class MoviePresenter implements MovieContract.Presenter {
 
                     /**
                      * Pass fetched data to MainActivity
-                     * @param movieResponse fetched Movie data list
+                     * @param movieList fetched Movie data list
                      */
                     @Override
-                    public void onNext(MovieResponse movieResponse) {
-                        Log.d(TAG, "inside onNext");
-                        ArrayList<Movie> movieList = movieResponse.getResults();
+                    public void onNext(List<Movie> movieList) {
+
                         mMovieMvpView.onLoadData(movieList);
-                        Log.d(TAG, "after movieAdapter.setMovieData");
                         mMovieMvpView.hideProgressBar();
                         mMovieMvpView.showFetchedData();
                     }
@@ -88,11 +80,10 @@ class MoviePresenter implements MovieContract.Presenter {
      */
     void getPopularMovies() {
         mMovieMvpView.showProgressBar();
-        mCompositeSubscription.add(makeMovieService()
-                .getPopularMovies(BuildConfig.OPEN_MOVIE_DB_API_KEY)
+        mCompositeSubscription.add(mMovieRepository.getPopularMovies()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<MovieResponse>() {
+                .subscribe(new Subscriber<List<Movie>>() {
 
                     @Override
                     public void onCompleted() {
@@ -105,15 +96,11 @@ class MoviePresenter implements MovieContract.Presenter {
                     }
 
                     @Override
-                    public void onNext(MovieResponse movieResponse) {
-                        Log.d(TAG, "inside onNext");
-                        ArrayList<Movie> movieList = movieResponse.getResults();
+                    public void onNext(List<Movie> movieList) {
                         mMovieMvpView.onLoadData(movieList);
-                        Log.d(TAG, "after movieAdapter.setMovieData");
                         mMovieMvpView.hideProgressBar();
                         mMovieMvpView.showFetchedData();
                     }
                 }));
     }
-
 }

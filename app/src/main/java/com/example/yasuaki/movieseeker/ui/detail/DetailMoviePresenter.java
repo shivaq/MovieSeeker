@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.yasuaki.movieseeker.BuildConfig;
+import com.example.yasuaki.movieseeker.data.MovieRepository;
 import com.example.yasuaki.movieseeker.data.local.MovieDbHelper;
 import com.example.yasuaki.movieseeker.data.local.MovieLocalDataSource;
 import com.example.yasuaki.movieseeker.data.model.Movie;
@@ -11,8 +12,7 @@ import com.example.yasuaki.movieseeker.data.model.Review;
 import com.example.yasuaki.movieseeker.data.model.ReviewResponse;
 import com.example.yasuaki.movieseeker.data.model.Trailer;
 import com.example.yasuaki.movieseeker.data.model.TrailerResponse;
-import com.example.yasuaki.movieseeker.data.remote.MovieService;
-import com.example.yasuaki.movieseeker.data.remote.ServiceFactory;
+import com.example.yasuaki.movieseeker.data.remote.MovieRemoteDataSource;
 
 import java.util.ArrayList;
 
@@ -28,12 +28,14 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
     private CompositeSubscription mCompositeSubscription;
 
     private MovieLocalDataSource mMovieLocalDataSource;
+    private MovieRepository mMovieRepository;
     private MovieDbHelper mOpenHelper;
 
     DetailMoviePresenter(DetailMovieContract.DetailMvpView detailedMovieMvpView, Context context) {
         mDetailedMovieMvpView = detailedMovieMvpView;
         mCompositeSubscription = new CompositeSubscription();
         mMovieLocalDataSource = MovieLocalDataSource.getInstance(context);
+        mMovieRepository = MovieRepository.getInstance(context);
         mOpenHelper = new MovieDbHelper(context);
     }
 
@@ -46,16 +48,17 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
         mCompositeSubscription.clear();
     }
 
-    private MovieService makeMovieService() {
-        return ServiceFactory.makeMovieService();
+    private MovieRemoteDataSource makeMovieService() {
+        return MovieRemoteDataSource.ServiceFactory.makeMovieService();
     }
 
     void getMovieTrailer() {
 
         mDetailedMovieMvpView.showTrailerProgressBar();
+        Log.d(TAG, "Movie Id is " + mDetailedMovieMvpView.getMovie().getMovieId());
 
         mCompositeSubscription.add(makeMovieService()
-                .getMovieTrailer(mDetailedMovieMvpView.getMovie().getId(),
+                        .getMovieTrailer(mDetailedMovieMvpView.getMovie().getMovieId(),
                         BuildConfig.OPEN_MOVIE_DB_API_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -90,7 +93,7 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
         mDetailedMovieMvpView.showReviewProgressBar();
 
         mCompositeSubscription.add(makeMovieService()
-                .getReview(mDetailedMovieMvpView.getMovie().getId(),
+                .getReview(mDetailedMovieMvpView.getMovie().getMovieId(),
                         BuildConfig.OPEN_MOVIE_DB_API_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -118,37 +121,39 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
                 ));
     }
 
-    //TODO:Get Movie from DB
-//    public void queryMovie(String movieId) {
-//
-//        mCompositeSubscription.add(mMovieLocalDataSource.queriedMovie)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Subscriber<Movie>() {
-//
-//                               @Override
-//                               public void onCompleted() {
-//
-//                               }
-//
-//                               @Override
-//                               public void onError(Throwable e) {
-//
-//                               }
-//
-//                               @Override
-//                               public void onNext(Movie movie) {
-//
-//                               }
-//                           }
-//                );
-//
-//
-//    }
+    //TODO:Get Movie movieToContentValues DB
+    public void queryMovie(String movieId) {
+
+        mCompositeSubscription.add(mMovieRepository.getMovie(movieId)
+
+
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Movie>() {
+
+                               @Override
+                               public void onCompleted() {
+
+                               }
+
+                               @Override
+                               public void onError(Throwable e) {
+
+                               }
+
+                               @Override
+                               public void onNext(Movie movie) {
+
+                               }
+                           }
+                ));
+
+
+    }
 
     public void saveMovie(Movie movie) {
-        Log.d(TAG, "inside saveMovie");
-        mMovieLocalDataSource.saveMovie(movie);
+        Log.d(TAG, "inside insertMovie");
+        mMovieLocalDataSource.insertMovie(movie);
     }
 
     public void deleteMovie(String movieId) {

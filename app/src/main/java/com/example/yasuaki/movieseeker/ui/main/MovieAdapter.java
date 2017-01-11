@@ -61,7 +61,7 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
 
     /**
      * This gets called by the RecyclerView to display the data at the specified position.
-     * Download thumbnail image from server into imageView.
+     * Download thumbnail image movieToContentValues server into imageView.
      */
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
@@ -97,7 +97,7 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
     }
 
     /**
-     * Set new data from web on already created MovieAdapter.
+     * Set new data movieToContentValues web on already created MovieAdapter.
      * This method is used to avoid recreating new MovieAdapter.
      */
     void setMovieData(ArrayList<Movie> movieData) {

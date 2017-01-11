@@ -3,28 +3,69 @@ package com.example.yasuaki.movieseeker.data.local;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.example.yasuaki.movieseeker.data.MovieDataSource;
 import com.example.yasuaki.movieseeker.data.MovieValues;
+import com.example.yasuaki.movieseeker.data.local.MoviePersistenceContract.MovieEntry;
 import com.example.yasuaki.movieseeker.data.model.Movie;
 import com.squareup.sqlbrite.BriteDatabase;
 import com.squareup.sqlbrite.SqlBrite;
 
+import rx.Observable;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class MovieLocalDataSource {
+public class MovieLocalDataSource implements MovieDataSource {
 
     private final String TAG = MovieLocalDataSource.class.getSimpleName();
 
     private static MovieLocalDataSource INSTANCE;
     private final BriteDatabase mDatabaseHelper;
+    private final SqlBrite mSqlBrite;
+
 
     private MovieLocalDataSource(Context context) {
         MovieDbHelper mOpenHelper = new MovieDbHelper(context);
-        SqlBrite sqlBrite = new SqlBrite.Builder().build();
-        mDatabaseHelper = sqlBrite.wrapDatabaseHelper(mOpenHelper, Schedulers.io());
+        mSqlBrite = new SqlBrite.Builder().build();
+        mDatabaseHelper = mSqlBrite.wrapDatabaseHelper(mOpenHelper, Schedulers.io());
     }
+
+    //Do query in local
+    public Observable<Movie> getMovie(String movieId) {
+
+        String[] projection = MoviePersistenceContract.MOVIE_PROJECTION;
+        String sqlQueryMovieTable = String.format("SELECT %s FROM %s WHERE %s LIKE ?",
+                projection,
+                MovieEntry.TABLE_NAME,
+                MovieEntry.COLUMN_MOVIE_ID);
+
+        return mDatabaseHelper.createQuery(MovieEntry.TABLE_NAME, sqlQueryMovieTable, movieId)
+                .mapToOneOrDefault(MOVIE_MAPPER_FOR_QUERY, null);
+    }
+
+    //Pass Cursor and get Movie
+    private final Func1<Cursor, Movie> MOVIE_MAPPER_FOR_QUERY = new Func1<Cursor, Movie>() {
+
+        @Override
+        public Movie call(Cursor cursor) {//Pass cursor and...
+
+            int movieId = cursor.getInt(MoviePersistenceContract.INDEX_MOVIE_ID);
+            String title = cursor.getString(MoviePersistenceContract.INDEX_TITLE);
+            String thumbnailPath = cursor.getString(MoviePersistenceContract.INDEX_POSTER_PATH);
+            String overView = cursor.getString(MoviePersistenceContract.INDEX_OVERVIEW);
+            String releaseDate = cursor.getString(MoviePersistenceContract.INDEX_RELEASE_DATE);
+            float voteAverage = cursor.getFloat(MoviePersistenceContract.INDEX_VOTE_AVERAGE);
+            boolean isFavorite = cursor.getInt(MoviePersistenceContract.INDEX_FAVORITE) != 0;
+
+            //Get movie.
+            return new Movie(movieId, title, thumbnailPath, overView,
+                    releaseDate, voteAverage, isFavorite);
+        }
+    };
+
 
     public static MovieLocalDataSource getInstance(Context context) {
         if (INSTANCE == null) {
@@ -33,26 +74,28 @@ public class MovieLocalDataSource {
         return INSTANCE;
     }
 
-    public void saveMovie(Movie movie) {
-        ContentValues values = MovieValues.from(movie);
-        Log.d(TAG, "saveMovie " + values.toString());
+    public void insertMovie(Movie movie) {
+        ContentValues values = MovieValues.movieToContentValues(movie);
+        Log.d(TAG, "insertMovie " + values.toString());
         mDatabaseHelper.insert(
-                MoviePersistenceContract.MovieEntry.TABLE_NAME,
+                MovieEntry.TABLE_NAME,
                 values,
                 SQLiteDatabase.CONFLICT_REPLACE);
     }
 
+
     public void deleteMovie(String movieId) {
-        String selection = MoviePersistenceContract.MovieEntry.COLUMN_MOVIE_ID + " LIKE ?";
+        String selection = MovieEntry.COLUMN_MOVIE_ID + " LIKE ?";
         String[] selectionArgs = {movieId};
         Log.d(TAG, movieId);
 
-        mDatabaseHelper.delete(MoviePersistenceContract.MovieEntry.TABLE_NAME,
+        mDatabaseHelper.delete(MovieEntry.TABLE_NAME,
                 selection,
                 selectionArgs);
     }
 
-//    public Observable<Cursor> queryMovie(String movieId) {
+
+//    public Observable<Cursor> getMovie(String movieId) {
 //
 //        String selection = MoviePersistenceContract.MovieEntry.COLUMN_MOVIE_ID + " LIKE ?";
 //        String[] selectionArgs = {movieId};

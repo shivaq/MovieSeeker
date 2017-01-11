@@ -22,6 +22,7 @@ import com.example.yasuaki.movieseeker.ui.preference.SettingsActivity;
 import com.example.yasuaki.movieseeker.util.ActivityUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        mMoviePresenter = new MoviePresenter(this);
+        mMoviePresenter = new MoviePresenter(this, this);
 
         //If there is no savedInstanceState, load data
         checkSavedInstanceState(savedInstanceState);
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity
         ArrayList<Movie> movieList = null;
 
         //TODO:Add sort for favorite
-        //TODO:Pass  movieList data from DB
+        //TODO:Pass  movieList data movieToContentValues DB
         switch (mSortOrder) {
             case TOP_RATED:
                 movieList = mTopRatedMovieList;
@@ -169,12 +170,12 @@ public class MainActivity extends AppCompatActivity
      * @param movieList fetched movie data list
      */
     @Override
-    public void onLoadData(ArrayList movieList) {
+    public void onLoadData(List movieList) {
 
         if (mSortOrder.equals(TOP_RATED)) {
-            mTopRatedMovieList = movieList;
+            mTopRatedMovieList = (ArrayList)movieList;
         } else {
-            mMostPopularMovieList = movieList;
+            mMostPopularMovieList = (ArrayList)movieList;
         }
         setMovieData();
     }
@@ -223,7 +224,7 @@ public class MainActivity extends AppCompatActivity
     /*****************************
      * MovieAdapter callback
      *****************************/
-    //This get called when thumbnail is clicked. Move from here to detailed Activity
+    //This get called when thumbnail is clicked. Move movieToContentValues here to detailed Activity
     @Override
     public void onThumbnailClicked(Movie clickedMovie) {
         Intent intent = new Intent(this, DetailMovieActivity.class);

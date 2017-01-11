@@ -96,7 +96,7 @@ public class DetailMovieActivity extends AppCompatActivity
         String releaseDate = "Release Date \n" + mMovie.getReleaseDate();
         tvReleaseDate.setText(releaseDate);
 
-        String userRating = "User rating \n" + String.valueOf(mMovie.getRating());
+        String userRating = "User rating \n" + String.valueOf(mMovie.getVoteAverage());
         tvUserRating.setText(userRating + "/10");
         tvSynopsis.setText(mMovie.getMovieOverView());
 
@@ -231,7 +231,7 @@ public class DetailMovieActivity extends AppCompatActivity
             //Change icon color
             mFavoriteButton.setColorFilter(ContextCompat.getColor(this, R.color.grayColor));
 
-            mDetailMoviePresenter.deleteMovie(Integer.toString(mMovie.getId()));
+            mDetailMoviePresenter.deleteMovie(Integer.toString(mMovie.getMovieId()));
             if (mToast != null) {
                 mToast.cancel();
             }
