@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.example.yasuaki.movieseeker.data.MovieDataSource;
 import com.example.yasuaki.movieseeker.data.MovieValues;
 import com.example.yasuaki.movieseeker.data.local.MoviePersistenceContract.MovieEntry;
 import com.example.yasuaki.movieseeker.data.model.Movie;
@@ -18,9 +17,12 @@ import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class MovieLocalDataSource implements MovieDataSource {
+public class MovieLocalDataSource {
 
     private final String TAG = MovieLocalDataSource.class.getSimpleName();
+
+    public static final int BOOLEAN_FALSE = 0;
+    public static final int BOOLEAN_TRUE = 1;
 
     private static MovieLocalDataSource INSTANCE;
     private final BriteDatabase mDatabaseHelper;
@@ -34,37 +36,38 @@ public class MovieLocalDataSource implements MovieDataSource {
     }
 
     //Do query in local
-    public Observable<Movie> getMovie(String movieId) {
-
-        String[] projection = MoviePersistenceContract.MOVIE_PROJECTION;
-        String sqlQueryMovieTable = String.format("SELECT %s FROM %s WHERE %s LIKE ?",
-                projection,
-                MovieEntry.TABLE_NAME,
-                MovieEntry.COLUMN_MOVIE_ID);
-
-        return mDatabaseHelper.createQuery(MovieEntry.TABLE_NAME, sqlQueryMovieTable, movieId)
-                .mapToOneOrDefault(MOVIE_MAPPER_FOR_QUERY, null);
-    }
+//    public Observable<Movie> getMovie(String movieId) {
+//
+//        String[] projection = MoviePersistenceContract.MOVIE_PROJECTION;
+//        String sqlQueryMovieTable = String.format("SELECT %s FROM %s WHERE %s LIKE ?",
+//                projection,
+//                MovieEntry.TABLE_NAME,
+//                MovieEntry.COLUMN_MOVIE_ID);
+//
+//        return mDatabaseHelper.createQuery(MovieEntry.TABLE_NAME, sqlQueryMovieTable, movieId)
+//                .mapToOneOrDefault(MOVIE_MAPPER_FOR_QUERY, null);
+//    }
 
     //Pass Cursor and get Movie
-    private final Func1<Cursor, Movie> MOVIE_MAPPER_FOR_QUERY = new Func1<Cursor, Movie>() {
-
-        @Override
-        public Movie call(Cursor cursor) {//Pass cursor and...
-
-            int movieId = cursor.getInt(MoviePersistenceContract.INDEX_MOVIE_ID);
-            String title = cursor.getString(MoviePersistenceContract.INDEX_TITLE);
-            String thumbnailPath = cursor.getString(MoviePersistenceContract.INDEX_POSTER_PATH);
-            String overView = cursor.getString(MoviePersistenceContract.INDEX_OVERVIEW);
-            String releaseDate = cursor.getString(MoviePersistenceContract.INDEX_RELEASE_DATE);
-            float voteAverage = cursor.getFloat(MoviePersistenceContract.INDEX_VOTE_AVERAGE);
-            boolean isFavorite = cursor.getInt(MoviePersistenceContract.INDEX_FAVORITE) != 0;
-
-            //Get movie.
-            return new Movie(movieId, title, thumbnailPath, overView,
-                    releaseDate, voteAverage, isFavorite);
-        }
-    };
+//    private final Func1<Cursor, Movie> MOVIE_MAPPER_FOR_QUERY =
+//            new Func1<Cursor, Movie>() {
+//
+//        @Override
+//        public Movie call(Cursor cursor) {//Pass cursor and...
+//
+//            int movieId = cursor.getInt(MoviePersistenceContract.INDEX_MOVIE_ID);
+//            String title = cursor.getString(MoviePersistenceContract.INDEX_TITLE);
+//            String thumbnailPath = cursor.getString(MoviePersistenceContract.INDEX_POSTER_PATH);
+//            String overView = cursor.getString(MoviePersistenceContract.INDEX_OVERVIEW);
+//            String releaseDate = cursor.getString(MoviePersistenceContract.INDEX_RELEASE_DATE);
+//            float voteAverage = cursor.getFloat(MoviePersistenceContract.INDEX_VOTE_AVERAGE);
+//            boolean isFavorite = cursor.getInt(MoviePersistenceContract.INDEX_FAVORITE) != 0;
+//
+//            //Get movie.
+//            return new Movie(movieId, title, thumbnailPath, overView,
+//                    releaseDate, voteAverage, isFavorite);
+//        }
+//    };
 
 
     public static MovieLocalDataSource getInstance(Context context) {
@@ -87,37 +90,47 @@ public class MovieLocalDataSource implements MovieDataSource {
     public void deleteMovie(String movieId) {
         String selection = MovieEntry.COLUMN_MOVIE_ID + " LIKE ?";
         String[] selectionArgs = {movieId};
-        Log.d(TAG, movieId);
+        Log.d(TAG, "deleted movie is " + movieId);
 
         mDatabaseHelper.delete(MovieEntry.TABLE_NAME,
                 selection,
                 selectionArgs);
     }
 
+    private static final String SQL_QUERY_FAVORITE_MOVIE = "SELECT * FROM "
+            + MovieEntry.TABLE_NAME
+            + " WHERE "
+            + MovieEntry.COLUMN_FAVORITE
+            + " = "
+            + BOOLEAN_TRUE;
 
-//    public Observable<Cursor> getMovie(String movieId) {
-//
-//        String selection = MoviePersistenceContract.MovieEntry.COLUMN_MOVIE_ID + " LIKE ?";
-//        String[] selectionArgs = {movieId};
-//
-//        return mContentResolver.query(
-//                MoviePersistenceContract.MovieEntry.buildMovieUri(),
-//                selection,
-//                selectionArgs);
+    private static final String SQL_QUERY_WITH_MOVIE_ID = "SELECT * FROM "
+            + MovieEntry.TABLE_NAME
+            + " WHERE "
+            + MovieEntry.COLUMN_MOVIE_ID
+            + " = ?";
 
+    public Observable<Cursor> getFavoriteMovie() {
 
-//        Observable<SqlBrite.Query> queriedMovie =
-//                db.createQuery(
-//                        MoviePersistenceContract.MovieEntry.TABLE_NAME,
-//                        MovieDbHelper.SQL_QUERY_MOVIE_TABLE);
-//
-//        queriedMovie.subscribe(new Action1<SqlBrite.Query>() {
-//            @Override
-//            public void call(SqlBrite.Query query) {
-//                Cursor cursor = query.run();
-//            }
-//        });
-//    }
+        return mDatabaseHelper.createQuery(
+                MovieEntry.TABLE_NAME, SQL_QUERY_FAVORITE_MOVIE)
+                .map(new Func1<SqlBrite.Query, Cursor>() {
+                    @Override
+                    public Cursor call(SqlBrite.Query query) {
+                        return query.run();
+                    }
+                });
+    }
 
-
+    public Observable<Cursor> getMovieWithId(String movieId) {
+        Log.d(TAG, "getMovieWithId: movieId = " + movieId);
+        return mDatabaseHelper.createQuery(
+                MovieEntry.TABLE_NAME, SQL_QUERY_WITH_MOVIE_ID, movieId)
+                .map(new Func1<SqlBrite.Query, Cursor>() {
+                    @Override
+                    public Cursor call(SqlBrite.Query query) {
+                        return query.run();
+                    }
+                });
+    }
 }

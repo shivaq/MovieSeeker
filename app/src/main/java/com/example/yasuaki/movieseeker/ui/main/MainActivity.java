@@ -160,7 +160,6 @@ public class MainActivity extends AppCompatActivity
             }
             mMovieAdapter.setMovieData(movieList);
             mRecyclerView.setAdapter(mMovieAdapter);
-            Log.d(TAG, "inside setMovieData");
         }
     }
 

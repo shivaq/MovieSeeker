@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -82,8 +83,7 @@ public class DetailMovieActivity extends AppCompatActivity
         setContentView(R.layout.activity_detail_movie);
         ButterKnife.bind(this);
 
-        //TODO:DB があるかどうかクエリ
-        //TODO:isFavorite か確認 →星の色をカエル
+
         mDetailMoviePresenter = new DetailMoviePresenter(this, this);
 
         Intent intentFromMain = getIntent();
@@ -99,6 +99,7 @@ public class DetailMovieActivity extends AppCompatActivity
         String userRating = "User rating \n" + String.valueOf(mMovie.getVoteAverage());
         tvUserRating.setText(userRating + "/10");
         tvSynopsis.setText(mMovie.getMovieOverView());
+
 
         //Set up RecyclerView for trailers
         LinearLayoutManager trailerLayoutManager
@@ -126,12 +127,32 @@ public class DetailMovieActivity extends AppCompatActivity
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mDetailMoviePresenter.clearSubscription();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        mDetailMoviePresenter.getMovieWithId(Integer.toString(mMovie.getMovieId()));
+    }
+
     /**
      * Arrange Constraint layout when there is no trailer
      */
     @Override
     public void changeConstraintLayout() {
         mNoTrailerConstraintSet.applyTo(mConstraintLayout);
+    }
+
+    @Override
+    public void setFavorite(boolean isFavorite) {
+        if(isFavorite){
+            mFavoriteButton.setColorFilter(ContextCompat.getColor(this, R.color.colorAccent));
+        }
     }
 
     @Override
@@ -207,6 +228,8 @@ public class DetailMovieActivity extends AppCompatActivity
         mTextViewNoReviews.setVisibility(View.VISIBLE);
     }
 
+
+
     /***************
      * implementation for TrailerAdapterOnClickListener
      */
@@ -239,10 +262,10 @@ public class DetailMovieActivity extends AppCompatActivity
             mToast = Toast.makeText(this, mMovie.getMovieTitle() + "\nis not your favorite anymore.", Toast.LENGTH_SHORT);
             mToast.show();
 
-        } else if (!mMovie.isFavorite()) {//If it&s not favorite
+        } else if (!mMovie.isFavorite()) {//If it's not favorite
             mMovie.setFavorite(true);
             mFavoriteButton.setColorFilter(ContextCompat.getColor(this, R.color.colorAccent));
-            mDetailMoviePresenter.saveMovie(mMovie);
+            mDetailMoviePresenter.insertMovie(mMovie);
             if (mToast != null) {
                 mToast.cancel();
             }

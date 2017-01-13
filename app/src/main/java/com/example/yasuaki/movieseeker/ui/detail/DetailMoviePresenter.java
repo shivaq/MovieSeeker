@@ -1,12 +1,14 @@
 package com.example.yasuaki.movieseeker.ui.detail;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.util.Log;
 
 import com.example.yasuaki.movieseeker.BuildConfig;
 import com.example.yasuaki.movieseeker.data.MovieRepository;
 import com.example.yasuaki.movieseeker.data.local.MovieDbHelper;
 import com.example.yasuaki.movieseeker.data.local.MovieLocalDataSource;
+import com.example.yasuaki.movieseeker.data.local.MoviePersistenceContract;
 import com.example.yasuaki.movieseeker.data.model.Movie;
 import com.example.yasuaki.movieseeker.data.model.Review;
 import com.example.yasuaki.movieseeker.data.model.ReviewResponse;
@@ -55,10 +57,9 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
     void getMovieTrailer() {
 
         mDetailedMovieMvpView.showTrailerProgressBar();
-        Log.d(TAG, "Movie Id is " + mDetailedMovieMvpView.getMovie().getMovieId());
 
         mCompositeSubscription.add(makeMovieService()
-                        .getMovieTrailer(mDetailedMovieMvpView.getMovie().getMovieId(),
+                .getMovieTrailer(mDetailedMovieMvpView.getMovie().getMovieId(),
                         BuildConfig.OPEN_MOVIE_DB_API_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -121,43 +122,54 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
                 ));
     }
 
-    //TODO:Get Movie movieToContentValues DB
-    public void queryMovie(String movieId) {
+    /**
+     * query and chedk if the movie is favored.
+     * @param movieId
+     */
+    public void getMovieWithId(String movieId) {
 
-        mCompositeSubscription.add(mMovieRepository.getMovie(movieId)
-
-
+        Log.d(TAG, "Presenter to Repository, do getMovieWithId: " + movieId);
+        mCompositeSubscription.add(mMovieRepository.getMovieFromLocalWithId(movieId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Movie>() {
+                .subscribe(new Subscriber<Cursor>() {
 
                                @Override
                                public void onCompleted() {
+                                   Log.d(TAG, "onCompleted: ");
 
                                }
 
                                @Override
                                public void onError(Throwable e) {
+                                   String message = e.getMessage();
+                                   Log.d(TAG, "onError: message is " + message);
 
                                }
 
                                @Override
-                               public void onNext(Movie movie) {
+                               public void onNext(Cursor cursor) {
+
+                                   Log.d(TAG, "onNext: before check cursor");
+                                   if (cursor != null && cursor.moveToFirst()) {
+                                       boolean isFavorite = cursor.getInt(MoviePersistenceContract.INDEX_FAVORITE) != 1;
+                                       Log.d(TAG, "onNext: isFavorite is " + isFavorite);
+                                       mDetailedMovieMvpView.setFavorite(isFavorite);
+                                   } else {
+                                       Log.d(TAG, "onNext: Not favorited movie doesn't exist in DB");
+                                   }
 
                                }
                            }
                 ));
-
-
     }
 
-    public void saveMovie(Movie movie) {
-        Log.d(TAG, "inside insertMovie");
-        mMovieLocalDataSource.insertMovie(movie);
+    public void insertMovie(Movie movie) {
+        mMovieRepository.insertMovie(movie);
     }
 
     public void deleteMovie(String movieId) {
-        mMovieLocalDataSource.deleteMovie(movieId);
+        mMovieRepository.deleteMovie(movieId);
     }
 
 

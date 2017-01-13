@@ -1,8 +1,6 @@
 package com.example.yasuaki.movieseeker.ui.detail;
 
 
-import android.content.ContentResolver;
-
 import com.example.yasuaki.movieseeker.data.model.Movie;
 import com.example.yasuaki.movieseeker.data.model.Review;
 import com.example.yasuaki.movieseeker.data.model.Trailer;
@@ -42,6 +40,7 @@ public interface DetailMovieContract {
 
         void changeConstraintLayout();
 
-        ContentResolver getContentResolver();
+        void setFavorite(boolean isFavorite);
+
     }
 }

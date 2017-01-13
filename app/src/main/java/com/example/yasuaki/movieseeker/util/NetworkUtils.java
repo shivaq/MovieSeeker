@@ -1,7 +1,6 @@
 package com.example.yasuaki.movieseeker.util;
 
 import android.net.Uri;
-import android.util.Log;
 
 /**
  * These utilities will be used to communicate with the weather servers.
@@ -20,14 +19,13 @@ public final class NetworkUtils {
      */
     public static Uri buildUriForThumbnail(String thumbnailPath) {
 
-        String fetchedImageSize = "w185";
+        String fetchedImageSize = "w342";
 
         Uri builtUriForImage = Uri.parse(IMAGE_FETCH_BASE_URL).buildUpon()
                 .appendPath(fetchedImageSize)
                 .appendEncodedPath(thumbnailPath)
                 .build();
 
-        Log.d(TAG, "Built URI for thumbnail " + builtUriForImage);
         return builtUriForImage;
     }
 
@@ -37,7 +35,6 @@ public final class NetworkUtils {
                 .appendPath("watch")
                 .appendQueryParameter("v", trailerKey)
                 .build();
-        Log.d(TAG, "Built URI for trailer " + trailerUri);
 
         return trailerUri;
     }

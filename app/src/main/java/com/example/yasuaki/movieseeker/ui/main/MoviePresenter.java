@@ -103,4 +103,38 @@ class MoviePresenter implements MovieContract.Presenter {
                     }
                 }));
     }
+
+//    void getFavoriteMovies(){
+//        mMovieMvpView.showProgressBar();
+//        mCompositeSubscription.add(mMovieRepository.getFavoriteMovie()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Subscriber<Cursor>() {
+//
+//
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        mMovieMvpView.showErrorMessage();
+//                        Log.e(TAG, e.toString());
+//                    }
+//
+//                    @Override
+//                    public void onNext(Cursor cursor) {
+//
+//                        try{
+//                            if(!cursor.moveToNext()){
+//                                //TODO:show no favorite message
+//                            }
+//                            cursor.
+//                        } finally{
+//                            cursor.close();
+//                        }
+//                    }
+//                }));
+//    }
 }
