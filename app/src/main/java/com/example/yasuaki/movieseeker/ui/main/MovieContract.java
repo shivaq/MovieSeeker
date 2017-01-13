@@ -21,7 +21,7 @@ interface MovieContract {
 
         void setMovieData();
 
-        void setSortOrder();
+        void checkSortOrder();
 
         void showFetchedData();
 
@@ -31,5 +31,6 @@ interface MovieContract {
 
         void hideProgressBar();
 
+        void showNetworkError();
     }
 }

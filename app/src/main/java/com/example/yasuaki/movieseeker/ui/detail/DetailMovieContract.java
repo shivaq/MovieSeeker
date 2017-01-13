@@ -40,7 +40,7 @@ public interface DetailMovieContract {
 
         void changeConstraintLayout();
 
-        void setFavorite(boolean isFavorite);
+        void syncFavorite(boolean isFavorite);
 
     }
 }

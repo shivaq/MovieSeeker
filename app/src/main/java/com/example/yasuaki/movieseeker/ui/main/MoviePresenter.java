@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.yasuaki.movieseeker.data.MovieRepository;
 import com.example.yasuaki.movieseeker.data.model.Movie;
+import com.example.yasuaki.movieseeker.util.NetworkUtils;
 
 import java.util.List;
 
@@ -22,10 +23,12 @@ class MoviePresenter implements MovieContract.Presenter {
     private final MovieContract.MvpView mMovieMvpView;
     private final MovieRepository mMovieRepository;
     private CompositeSubscription mCompositeSubscription;
+    private Context mContext;
 
     MoviePresenter(MovieContract.MvpView movieMvpView, Context context) {
+        mContext = context;
         mMovieMvpView = movieMvpView;
-        mMovieRepository = MovieRepository.getInstance(context);
+        mMovieRepository = MovieRepository.getInstance(mContext);
         mCompositeSubscription = new CompositeSubscription();
     }
 
@@ -56,8 +59,13 @@ class MoviePresenter implements MovieContract.Presenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        mMovieMvpView.showErrorMessage();
-                        Log.e(TAG, e.toString());
+                        Log.d(TAG, "onError: " + e.getMessage());
+                        if(NetworkUtils.isOnline(mContext)){
+                            mMovieMvpView.showErrorMessage();
+                        } else {
+                            mMovieMvpView.showNetworkError();
+                            Log.d(TAG, "onError: network error");
+                        }
                     }
 
                     /**
@@ -79,6 +87,7 @@ class MoviePresenter implements MovieContract.Presenter {
      * Operate completion or error of the process.
      */
     void getPopularMovies() {
+
         mMovieMvpView.showProgressBar();
         mCompositeSubscription.add(mMovieRepository.getPopularMovies()
                 .subscribeOn(Schedulers.io())
@@ -91,8 +100,13 @@ class MoviePresenter implements MovieContract.Presenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        mMovieMvpView.showErrorMessage();
-                        Log.e(TAG, e.toString());
+                        Log.d(TAG, "onError: " + e.getMessage());
+                        if(NetworkUtils.isOnline(mContext)){
+                            mMovieMvpView.showErrorMessage();
+                        } else {
+                            mMovieMvpView.showNetworkError();
+                            Log.d(TAG, "onError: network error");
+                        }
                     }
 
                     @Override
@@ -104,37 +118,37 @@ class MoviePresenter implements MovieContract.Presenter {
                 }));
     }
 
-//    void getFavoriteMovies(){
-//        mMovieMvpView.showProgressBar();
-//        mCompositeSubscription.add(mMovieRepository.getFavoriteMovie()
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Subscriber<Cursor>() {
-//
-//
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        mMovieMvpView.showErrorMessage();
-//                        Log.e(TAG, e.toString());
-//                    }
-//
-//                    @Override
-//                    public void onNext(Cursor cursor) {
-//
-//                        try{
-//                            if(!cursor.moveToNext()){
-//                                //TODO:show no favorite message
-//                            }
-//                            cursor.
-//                        } finally{
-//                            cursor.close();
-//                        }
-//                    }
-//                }));
-//    }
+    void getFavoriteMovies(){
+        mMovieMvpView.showFetchedData();
+        mMovieMvpView.showProgressBar();
+        mCompositeSubscription.add(mMovieRepository.getFavoriteMovie()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Movie>>() {
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(TAG, "onError: " + e.getMessage());
+                        if(NetworkUtils.isOnline(mContext)){
+                            mMovieMvpView.showErrorMessage();
+                        } else {
+                            mMovieMvpView.showNetworkError();
+                            Log.d(TAG, "onError: network error");
+                        }
+                    }
+
+                    @Override
+                    public void onNext(List<Movie> movieList) {
+                        Log.d(TAG, "getFavoriteMovie onNext: movielist is" + movieList);
+                        mMovieMvpView.onLoadData(movieList);
+                        mMovieMvpView.hideProgressBar();
+                        mMovieMvpView.showFetchedData();
+                    }
+                }));
+    }
 }

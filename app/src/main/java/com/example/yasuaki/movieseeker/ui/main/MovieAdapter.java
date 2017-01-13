@@ -95,8 +95,8 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
      * Set new data movieToContentValues web on already created MovieAdapter.
      * This method is used to avoid recreating new MovieAdapter.
      */
-    void setMovieData(ArrayList<Movie> movieData) {
-        mMovieArrayList = movieData;
+    void setMovieData(ArrayList<Movie> movieList) {
+        mMovieArrayList = movieList;
         notifyDataSetChanged();
     }
 

@@ -3,14 +3,15 @@ package com.example.yasuaki.movieseeker.data;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 
 import com.example.yasuaki.movieseeker.BuildConfig;
 import com.example.yasuaki.movieseeker.data.local.MovieLocalDataSource;
+import com.example.yasuaki.movieseeker.data.local.MoviePersistenceContract;
 import com.example.yasuaki.movieseeker.data.model.Movie;
 import com.example.yasuaki.movieseeker.data.model.MovieResponse;
 import com.example.yasuaki.movieseeker.data.remote.MovieRemoteDataSource;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -77,12 +78,42 @@ public class MovieRepository {
                 });
     }
 
-    public Observable<Cursor> getFavoriteMovie() {
-        return mMovieLocalDataSource.getFavoriteMovie();
+    public Observable<List<Movie>> getFavoriteMovie() {
+
+        return mMovieLocalDataSource.getFavoriteMovie()
+                .map(new Func1<Cursor, List<Movie>>() {
+
+                    @Override
+                    public List<Movie> call(Cursor cursor) {
+
+                        List<Movie> movieList = new ArrayList<>();
+
+                        try {
+                            if (cursor.moveToFirst()) {
+                                for (int i = 0; i < cursor.getCount(); i++) {
+                                    int movieId = cursor.getInt(MoviePersistenceContract.INDEX_MOVIE_ID);
+                                    String title = cursor.getString(MoviePersistenceContract.INDEX_TITLE);
+                                    String thumbnailPath = cursor.getString(MoviePersistenceContract.INDEX_POSTER_PATH);
+                                    String overView = cursor.getString(MoviePersistenceContract.INDEX_OVERVIEW);
+                                    String releaseDate = cursor.getString(MoviePersistenceContract.INDEX_RELEASE_DATE);
+                                    float voteAverage = cursor.getFloat(MoviePersistenceContract.INDEX_VOTE_AVERAGE);
+                                    boolean isFavorite = cursor.getInt(MoviePersistenceContract.INDEX_FAVORITE) != 1;
+                                    Movie movie = new Movie(movieId, title,
+                                            thumbnailPath, overView, releaseDate,
+                                            voteAverage, isFavorite);
+                                    movieList.add(movie);
+                                    cursor.moveToNext();
+                                }
+                            }
+                        } finally {
+                            cursor.close();
+                        }
+                        return movieList;
+                    }
+                });
     }
 
-    public Observable<Cursor> getMovieFromLocalWithId(String movieId){
-        Log.d(TAG, "getMovieFromLocalWithId: ");
+    public Observable<Cursor> getMovieFromLocalWithId(String movieId) {
         return mMovieLocalDataSource.getMovieWithId(movieId);
     }
 

@@ -77,7 +77,6 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
                                @Override
                                public void onNext(TrailerResponse trailerResponse) {
                                    ArrayList<Trailer> trailerList = trailerResponse.getResults();
-                                   Log.d(TAG, "TrailerList is " + trailerList.toString());
                                    if (trailerList.size() == 0) {
                                        mDetailedMovieMvpView.showNoTrailerMessage();
                                        mDetailedMovieMvpView.changeConstraintLayout();
@@ -128,7 +127,6 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
      */
     public void getMovieWithId(String movieId) {
 
-        Log.d(TAG, "Presenter to Repository, do getMovieWithId: " + movieId);
         mCompositeSubscription.add(mMovieRepository.getMovieFromLocalWithId(movieId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -136,29 +134,25 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
 
                                @Override
                                public void onCompleted() {
-                                   Log.d(TAG, "onCompleted: ");
-
                                }
 
                                @Override
                                public void onError(Throwable e) {
-                                   String message = e.getMessage();
-                                   Log.d(TAG, "onError: message is " + message);
-
+                                   Log.e(TAG, "onError: message is " + e.getMessage());
                                }
 
                                @Override
                                public void onNext(Cursor cursor) {
 
-                                   Log.d(TAG, "onNext: before check cursor");
-                                   if (cursor != null && cursor.moveToFirst()) {
-                                       boolean isFavorite = cursor.getInt(MoviePersistenceContract.INDEX_FAVORITE) != 1;
-                                       Log.d(TAG, "onNext: isFavorite is " + isFavorite);
-                                       mDetailedMovieMvpView.setFavorite(isFavorite);
-                                   } else {
-                                       Log.d(TAG, "onNext: Not favorited movie doesn't exist in DB");
+                                   try{
+                                       if (cursor.moveToFirst()) {
+                                           boolean isFavorite = cursor.getInt(MoviePersistenceContract.INDEX_FAVORITE) != 1;
+                                           mDetailedMovieMvpView.syncFavorite(isFavorite);
+                                       } else {
+                                       }
+                                   } finally{
+                                       cursor.close();
                                    }
-
                                }
                            }
                 ));
