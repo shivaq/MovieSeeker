@@ -6,10 +6,14 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -78,6 +82,8 @@ public class DetailMovieActivity extends AppCompatActivity
     private Toast mToast;
 
     boolean mIsFavorite;
+    ShareActionProvider mShareActionProvider;
+    ArrayList<Trailer> mTralierList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,10 +132,9 @@ public class DetailMovieActivity extends AppCompatActivity
         mNoTrailerConstraintSet.constrainWidth(R.id.review_label, 2000);
         mNoTrailerConstraintSet.connect(R.id.review_label, ConstraintSet.TOP, R.id.text_no_trailers, ConstraintSet.BOTTOM, 0);
 
-
     }
 
-    @Override
+        @Override
     protected void onDestroy() {
         super.onDestroy();
         mDetailMoviePresenter.clearSubscription();
@@ -140,6 +145,37 @@ public class DetailMovieActivity extends AppCompatActivity
         super.onResume();
         mDetailMoviePresenter.getMovieWithId(Integer.toString(mMovie.getMovieId()));
         Log.d(TAG, "onResume: isFavorite is " + mIsFavorite);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.detail_menu, menu);
+
+        MenuItem item = menu.findItem(R.id.menu_item_share);
+        mShareActionProvider = new ShareActionProvider(this);
+        MenuItemCompat.setActionProvider(item, mShareActionProvider);
+
+        return true;
+    }
+
+    private void createShareYoutubeTrailer() {
+
+        if (mTralierList.size() > 0) {
+            String trailerKey = mTralierList.get(0).getTrailerKey();
+            Uri trailerUri = NetworkUtils.buildUriForTrailer(trailerKey);
+
+            Intent sendIntent = new Intent(Intent.ACTION_SEND);
+            sendIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+            sendIntent.setType("text/plain");
+            sendIntent.putExtra(Intent.EXTRA_TEXT, mMovie.getMovieTitle() + " Trailer\n" + trailerUri);
+
+            if (mShareActionProvider != null) {
+                mShareActionProvider.setShareIntent(sendIntent);
+            } else {
+                Log.d(TAG, "createShareYoutubeTrailer: Share Action Provider is null");
+            }
+        }
     }
 
     /**
@@ -173,11 +209,13 @@ public class DetailMovieActivity extends AppCompatActivity
 
     @Override
     public void onLoadTrailer(ArrayList<Trailer> trailerResults) {
+        Log.d(TAG, "onLoadTrailer: ");
+        mTralierList = trailerResults;
         if (trailerResults == null) {
             mDetailMoviePresenter.getMovieTrailer();
         }
-
         mTrailerAdapter.setTrailerData(trailerResults);
+        createShareYoutubeTrailer();
     }
 
     @Override

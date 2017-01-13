@@ -25,5 +25,6 @@
     <string name="error_loading_reviews">There is a problem loading reviews.</string>
     <string name="text_message_favorite">Click me!!</string>
     <string name="error_network_offline_message">Network is offline</string>
+    <string name="share_trailer_title">Share youtube</string>
 
 </resources>
