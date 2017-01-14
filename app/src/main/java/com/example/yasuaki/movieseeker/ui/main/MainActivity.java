@@ -4,11 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity
     private final String TAG = MainActivity.class.getSimpleName();
 
     static final String EXTRA_CLICKED_MOVIE = "com.example.yasuaki.movieseeker.EXTRA_CLICKED_MOVIE";
+    private static final String LIST_STATE_KEY = "com.example.yasuaki.movieseeker.LIST_STATE";
 
     private final String TOP_RATED = "top_rated";
     private final String MOST_POPULAR = "popular";
@@ -60,6 +62,8 @@ public class MainActivity extends AppCompatActivity
     private ArrayList<Movie> mMostPopularMovieList;
     private ArrayList<Movie> mFavoriteMovieList;
     private String mSortOrder;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private Parcelable mListState;
 
     public static Intent getStartIntent(Context context, Movie clickedMovie) {
         Intent intent = new Intent(context, DetailMovieActivity.class);
@@ -73,23 +77,55 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        StaggeredGridLayoutManager gridLayoutManager
-                = new StaggeredGridLayoutManager(1, LinearLayoutManager.VERTICAL);
+        mLayoutManager =
+                new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false);
 
-        mRecyclerView.setLayoutManager(gridLayoutManager);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
 
         mMoviePresenter = new MoviePresenter(this, this);
 
-        checkSortOrder();
-
-        //If there is no savedInstanceState, load data
-        getMovieData(savedInstanceState);
+        checkSortOrderAndLoad();
 
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this);
     }
 
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        //Save list item state
+        mListState = mLayoutManager.onSaveInstanceState();
+        outState.putParcelable(LIST_STATE_KEY, mListState);
+
+        outState.putParcelableArrayList(TOP_RATED, mTopRatedMovieList);
+        outState.putParcelableArrayList(MOST_POPULAR, mMostPopularMovieList);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        //Retrieve list item state
+        mListState = savedInstanceState.getParcelable(LIST_STATE_KEY);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(mListState != null){
+            //Restore list item state
+            mLayoutManager.onRestoreInstanceState(mListState);
+        }
+    }
+
+
+    /**
+     * Clear subscription.
+     * Unregister OnSharedPreferenceListener
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -98,21 +134,13 @@ public class MainActivity extends AppCompatActivity
         PreferenceManager.getDefaultSharedPreferences(this)
                 .unregisterOnSharedPreferenceChangeListener(this);
     }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-
-        outState.putParcelableArrayList(TOP_RATED, mTopRatedMovieList);
-        outState.putParcelableArrayList(MOST_POPULAR, mMostPopularMovieList);
-        super.onSaveInstanceState(outState);
-    }
-
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.pref_sort_key))) {
-            checkSortOrder();
+            checkSortOrderAndLoad();
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -198,8 +226,8 @@ public class MainActivity extends AppCompatActivity
      * Get sort order preference and set it to field
      */
     @Override
-    public void checkSortOrder() {
-        Log.d(TAG, "checkSortOrder: sort order is now " + mSortOrder);
+    public void checkSortOrderAndLoad() {
+        Log.d(TAG, "checkSortOrderAndLoad: sort order is now " + mSortOrder);
         if (mSortOrder == null || !mSortOrder.equals(ActivityUtils.getPreferredSortOrder(this))) {
             mSortOrder = ActivityUtils.getPreferredSortOrder(this);
             loadMovies();
@@ -260,27 +288,27 @@ public class MainActivity extends AppCompatActivity
      *****************************/
 
 
-    /**
-     * Check and store savedInstanceState to fields
-     */
-    private void getMovieData(Bundle savedInstanceState) {
-
-        Log.d(TAG, "getMovieData: ");
-        if (savedInstanceState != null) {
-            if (savedInstanceState.getParcelableArrayList(TOP_RATED) != null) {
-                mTopRatedMovieList = savedInstanceState.getParcelableArrayList(TOP_RATED);
-            }
-            if (savedInstanceState.getParcelableArrayList(MOST_POPULAR) != null) {
-                mMostPopularMovieList = savedInstanceState.getParcelableArrayList(MOST_POPULAR);
-            }
-            if (mSortOrder.equals(FAVORITE)) {
-                mMoviePresenter.getFavoriteMovies();
-            }
-            setMovieData();
-        } else {
-            loadMovies();
-        }
-    }
+//    /**
+//     * Check and store savedInstanceState to fields
+//     */
+//    private void getMovieData(Bundle savedInstanceState) {
+//
+//        Log.d(TAG, "getMovieData: ");
+//        if (savedInstanceState != null) {
+//            if (savedInstanceState.getParcelableArrayList(TOP_RATED) != null) {
+//                mTopRatedMovieList = savedInstanceState.getParcelableArrayList(TOP_RATED);
+//            }
+//            if (savedInstanceState.getParcelableArrayList(MOST_POPULAR) != null) {
+//                mMostPopularMovieList = savedInstanceState.getParcelableArrayList(MOST_POPULAR);
+//            }
+//            if (mSortOrder.equals(FAVORITE)) {
+//                mMoviePresenter.getFavoriteMovies();
+//            }
+//            setMovieData();
+//        } else {
+//            loadMovies();
+//        }
+//    }
 
     //Request for movie data depends on sharedPreference
     private void loadMovies() {
