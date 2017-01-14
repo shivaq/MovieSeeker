@@ -3,7 +3,7 @@ package com.example.yasuaki.movieseeker.ui.main;
 import com.example.yasuaki.movieseeker.data.model.Movie;
 import com.example.yasuaki.movieseeker.ui.base.BasePresenter;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This specifies the contract between the view and the presenter.
@@ -17,9 +17,11 @@ interface MovieContract {
 
     interface MvpView<Presenter>{
 
-        void onLoadData(ArrayList<Movie> movieList);
+        void onLoadData(List<Movie> movieList);
 
         void setMovieData();
+
+        void checkSortOrder();
 
         void showFetchedData();
 
@@ -29,5 +31,6 @@ interface MovieContract {
 
         void hideProgressBar();
 
+        void showNetworkError();
     }
 }
