@@ -35,10 +35,6 @@
                 android:value=".ui.main.MainActivity"/>
         </activity>
 
-        <provider
-            android:name=".data.MovieContentProvider"
-            android:authorities="com.example.yasuaki.movieseeker"
-            android:exported="false"/>
     </application>
 
 </manifest>

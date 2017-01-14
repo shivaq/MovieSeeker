@@ -50,7 +50,9 @@ class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerViewHold
         Uri trailerThumbnailUri = NetworkUtils.
                 buildTrailerThumbnailUri(trailer.getTrailerKey());
         Picasso.with(mContext).load(trailerThumbnailUri)
-                .resize(400, 400).centerInside().into(trailerThumbnailView);
+                .resize(400, 400)
+                .centerInside().
+                into(trailerThumbnailView);
     }
 
     @Override

@@ -40,6 +40,7 @@ public class DetailMovieActivity extends AppCompatActivity
         TrailerAdapter.TrailerAdapterOnClickListener {
 
     private final static String TAG = DetailMovieActivity.class.getSimpleName();
+    static final String EXTRA_CLICKED_MOVIE = "com.example.yasuaki.movieseeker.EXTRA_CLICKED_MOVIE";
 
     @BindView(R.id.text_detail_title)
     TextView tvTitle;
@@ -72,18 +73,18 @@ public class DetailMovieActivity extends AppCompatActivity
     @BindView(R.id.button_favorite)
     ImageView mFavoriteButton;
 
-    DetailMoviePresenter mDetailMoviePresenter;
-    Movie mMovie;
-    TrailerAdapter mTrailerAdapter;
-    ReviewAdapter mReviewAdapter;
+    private DetailMoviePresenter mDetailMoviePresenter;
+    private Movie mMovie;
+    private TrailerAdapter mTrailerAdapter;
+    private ReviewAdapter mReviewAdapter;
 
-    ConstraintLayout mConstraintLayout;
-    ConstraintSet mNoTrailerConstraintSet = new ConstraintSet();
+    private ConstraintLayout mConstraintLayout;
+    private ConstraintSet mNoTrailerConstraintSet = new ConstraintSet();
     private Toast mToast;
 
     boolean mIsFavorite;
-    ShareActionProvider mShareActionProvider;
-    ArrayList<Trailer> mTralierList;
+    private ShareActionProvider mShareActionProvider;
+    private ArrayList<Trailer> mTrailerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,21 +92,23 @@ public class DetailMovieActivity extends AppCompatActivity
         setContentView(R.layout.activity_detail_movie);
         ButterKnife.bind(this);
 
-
         mDetailMoviePresenter = new DetailMoviePresenter(this, this);
 
         Intent intentFromMain = getIntent();
-        mMovie = intentFromMain.getParcelableExtra("clicked_movie");
+        mMovie = intentFromMain.getParcelableExtra(EXTRA_CLICKED_MOVIE);
 
         tvTitle.setText(mMovie.getMovieTitle());
         Uri thumbnailUri = NetworkUtils.buildUriForThumbnail(mMovie.getThumbnailPath());
-        Picasso.with(this).load(thumbnailUri).resize(800, 800).centerInside().into(moviePoster);
+        Picasso.with(this).load(thumbnailUri)
+                .resize(800, 800)
+                .centerInside()
+                .into(moviePoster);
 
         String releaseDate = "Release Date \n" + mMovie.getReleaseDate();
         tvReleaseDate.setText(releaseDate);
 
-        String userRating = "User rating \n" + String.valueOf(mMovie.getVoteAverage());
-        tvUserRating.setText(userRating + "/10");
+        String userRating = "User rating \n" + String.valueOf(mMovie.getVoteAverage() + "/10");
+        tvUserRating.setText(userRating);
         tvSynopsis.setText(mMovie.getMovieOverView());
 
         //Set up RecyclerView for trailers
@@ -134,7 +137,7 @@ public class DetailMovieActivity extends AppCompatActivity
 
     }
 
-        @Override
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         mDetailMoviePresenter.clearSubscription();
@@ -143,8 +146,8 @@ public class DetailMovieActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        //query db and sync favorite state
         mDetailMoviePresenter.getMovieWithId(Integer.toString(mMovie.getMovieId()));
-        Log.d(TAG, "onResume: isFavorite is " + mIsFavorite);
     }
 
 
@@ -155,14 +158,13 @@ public class DetailMovieActivity extends AppCompatActivity
         MenuItem item = menu.findItem(R.id.menu_item_share);
         mShareActionProvider = new ShareActionProvider(this);
         MenuItemCompat.setActionProvider(item, mShareActionProvider);
-
         return true;
     }
 
-    private void createShareYoutubeTrailer() {
+    private void createShareTrailerIntent() {
 
-        if (mTralierList.size() > 0) {
-            String trailerKey = mTralierList.get(0).getTrailerKey();
+        if (mTrailerList.size() > 0) {
+            String trailerKey = mTrailerList.get(0).getTrailerKey();
             Uri trailerUri = NetworkUtils.buildUriForTrailer(trailerKey);
 
             Intent sendIntent = new Intent(Intent.ACTION_SEND);
@@ -173,7 +175,7 @@ public class DetailMovieActivity extends AppCompatActivity
             if (mShareActionProvider != null) {
                 mShareActionProvider.setShareIntent(sendIntent);
             } else {
-                Log.d(TAG, "createShareYoutubeTrailer: Share Action Provider is null");
+                Log.d(TAG, "createShareTrailerIntent: Share Action Provider is null");
             }
         }
     }
@@ -188,13 +190,12 @@ public class DetailMovieActivity extends AppCompatActivity
 
     /**
      * Sync favorite state of DetailMovieActivity, Movie object, image color, and db.
-     * @param isFavorite
      */
     @Override
     public void syncFavorite(boolean isFavorite) {
         mIsFavorite = isFavorite;
         mMovie.setFavorite(isFavorite);
-        if(isFavorite){
+        if (isFavorite) {
             mFavoriteButton.setColorFilter(ContextCompat.getColor(this, R.color.starColor));
         } else {
             mFavoriteButton.setColorFilter(ContextCompat.getColor(this, R.color.grayColor));
@@ -208,22 +209,21 @@ public class DetailMovieActivity extends AppCompatActivity
 
 
     @Override
-    public void onLoadTrailer(ArrayList<Trailer> trailerResults) {
-        Log.d(TAG, "onLoadTrailer: ");
-        mTralierList = trailerResults;
-        if (trailerResults == null) {
+    public void onLoadTrailer(ArrayList<Trailer> trailerList) {
+        mTrailerList = trailerList;
+        if (trailerList == null) {
             mDetailMoviePresenter.getMovieTrailer();
         }
-        mTrailerAdapter.setTrailerData(trailerResults);
-        createShareYoutubeTrailer();
+        mTrailerAdapter.setTrailerData(trailerList);
+        createShareTrailerIntent();
     }
 
     @Override
-    public void onLoadReview(ArrayList<Review> reviewResults) {
-        if (reviewResults == null) {
+    public void onLoadReview(ArrayList<Review> reviewList) {
+        if (reviewList == null) {
             mDetailMoviePresenter.getReview();
         }
-        mReviewAdapter.setReviewData(reviewResults);
+        mReviewAdapter.setReviewData(reviewList);
     }
 
 
@@ -279,7 +279,6 @@ public class DetailMovieActivity extends AppCompatActivity
     /***************
      * implementation for TrailerAdapterOnClickListener
      */
-
     @Override
     public void onYoutubeClicked(Trailer clickedTrailer) {
         String trailerKey = clickedTrailer.getTrailerKey();
@@ -298,6 +297,7 @@ public class DetailMovieActivity extends AppCompatActivity
         if (mIsFavorite) {//If it's favorite
             syncFavorite(false);//Change favorite to not favorite.
 
+            //delete from db
             mDetailMoviePresenter.deleteMovie(Integer.toString(mMovie.getMovieId()));
 
             if (mToast != null) {
@@ -310,8 +310,9 @@ public class DetailMovieActivity extends AppCompatActivity
         } else {//If it's not favorite
             syncFavorite(true);
 
+            //insert to db
             mDetailMoviePresenter.insertMovie(mMovie);
-            
+
             if (mToast != null) {
                 mToast.cancel();
             }

@@ -6,8 +6,6 @@ import android.util.Log;
 
 import com.example.yasuaki.movieseeker.BuildConfig;
 import com.example.yasuaki.movieseeker.data.MovieRepository;
-import com.example.yasuaki.movieseeker.data.local.MovieDbHelper;
-import com.example.yasuaki.movieseeker.data.local.MovieLocalDataSource;
 import com.example.yasuaki.movieseeker.data.local.MoviePersistenceContract;
 import com.example.yasuaki.movieseeker.data.model.Movie;
 import com.example.yasuaki.movieseeker.data.model.Review;
@@ -23,24 +21,19 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter {
+class DetailMoviePresenter implements DetailMovieContract.DetailPresenter {
 
     private static final String TAG = DetailMoviePresenter.class.getSimpleName();
     private DetailMovieContract.DetailMvpView mDetailedMovieMvpView;
     private CompositeSubscription mCompositeSubscription;
 
-    private MovieLocalDataSource mMovieLocalDataSource;
     private MovieRepository mMovieRepository;
-    private MovieDbHelper mOpenHelper;
 
-    DetailMoviePresenter(DetailMovieContract.DetailMvpView detailedMovieMvpView, Context context) {
+    DetailMoviePresenter(Context context, DetailMovieContract.DetailMvpView detailedMovieMvpView) {
         mDetailedMovieMvpView = detailedMovieMvpView;
         mCompositeSubscription = new CompositeSubscription();
-        mMovieLocalDataSource = MovieLocalDataSource.getInstance(context);
         mMovieRepository = MovieRepository.getInstance(context);
-        mOpenHelper = new MovieDbHelper(context);
     }
-
 
     /**
      * Unsubscribe CompositeSubscription and its reusable
@@ -54,6 +47,7 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
         return MovieRemoteDataSource.ServiceFactory.makeMovieService();
     }
 
+    //Fetch trailer data
     void getMovieTrailer() {
 
         mDetailedMovieMvpView.showTrailerProgressBar();
@@ -72,6 +66,7 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
                                @Override
                                public void onError(Throwable e) {
                                    mDetailedMovieMvpView.showTrailerErrorMessage();
+                                   Log.d(TAG, "onError: " + e.getMessage());
                                }
 
                                @Override
@@ -89,6 +84,7 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
                 ));
     }
 
+    //fetch review data
     void getReview() {
         mDetailedMovieMvpView.showReviewProgressBar();
 
@@ -106,6 +102,8 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
                                @Override
                                public void onError(Throwable e) {
                                    mDetailedMovieMvpView.showReviewErrorMessage();
+                                   Log.d(TAG, "onError: " + e.getMessage());
+
                                }
 
                                @Override
@@ -123,9 +121,8 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
 
     /**
      * query and chedk if the movie is favored.
-     * @param movieId
      */
-    public void getMovieWithId(String movieId) {
+    void getMovieWithId(String movieId) {
 
         mCompositeSubscription.add(mMovieRepository.getMovieFromLocalWithId(movieId)
                 .subscribeOn(Schedulers.io())
@@ -144,13 +141,12 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
                                @Override
                                public void onNext(Cursor cursor) {
 
-                                   try{
+                                   try {
                                        if (cursor.moveToFirst()) {
                                            boolean isFavorite = cursor.getInt(MoviePersistenceContract.INDEX_FAVORITE) != 1;
                                            mDetailedMovieMvpView.syncFavorite(isFavorite);
-                                       } else {
                                        }
-                                   } finally{
+                                   } finally {
                                        cursor.close();
                                    }
                                }
@@ -158,13 +154,12 @@ public class DetailMoviePresenter implements DetailMovieContract.DetailPresenter
                 ));
     }
 
-    public void insertMovie(Movie movie) {
+    void insertMovie(Movie movie) {
         mMovieRepository.insertMovie(movie);
     }
 
-    public void deleteMovie(String movieId) {
+    void deleteMovie(String movieId) {
         mMovieRepository.deleteMovie(movieId);
     }
-
 
 }

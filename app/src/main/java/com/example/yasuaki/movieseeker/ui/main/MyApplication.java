@@ -4,6 +4,9 @@ import android.app.Application;
 
 import com.facebook.stetho.Stetho;
 
+/**
+ * Use Application to activate Stetho
+ */
 public class MyApplication extends Application {
 
     @Override

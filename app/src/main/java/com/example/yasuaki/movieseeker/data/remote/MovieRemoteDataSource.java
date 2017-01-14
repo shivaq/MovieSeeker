@@ -49,8 +49,6 @@ public interface MovieRemoteDataSource {
          */
         public static MovieRemoteDataSource makeMovieService(){
 
-            String baseUrl;
-
             //Create logging interceptor
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);

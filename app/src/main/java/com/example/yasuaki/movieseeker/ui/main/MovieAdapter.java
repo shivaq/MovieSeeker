@@ -77,7 +77,9 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
             movieTitle.setVisibility(View.INVISIBLE);
             posterImage.setVisibility(View.VISIBLE);
             Uri thumbnailUri = NetworkUtils.buildUriForThumbnail(thumbnailPath);
-            Picasso.with(mContext).load(thumbnailUri).into(posterImage);
+            Picasso.with(mContext)
+                    .load(thumbnailUri)
+                    .into(posterImage);
         }
     }
 

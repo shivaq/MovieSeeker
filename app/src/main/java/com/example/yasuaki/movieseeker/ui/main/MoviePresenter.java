@@ -25,7 +25,7 @@ class MoviePresenter implements MovieContract.Presenter {
     private CompositeSubscription mCompositeSubscription;
     private Context mContext;
 
-    MoviePresenter(MovieContract.MvpView movieMvpView, Context context) {
+    MoviePresenter(Context context, MovieContract.MvpView movieMvpView) {
         mContext = context;
         mMovieMvpView = movieMvpView;
         mMovieRepository = MovieRepository.getInstance(mContext);
@@ -64,7 +64,6 @@ class MoviePresenter implements MovieContract.Presenter {
                             mMovieMvpView.showErrorMessage();
                         } else {
                             mMovieMvpView.showNetworkError();
-                            Log.d(TAG, "onError: network error");
                         }
                     }
 
@@ -74,7 +73,6 @@ class MoviePresenter implements MovieContract.Presenter {
                      */
                     @Override
                     public void onNext(List<Movie> movieList) {
-
                         mMovieMvpView.onLoadData(movieList);
                         mMovieMvpView.hideProgressBar();
                         mMovieMvpView.showFetchedData();
@@ -105,7 +103,6 @@ class MoviePresenter implements MovieContract.Presenter {
                             mMovieMvpView.showErrorMessage();
                         } else {
                             mMovieMvpView.showNetworkError();
-                            Log.d(TAG, "onError: network error");
                         }
                     }
 
@@ -118,6 +115,10 @@ class MoviePresenter implements MovieContract.Presenter {
                 }));
     }
 
+    /**
+     * Request Sql database for favorite movie data and watch the process.
+     * Operate completion or error of the process.
+     */
     void getFavoriteMovies(){
         mMovieMvpView.showFetchedData();
         mMovieMvpView.showProgressBar();
@@ -128,7 +129,6 @@ class MoviePresenter implements MovieContract.Presenter {
 
                     @Override
                     public void onCompleted() {
-
                     }
 
                     @Override
@@ -138,13 +138,11 @@ class MoviePresenter implements MovieContract.Presenter {
                             mMovieMvpView.showErrorMessage();
                         } else {
                             mMovieMvpView.showNetworkError();
-                            Log.d(TAG, "onError: network error");
                         }
                     }
 
                     @Override
                     public void onNext(List<Movie> movieList) {
-                        Log.d(TAG, "getFavoriteMovie onNext: movielist is" + movieList);
                         mMovieMvpView.onLoadData(movieList);
                         mMovieMvpView.hideProgressBar();
                         mMovieMvpView.showFetchedData();

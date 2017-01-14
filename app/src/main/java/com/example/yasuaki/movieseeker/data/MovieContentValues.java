@@ -5,7 +5,7 @@ import android.content.ContentValues;
 import com.example.yasuaki.movieseeker.data.local.MoviePersistenceContract.MovieEntry;
 import com.example.yasuaki.movieseeker.data.model.Movie;
 
-public class MovieValues {
+public class MovieContentValues {
 
     public static ContentValues movieToContentValues(Movie movie){
         ContentValues values = new ContentValues();
@@ -18,5 +18,4 @@ public class MovieValues {
         values.put(MovieEntry.COLUMN_FAVORITE, Boolean.toString(movie.isFavorite()));
         return values;
     }
-
 }

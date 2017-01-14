@@ -13,7 +13,6 @@ import com.example.yasuaki.movieseeker.data.remote.MovieRemoteDataSource;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -25,8 +24,6 @@ public class MovieRepository {
     private static MovieRepository INSTANCE = null;
 
     private final MovieLocalDataSource mMovieLocalDataSource;
-
-    private Map<String, Movie> mCachedMovies;
 
     private MovieRepository(Context context) {
         mMovieLocalDataSource = MovieLocalDataSource.getInstance(context);
@@ -59,8 +56,7 @@ public class MovieRepository {
                 .map(new Func1<MovieResponse, List<Movie>>() {
                     @Override
                     public List<Movie> call(MovieResponse movieResponse) {
-                        List<Movie> remoteMovieData = movieResponse.getResults();
-                        return remoteMovieData;
+                        return movieResponse.getResults();
                     }
                 });
     }
@@ -72,8 +68,7 @@ public class MovieRepository {
                 .map(new Func1<MovieResponse, List<Movie>>() {
                     @Override
                     public List<Movie> call(MovieResponse movieResponse) {
-                        List<Movie> remoteMovieData = movieResponse.getResults();
-                        return remoteMovieData;
+                        return movieResponse.getResults();
                     }
                 });
     }
@@ -98,9 +93,13 @@ public class MovieRepository {
                                     String releaseDate = cursor.getString(MoviePersistenceContract.INDEX_RELEASE_DATE);
                                     float voteAverage = cursor.getFloat(MoviePersistenceContract.INDEX_VOTE_AVERAGE);
                                     boolean isFavorite = cursor.getInt(MoviePersistenceContract.INDEX_FAVORITE) != 1;
-                                    Movie movie = new Movie(movieId, title,
-                                            thumbnailPath, overView, releaseDate,
-                                            voteAverage, isFavorite);
+                                    Movie movie = new Movie(movieId,
+                                            title,
+                                            thumbnailPath,
+                                            overView,
+                                            releaseDate,
+                                            voteAverage,
+                                            isFavorite);
                                     movieList.add(movie);
                                     cursor.moveToNext();
                                 }
@@ -116,6 +115,4 @@ public class MovieRepository {
     public Observable<Cursor> getMovieFromLocalWithId(String movieId) {
         return mMovieLocalDataSource.getMovieWithId(movieId);
     }
-
-
 }

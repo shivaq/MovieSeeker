@@ -24,35 +24,32 @@ public final class NetworkUtils {
 
         String fetchedImageSize = "w342";
 
-        Uri builtUriForImage = Uri.parse(IMAGE_FETCH_BASE_URL).buildUpon()
+        return Uri.parse(IMAGE_FETCH_BASE_URL).buildUpon()
                 .appendPath(fetchedImageSize)
                 .appendEncodedPath(thumbnailPath)
                 .build();
-
-        return builtUriForImage;
     }
 
     public static Uri buildUriForTrailer(String trailerKey){
 
-        Uri trailerUri = Uri.parse(YOUTUBE_URL).buildUpon()
+        return Uri.parse(YOUTUBE_URL).buildUpon()
                 .appendPath("watch")
                 .appendQueryParameter("v", trailerKey)
                 .build();
-
-        return trailerUri;
     }
 
     public static Uri buildTrailerThumbnailUri(String trailerKey){
 
-        Uri trailerThumbnailUri = Uri.parse(YOUTUBE_THUMBNAIL).buildUpon()
+        return Uri.parse(YOUTUBE_THUMBNAIL).buildUpon()
                 .appendPath("vi")
                 .appendPath(trailerKey)
                 .appendPath("1.jpg")
                 .build();
-
-        return trailerThumbnailUri;
     }
 
+    /**
+     * Check network status
+     */
     public static boolean isOnline(Context context){
         ConnectivityManager cm =
                 (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
