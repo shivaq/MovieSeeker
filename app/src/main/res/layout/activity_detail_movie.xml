@@ -10,7 +10,7 @@
 
         android:id="@+id/activity_detail"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:context="com.example.yasuaki.movieseeker.ui.detail.DetailMovieActivity">
 
@@ -50,6 +50,7 @@
             android:id="@+id/text_movie_rating"
             style="@style/UiSmallElements"
             android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/text_release_year"
@@ -61,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:src="@drawable/ic_star_amber_600_36dp"
+            android:src="@drawable/ic_star_black_36dp"
             android:tint="@color/grayColor"
             app:layout_constraintLeft_toLeftOf="@+id/text_click"
             app:layout_constraintRight_toRightOf="@+id/text_click"
@@ -74,6 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
             android:layout_marginTop="0dp"
             android:text="@string/text_message_favorite"
             app:layout_constraintLeft_toLeftOf="@+id/text_movie_rating"
@@ -174,6 +176,9 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimaryDark"
             android:fontFamily="sans-serif-medium"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingRight="16dp"
             android:paddingLeft="16dp"
             android:text="@string/text_reviews_label"
             android:textColor="@android:color/white"
