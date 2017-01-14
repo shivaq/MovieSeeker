@@ -8,7 +8,7 @@ import com.example.yasuaki.movieseeker.ui.base.BasePresenter;
 
 import java.util.ArrayList;
 
-public interface DetailMovieContract {
+interface DetailMovieContract {
 
     interface DetailPresenter extends BasePresenter {
 
@@ -39,5 +39,8 @@ public interface DetailMovieContract {
         void showNoReviewMessage();
 
         void changeConstraintLayout();
+
+        void syncFavorite(boolean isFavorite);
+
     }
 }

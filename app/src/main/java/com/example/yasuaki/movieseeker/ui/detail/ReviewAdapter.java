@@ -15,9 +15,8 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
+class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
 
-    private Context mContext;
     private ArrayList<Review> mReviewArrayList;
 
     ReviewAdapter() {
@@ -25,8 +24,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
     @Override
     public ReviewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        mContext = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(mContext);
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.review_list_item, parent, false);
         return new ReviewViewHolder(view);
     }
@@ -34,22 +33,23 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     @Override
     public void onBindViewHolder(ReviewViewHolder holder, int position) {
         Review review = mReviewArrayList.get(position);
+
         TextView reviewAuthorView = holder.mReviewAuthor;
         TextView reviewContentView = holder.mReview;
 
-        String reviewAuthor = review.getAuthor();
-        reviewAuthorView.setText("Reviewer: " + reviewAuthor);
+        String reviewAuthor = "Reviewer: " + review.getAuthor();
+        reviewAuthorView.setText(reviewAuthor);
         String reviewContent = review.getContent();
         reviewContentView.setText(reviewContent);
     }
 
     @Override
     public int getItemCount() {
-        if(mReviewArrayList == null) return 0;
+        if (mReviewArrayList == null) return 0;
         return mReviewArrayList.size();
     }
 
-    public void setReviewData(ArrayList<Review> reviewData){
+    void setReviewData(ArrayList<Review> reviewData) {
         mReviewArrayList = reviewData;
         notifyDataSetChanged();
     }
@@ -65,7 +65,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         @BindView(R.id.text_review)
         TextView mReview;
 
-        public ReviewViewHolder(View itemView) {
+        ReviewViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

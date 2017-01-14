@@ -3,7 +3,6 @@ package com.example.yasuaki.movieseeker.ui.detail;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,8 +50,9 @@ class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerViewHold
         Uri trailerThumbnailUri = NetworkUtils.
                 buildTrailerThumbnailUri(trailer.getTrailerKey());
         Picasso.with(mContext).load(trailerThumbnailUri)
-                .resize(400, 400).centerInside().into(trailerThumbnailView);
-        Log.d(TAG, "trailer  uri is " + trailerThumbnailUri);
+                .resize(400, 400)
+                .centerInside().
+                into(trailerThumbnailView);
     }
 
     @Override

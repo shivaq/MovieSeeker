@@ -5,27 +5,18 @@ import com.google.gson.annotations.SerializedName;
 public class Trailer {
 
     @SerializedName("key")
-    String mTrailerKey;
+    private String mTrailerKey;
 
     @SerializedName("name")
-    String mTrailerTitle;
+    private String mTrailerTitle;
 
     @SerializedName("size")
-    int mTrailerSize;
+    private int mTrailerSize;
 
     public Trailer(){
-
     }
 
     public String getTrailerKey() {
         return mTrailerKey;
-    }
-
-    public String getTrailerTitle() {
-        return mTrailerTitle;
-    }
-
-    public int getTrailerSize() {
-        return mTrailerSize;
     }
 }

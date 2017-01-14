@@ -1,7 +1,9 @@
 package com.example.yasuaki.movieseeker.util;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
-import android.util.Log;
 
 /**
  * These utilities will be used to communicate with the weather servers.
@@ -20,36 +22,38 @@ public final class NetworkUtils {
      */
     public static Uri buildUriForThumbnail(String thumbnailPath) {
 
-        String fetchedImageSize = "w185";
+        String fetchedImageSize = "w342";
 
-        Uri builtUriForImage = Uri.parse(IMAGE_FETCH_BASE_URL).buildUpon()
+        return Uri.parse(IMAGE_FETCH_BASE_URL).buildUpon()
                 .appendPath(fetchedImageSize)
                 .appendEncodedPath(thumbnailPath)
                 .build();
-
-        Log.d(TAG, "Built URI for thumbnail " + builtUriForImage);
-        return builtUriForImage;
     }
 
     public static Uri buildUriForTrailer(String trailerKey){
 
-        Uri trailerUri = Uri.parse(YOUTUBE_URL).buildUpon()
+        return Uri.parse(YOUTUBE_URL).buildUpon()
                 .appendPath("watch")
                 .appendQueryParameter("v", trailerKey)
                 .build();
-        Log.d(TAG, "Built URI for trailer " + trailerUri);
-
-        return trailerUri;
     }
 
     public static Uri buildTrailerThumbnailUri(String trailerKey){
 
-        Uri trailerThumbnailUri = Uri.parse(YOUTUBE_THUMBNAIL).buildUpon()
+        return Uri.parse(YOUTUBE_THUMBNAIL).buildUpon()
                 .appendPath("vi")
                 .appendPath(trailerKey)
                 .appendPath("1.jpg")
                 .build();
+    }
 
-        return trailerThumbnailUri;
+    /**
+     * Check network status
+     */
+    public static boolean isOnline(Context context){
+        ConnectivityManager cm =
+                (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnectedOrConnecting();
     }
 }

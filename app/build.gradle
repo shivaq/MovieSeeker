@@ -44,9 +44,10 @@ dependencies {
     final DAGGER_VERSION = '2.5'
     final UI_AUTOMATOR_VERSION = '2.1.2'
     final CONSTRAINT_LAYOUT_VERSION = '1.0.0-beta4'
+    final STETHO_VERSION = '1.4.2'
 
     final RETROFIT2_VERSION = '2.1.0'
-    final OKHTTP_VERSION = '3.3.0'
+    final OKHTTP_VERSION = '3.4.1'
     final PICASSO_VERSION = '2.5.2'
 
     final BUTTERKNIFE_VERSION = '8.4.0'
@@ -54,6 +55,7 @@ dependencies {
 
     final RXANDROID_VERSION = '1.2.1'
     final RXJAVA_VERSION = '1.1.6'
+    final SQLBRITE_VERSION = '1.1.1'
 
     final PLAY_SERVICES_VERSION = '8.4.0'
 
@@ -68,6 +70,9 @@ dependencies {
 
     //constraint layout
     compile "com.android.support.constraint:constraint-layout:$CONSTRAINT_LAYOUT_VERSION"
+
+    compile "com.facebook.stetho:stetho:$STETHO_VERSION"
+    compile "com.facebook.stetho:stetho-okhttp3:$STETHO_VERSION"
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -116,11 +121,13 @@ dependencies {
 
     compile "com.squareup.okhttp3:okhttp:$OKHTTP_VERSION"
     compile "com.squareup.okhttp3:logging-interceptor:$OKHTTP_VERSION"
+
     compile "com.squareup.picasso:picasso:$PICASSO_VERSION"
 
-    // rx, butterknife
+    // rx, sqlbrite, butterknife
     compile "io.reactivex:rxandroid:$RXANDROID_VERSION"
     compile "io.reactivex:rxjava:$RXJAVA_VERSION"
+    compile "com.squareup.sqlbrite:sqlbrite:$SQLBRITE_VERSION"
     compile "com.jakewharton:butterknife:$BUTTERKNIFE_VERSION"
     apt "com.jakewharton:butterknife-compiler:$BUTTERKNIFE_VERSION"
 }

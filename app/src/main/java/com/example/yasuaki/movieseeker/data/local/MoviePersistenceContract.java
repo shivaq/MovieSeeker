@@ -3,24 +3,22 @@ package com.example.yasuaki.movieseeker.data.local;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-public class MoviePersistenceContract {
+public final class MoviePersistenceContract {
 
-    public static final String CONTENT_AUTHORITY = "com.example.yasuaki.movieseeker";
+    private static final String CONTENT_AUTHORITY = "com.example.yasuaki.movieseeker";
     private static final String CONTENT_SCHEME = "content://";
-    public static final Uri BASE_CONTENT_URI = Uri.parse(CONTENT_SCHEME + CONTENT_AUTHORITY);
-    public static final String PATH_MOVIE = "movie";
-    public static final String PATH_TRAILER = "trailer";
-    public static final String PATH_REVIEW = "review";
+    private static final Uri BASE_CONTENT_URI = Uri.parse(CONTENT_SCHEME + CONTENT_AUTHORITY);
+    private static final String PATH_MOVIE = "movie";
 
     public MoviePersistenceContract() {
     }
 
     public static final class MovieEntry implements BaseColumns {
 
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
+        static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
                 .appendPath(PATH_MOVIE).build();
 
-        public static final String TABLE_NAME = PATH_MOVIE;
+        static final String TABLE_NAME = PATH_MOVIE;
 
         public static final String COLUMN_MOVIE_ID = "movie_id";
         public static final String COLUMN_TITLE = "title";
@@ -30,39 +28,26 @@ public class MoviePersistenceContract {
         public static final String COLUMN_VOTE_AVERAGE = "vote_average";
         public static final String COLUMN_FAVORITE = "is_favorite";
 
-        public static Uri buildMovieUri(long id) {
-            return CONTENT_URI.buildUpon().appendPath(Long.toString(id)).build();
+        public static Uri buildMovieUri() {
+            return CONTENT_URI.buildUpon().build();
         }
     }
 
-    public static final class TrailerEntry implements BaseColumns {
+    public static final String[] MOVIE_PROJECTION = {
+            MovieEntry.COLUMN_MOVIE_ID,
+            MovieEntry.COLUMN_TITLE,
+            MovieEntry.COLUMN_POSTER_PATH,
+            MovieEntry.COLUMN_OVERVIEW,
+            MovieEntry.COLUMN_RELEASE_DATE,
+            MovieEntry.COLUMN_VOTE_AVERAGE,
+            MovieEntry.COLUMN_FAVORITE
+    };
 
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
-                .appendPath(PATH_TRAILER).build();
-
-        public static final String TABLE_NAME = PATH_TRAILER;
-
-        public static final String COLUMN_MOVIE_ID = "movie_id";
-        public static final String COLUMN_YOUTUBE_ID = "youtube_id";
-
-        public static Uri buildTrailerUri(long id) {
-            return CONTENT_URI.buildUpon().appendPath(Long.toString(id)).build();
-        }
-    }
-
-    public static final class ReviewEntry implements BaseColumns {
-
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
-                .appendPath(PATH_REVIEW).build();
-
-        public static final String TABLE_NAME = PATH_REVIEW;
-
-        public static final String COLUMN_MOVIE_ID = "movie_id";
-        public static final String COLUMN_AUTHOR = "author";
-        public static final String COLUMN_REVIEW_CONTENT = "review_content";
-
-        public static Uri buildReviewUri(long id) {
-            return CONTENT_URI.buildUpon().appendPath(Long.toString(id)).build();
-        }
-    }
+    public static final int INDEX_MOVIE_ID = 0;
+    public static final int INDEX_TITLE = 1;
+    public static final int INDEX_POSTER_PATH = 2;
+    public static final int INDEX_OVERVIEW = 3;
+    public static final int INDEX_RELEASE_DATE = 4;
+    public static final int INDEX_VOTE_AVERAGE = 5;
+    public static final int INDEX_FAVORITE = 6;
 }

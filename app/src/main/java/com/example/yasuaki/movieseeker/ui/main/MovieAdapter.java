@@ -3,7 +3,6 @@ package com.example.yasuaki.movieseeker.ui.main;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +36,6 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
      *                      when an item is clicked.
      */
     MovieAdapter(MovieAdapterOnClickListener clickListener) {
-        Log.d(TAG, "inside MovieAdapter constructor");
         mClickListener = clickListener;
     }
 
@@ -51,7 +49,6 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
      */
     @Override
     public MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d(TAG, "inside onCreateViewHolder");
         mContext = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.main_list_item, parent, false);
@@ -61,7 +58,7 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
 
     /**
      * This gets called by the RecyclerView to display the data at the specified position.
-     * Download thumbnail image from server into imageView.
+     * Download thumbnail image movieToContentValues server into imageView.
      */
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
@@ -80,9 +77,9 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
             movieTitle.setVisibility(View.INVISIBLE);
             posterImage.setVisibility(View.VISIBLE);
             Uri thumbnailUri = NetworkUtils.buildUriForThumbnail(thumbnailPath);
-            Log.d(TAG, "thumbnailPath is " + thumbnailPath);
-            Log.d(TAG, "thumbnailUrl is " + thumbnailUri);
-            Picasso.with(mContext).load(thumbnailUri).into(posterImage);
+            Picasso.with(mContext)
+                    .load(thumbnailUri)
+                    .into(posterImage);
         }
     }
 
@@ -97,11 +94,11 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
     }
 
     /**
-     * Set new data from web on already created MovieAdapter.
+     * Set new data movieToContentValues web on already created MovieAdapter.
      * This method is used to avoid recreating new MovieAdapter.
      */
-    void setMovieData(ArrayList<Movie> movieData) {
-        mMovieArrayList = movieData;
+    void setMovieData(ArrayList<Movie> movieList) {
+        mMovieArrayList = movieList;
         notifyDataSetChanged();
     }
 
@@ -128,7 +125,6 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
         MovieAdapterViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            Log.d(TAG, "inside ViewHolder");
         }
 
         //Set onClickListener on RecyclerView
