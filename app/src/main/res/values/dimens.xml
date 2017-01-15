@@ -11,4 +11,10 @@
     <dimen name="text_headline">24sp</dimen>
     <dimen name="text_subheading">16sp</dimen>
     <dimen name="text_body">14sp</dimen>
+    <dimen name="expanded_title_margin">24dp</dimen>
+    <dimen name="image_backdrop_height">300dp</dimen>
+    <dimen name="thin_height_movie_title">24dp</dimen>
+    <dimen name="zero_dimen">0dp</dimen>
+    <dimen name="margin_above_star">64dp</dimen>
+    <dimen name="width_height_progress_bar">48dp</dimen>
 </resources>

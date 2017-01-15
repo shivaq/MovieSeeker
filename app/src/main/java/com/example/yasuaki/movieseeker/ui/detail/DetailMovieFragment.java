@@ -107,7 +107,7 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_detail_movie, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this, rootView);
 
         mDetailMoviePresenter = new DetailMoviePresenter(getActivity(), this);
