@@ -10,8 +10,7 @@ import butterknife.ButterKnife;
 
 
 //Display detailed movie data
-public class DetailMovieActivity extends AppCompatActivity
-         {
+public class DetailMovieActivity extends AppCompatActivity {
 
     private final static String TAG = DetailMovieActivity.class.getSimpleName();
 
@@ -23,9 +22,9 @@ public class DetailMovieActivity extends AppCompatActivity
 
         DetailMovieFragment detailMovieFragment =
                 (DetailMovieFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.detail_fragment_container);
+                        .findFragmentById(R.id.detail_fragment_container);
 
-        if(detailMovieFragment == null){
+        if (detailMovieFragment == null) {
             detailMovieFragment = DetailMovieFragment.newInstance();
             ActivityUtils.addFragmentToActivity(
                     getSupportFragmentManager(),
