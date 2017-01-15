@@ -10,6 +10,13 @@
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>
 
+    <style name="AppTheme.ActionBar.TransParent" parent= "AppTheme">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="colorPrimary">@android:color/transparent</item>
+    </style>
+
+
     <style name="UiSmallElements">
         <item name="android:layout_marginTop">@dimen/margin_top_bottom</item>
         <item name="android:layout_marginBottom">@dimen/margin_top_bottom</item>

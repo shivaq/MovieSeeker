@@ -10,13 +10,14 @@ class MovieDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "movie.db";
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private static final String SQL_CREATE_MOVIE_TABLE = "CREATE TABLE " +
             MovieEntry.TABLE_NAME + " (" +
             MovieEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL PRIMARY KEY, " +
             MovieEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
             MovieEntry.COLUMN_POSTER_PATH + " TEXT NOT NULL, " +
+            MovieEntry.COLUMN_BACKDROP_PATH + " TEXT NOT NULL, " +
             MovieEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
             MovieEntry.COLUMN_RELEASE_DATE + " DATE NOT NULL, " +
             MovieEntry.COLUMN_VOTE_AVERAGE + " REAL NOT NULL, " +

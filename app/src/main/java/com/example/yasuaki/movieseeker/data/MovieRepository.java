@@ -89,6 +89,7 @@ public class MovieRepository {
                                     int movieId = cursor.getInt(MoviePersistenceContract.INDEX_MOVIE_ID);
                                     String title = cursor.getString(MoviePersistenceContract.INDEX_TITLE);
                                     String thumbnailPath = cursor.getString(MoviePersistenceContract.INDEX_POSTER_PATH);
+                                    String backdropPath = cursor.getString(MoviePersistenceContract.INDEX_BACKDROP_PATH);
                                     String overView = cursor.getString(MoviePersistenceContract.INDEX_OVERVIEW);
                                     String releaseDate = cursor.getString(MoviePersistenceContract.INDEX_RELEASE_DATE);
                                     float voteAverage = cursor.getFloat(MoviePersistenceContract.INDEX_VOTE_AVERAGE);
@@ -96,6 +97,7 @@ public class MovieRepository {
                                     Movie movie = new Movie(movieId,
                                             title,
                                             thumbnailPath,
+                                            backdropPath,
                                             overView,
                                             releaseDate,
                                             voteAverage,

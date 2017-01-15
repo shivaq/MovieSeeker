@@ -19,6 +19,9 @@ public final class Movie implements Parcelable {
     @SerializedName("poster_path")
     private String mThumbnailPath;
 
+    @SerializedName("backdrop_path")
+    private String mBackdropPath;
+
     @SerializedName("overview")
     private String mMovieOverView;
 
@@ -30,21 +33,25 @@ public final class Movie implements Parcelable {
 
     private boolean mIsFavorite;
 
-    public Movie(int movieId, String title, String thumbnailPath, String overView,
-                 String releaseDate, float voteAverage, boolean isFavorite) {
+    public Movie(int movieId, String title, String thumbnailPath, String backdropPath,
+                 String overView, String releaseDate, float voteAverage,
+                 boolean isFavorite) {
         mMovieId = movieId;
         mMovieTitle = title;
         mThumbnailPath = thumbnailPath;
+        mBackdropPath = backdropPath;
         mMovieOverView = overView;
         mReleaseDate = releaseDate;
         mVoteAverage = voteAverage;
         mIsFavorite = isFavorite;
     }
 
+
     protected Movie(Parcel in) {
         mMovieId = in.readInt();
         mMovieTitle = in.readString();
         mThumbnailPath = in.readString();
+        mBackdropPath = in.readString();
         mMovieOverView = in.readString();
         mReleaseDate = in.readString();
         mVoteAverage = in.readFloat();
@@ -63,8 +70,13 @@ public final class Movie implements Parcelable {
         }
     };
 
+
     public String getThumbnailPath() {
         return mThumbnailPath;
+    }
+
+    public String getBackdropPath() {
+        return mBackdropPath;
     }
 
     public String getMovieOverView() {
@@ -105,6 +117,7 @@ public final class Movie implements Parcelable {
         dest.writeInt(mMovieId);
         dest.writeString(mMovieTitle);
         dest.writeString(mThumbnailPath);
+        dest.writeString(mBackdropPath);
         dest.writeString(mMovieOverView);
         dest.writeString(mReleaseDate);
         dest.writeFloat(mVoteAverage);

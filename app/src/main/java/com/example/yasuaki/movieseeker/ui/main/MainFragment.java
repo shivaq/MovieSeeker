@@ -12,7 +12,6 @@ import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -63,7 +62,6 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
     private ArrayList<Movie> mFavoriteMovieList;
     private String mSortOrder;
     private RecyclerView.LayoutManager mLayoutManager;
-    private Parcelable mListState;
 
     public static Intent getStartIntent(Context context, Movie clickedMovie) {
         Intent intent = new Intent(context, DetailMovieActivity.class);
@@ -96,9 +94,9 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
             mLayoutManager =
                     new GridLayoutManager(getActivity(), 3, LinearLayoutManager.VERTICAL, false);
         }
-
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
+
 
         mMoviePresenter = new MoviePresenter(getActivity(), this);
 
@@ -116,12 +114,11 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
         super.onSaveInstanceState(outState);
 
         //Save list item state
-        mListState = mLayoutManager.onSaveInstanceState();
+        Parcelable mListState = mLayoutManager.onSaveInstanceState();
         outState.putParcelable(LIST_STATE_KEY, mListState);
 
         outState.putParcelableArrayList(TOP_RATED, mTopRatedMovieList);
         outState.putParcelableArrayList(MOST_POPULAR, mMostPopularMovieList);
-        Log.d(TAG, "onSaveInstanceState: " + mListState);
     }
 
     /**

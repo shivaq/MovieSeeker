@@ -7,12 +7,14 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ShareActionProvider;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -48,8 +50,10 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
     private static final String TRAILER_LIST_KEY = "com.example.yasuaki.movieseeker.TRAILER_LIST_KEY";
     private static final String REVIEW_LIST_KEY = "com.example.yasuaki.movieseeker.REVIEW_LIST_KEY";
 
-    @BindView(R.id.text_detail_title)
-    TextView tvTitle;
+    @BindView(R.id.image_movie_backdrop)
+    ImageView movieBackdrop;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     @BindView(R.id.image_movie_thumbnail)
     ImageView moviePoster;
     @BindView(R.id.text_release_year)
@@ -111,7 +115,16 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
         Intent intentFromMain = getActivity().getIntent();
         mMovie = intentFromMain.getParcelableExtra(EXTRA_CLICKED_MOVIE);
 
-        tvTitle.setText(mMovie.getMovieTitle());
+        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout)
+                rootView.findViewById(R.id.collapsing_toolbar);
+        collapsingToolbarLayout.setTitle(mMovie.getMovieTitle());
+        toolbar.setTitle(mMovie.getMovieTitle());
+
+        //set backdrop image
+        Uri backdropUri = NetworkUtils.buildUriForThumbnail(mMovie.getBackdropPath());
+        Picasso.with(getActivity()).load(backdropUri).into(movieBackdrop);
+
+        //set thumbnail image
         Uri thumbnailUri = NetworkUtils.buildUriForThumbnail(mMovie.getThumbnailPath());
         Picasso.with(getActivity()).load(thumbnailUri)
                 .resize(800, 800)
@@ -157,7 +170,7 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated: " + savedInstanceState);
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             mListState = savedInstanceState.getParcelable(LIST_STATE_KEY);
             Log.d(TAG, "onActivityCreated: mListState is " + mListState);
         }
@@ -169,7 +182,6 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
         //Save list item state
         mListState = mReviewLayoutManager.onSaveInstanceState();
         outState.putParcelable(LIST_STATE_KEY, mListState);
-
         outState.putParcelableArrayList(TRAILER_LIST_KEY, mTrailerList);
         outState.putParcelableArrayList(REVIEW_LIST_KEY, mReviewList);
     }
@@ -188,7 +200,7 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
         //query db and sync favorite state
         mDetailMoviePresenter.getMovieWithId(Integer.toString(mMovie.getMovieId()));
 
-        if(mListState != null){
+        if (mListState != null) {
             mReviewLayoutManager.onRestoreInstanceState(mListState);
         }
     }
