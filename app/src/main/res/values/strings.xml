@@ -21,7 +21,7 @@
     <string name="error_loading_trailer">There is a problem loading trailers.</string>
 
     <string name="text_reviews_label">Reviews</string>
-    <string name="text_no_review">Sorry, there is no reviewArrayList.</string>
+    <string name="text_no_review">Sorry, there is no review.</string>
     <string name="error_loading_reviews">There is a problem loading reviews.</string>
     <string name="text_message_favorite">Click me!!</string>
     <string name="error_network_offline_message">Network is offline</string>
