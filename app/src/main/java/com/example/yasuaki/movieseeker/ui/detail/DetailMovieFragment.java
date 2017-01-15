@@ -40,11 +40,13 @@ import butterknife.OnClick;
 
 
 public class DetailMovieFragment extends Fragment implements DetailMovieContract.DetailMvpView,
-        TrailerAdapter.TrailerAdapterOnClickListener{
+        TrailerAdapter.TrailerAdapterOnClickListener {
 
     private static final String TAG = DetailMovieFragment.class.getSimpleName();
     static final String EXTRA_CLICKED_MOVIE = "com.example.yasuaki.movieseeker.EXTRA_CLICKED_MOVIE";
-    private static final String LIST_STATE_KEY = "com.example.yasuaki.movieseeker.LIST_STATE";
+    private static final String LIST_STATE_KEY = "com.example.yasuaki.movieseeker.LIST_STATE_KEY";
+    private static final String TRAILER_LIST_KEY = "com.example.yasuaki.movieseeker.TRAILER_LIST_KEY";
+    private static final String REVIEW_LIST_KEY = "com.example.yasuaki.movieseeker.REVIEW_LIST_KEY";
 
     @BindView(R.id.text_detail_title)
     TextView tvTitle;
@@ -92,6 +94,7 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
     boolean mIsFavorite;
     private ShareActionProvider mShareActionProvider;
     private ArrayList<Trailer> mTrailerList;
+    private ArrayList<Review> mReviewList;
 
     public static DetailMovieFragment newInstance() {
         return new DetailMovieFragment();
@@ -127,18 +130,18 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerTrailerView.setLayoutManager(trailerLayoutManager);
         mRecyclerTrailerView.setHasFixedSize(true);
+
         mTrailerAdapter = new TrailerAdapter(this);
         mRecyclerTrailerView.setAdapter(mTrailerAdapter);
-        mDetailMoviePresenter.getMovieTrailer();
 
         //Set up RecyclerView for reviews
         mReviewLayoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerReviewView.setLayoutManager(mReviewLayoutManager);
         mRecyclerReviewView.setHasFixedSize(true);
+
         mReviewAdapter = new ReviewAdapter();
         mRecyclerReviewView.setAdapter(mReviewAdapter);
-        mDetailMoviePresenter.getReview();
 
         //Prepare ConstraintSet in case there is no trailer.
         mConstraintLayout = (ConstraintLayout) rootView.findViewById(R.id.activity_detail);
@@ -151,14 +154,25 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.d(TAG, "onActivityCreated: " + savedInstanceState);
+        if(savedInstanceState != null){
+            mListState = savedInstanceState.getParcelable(LIST_STATE_KEY);
+            Log.d(TAG, "onActivityCreated: mListState is " + mListState);
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //Save list item state
         mListState = mReviewLayoutManager.onSaveInstanceState();
         outState.putParcelable(LIST_STATE_KEY, mListState);
+
+        outState.putParcelableArrayList(TRAILER_LIST_KEY, mTrailerList);
+        outState.putParcelableArrayList(REVIEW_LIST_KEY, mReviewList);
     }
-
-
 
     @Override
     public void onDestroyView() {
@@ -169,8 +183,14 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
     @Override
     public void onResume() {
         super.onResume();
+        mDetailMoviePresenter.getMovieTrailer();
+        mDetailMoviePresenter.getReview();
         //query db and sync favorite state
         mDetailMoviePresenter.getMovieWithId(Integer.toString(mMovie.getMovieId()));
+
+        if(mListState != null){
+            mReviewLayoutManager.onRestoreInstanceState(mListState);
+        }
     }
 
     @Override
@@ -236,16 +256,17 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
         if (trailerList == null) {
             mDetailMoviePresenter.getMovieTrailer();
         }
-        mTrailerAdapter.setTrailerData(trailerList);
+        mTrailerAdapter.setTrailerData(mTrailerList);
         createShareTrailerIntent();
     }
 
     @Override
     public void onLoadReview(ArrayList<Review> reviewList) {
+        mReviewList = reviewList;
         if (reviewList == null) {
             mDetailMoviePresenter.getReview();
         }
-        mReviewAdapter.setReviewData(reviewList);
+        mReviewAdapter.setReviewData(mReviewList);
     }
 
     @Override
@@ -308,6 +329,7 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
         Intent youtubeIntent = new Intent(Intent.ACTION_VIEW, trailerUri);
         startActivity(youtubeIntent);
     }
+
     /***********
      * set onClick
      ************/

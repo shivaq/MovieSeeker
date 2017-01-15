@@ -12,6 +12,7 @@ import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,6 +38,7 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
         SharedPreferences.OnSharedPreferenceChangeListener,
         MovieContract.MvpView{
 
+    private static final String TAG = MainFragment.class.getSimpleName();
     static final String EXTRA_CLICKED_MOVIE = "com.example.yasuaki.movieseeker.EXTRA_CLICKED_MOVIE";
     private static final String LIST_STATE_KEY = "com.example.yasuaki.movieseeker.LIST_STATE";
 
@@ -119,24 +121,7 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
 
         outState.putParcelableArrayList(TOP_RATED, mTopRatedMovieList);
         outState.putParcelableArrayList(MOST_POPULAR, mMostPopularMovieList);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        //Retrieve list item state
-        if(mListState != null){
-            mListState = savedInstanceState.getParcelable(LIST_STATE_KEY);
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mListState != null) {
-            //Restore list item state
-            mLayoutManager.onRestoreInstanceState(mListState);
-        }
+        Log.d(TAG, "onSaveInstanceState: " + mListState);
     }
 
     /**
