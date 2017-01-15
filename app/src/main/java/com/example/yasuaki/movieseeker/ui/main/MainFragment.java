@@ -3,6 +3,7 @@ package com.example.yasuaki.movieseeker.ui.main;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -84,8 +85,16 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, rootView);
 
-        mLayoutManager =
-                new GridLayoutManager(getActivity(), 2, LinearLayoutManager.VERTICAL, false);
+        //Check orientation and change column number
+        int orientation = getActivity().getResources().getConfiguration().orientation;
+        if(orientation == Configuration.ORIENTATION_PORTRAIT){
+            mLayoutManager =
+                    new GridLayoutManager(getActivity(), 2, LinearLayoutManager.VERTICAL, false);
+        } else {
+            mLayoutManager =
+                    new GridLayoutManager(getActivity(), 3, LinearLayoutManager.VERTICAL, false);
+        }
+
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
 
