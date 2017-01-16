@@ -54,6 +54,8 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
     ImageView movieBackdrop;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbarLayout;
     @BindView(R.id.image_movie_thumbnail)
     ImageView moviePoster;
     @BindView(R.id.text_release_year)
@@ -115,18 +117,22 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
         Intent intentFromMain = getActivity().getIntent();
         mMovie = intentFromMain.getParcelableExtra(EXTRA_CLICKED_MOVIE);
 
-        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout)
-                rootView.findViewById(R.id.collapsing_toolbar);
-        collapsingToolbarLayout.setTitle(mMovie.getMovieTitle());
         toolbar.setTitle(mMovie.getMovieTitle());
 
         //set backdrop image
         Uri backdropUri = NetworkUtils.buildUriForThumbnail(mMovie.getBackdropPath());
-        Picasso.with(getActivity()).load(backdropUri).into(movieBackdrop);
+        Picasso.with(getActivity())
+                .load(backdropUri)
+                .placeholder(R.drawable.no_image)
+                .error(R.drawable.error)
+                .into(movieBackdrop);
 
         //set thumbnail image
         Uri thumbnailUri = NetworkUtils.buildUriForThumbnail(mMovie.getThumbnailPath());
-        Picasso.with(getActivity()).load(thumbnailUri)
+        Picasso.with(getActivity())
+                .load(thumbnailUri)
+                .placeholder(R.drawable.no_image)
+                .error(R.drawable.error)
                 .resize(800, 800)
                 .centerInside()
                 .into(moviePoster);

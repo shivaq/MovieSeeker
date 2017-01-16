@@ -11,10 +11,11 @@
         android:layout_height="match_parent"/>
 
     <TextView
-        android:id="@+id/tv_error_message_trailer"
+        android:id="@+id/tv_error_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:textColor="@android:color/white"
         android:padding="@dimen/activity_padding"
         android:text="@string/error_message"
         android:textSize="@dimen/textsize_middle"
@@ -25,6 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:textColor="@android:color/white"
         android:padding="@dimen/activity_padding"
         android:text="@string/error_network_offline_message"
         android:textSize="@dimen/textsize_middle"

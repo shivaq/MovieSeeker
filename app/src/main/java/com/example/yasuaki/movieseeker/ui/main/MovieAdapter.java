@@ -79,6 +79,8 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHol
             Uri thumbnailUri = NetworkUtils.buildUriForThumbnail(thumbnailPath);
             Picasso.with(mContext)
                     .load(thumbnailUri)
+                    .placeholder(R.drawable.no_image)
+                    .error(R.drawable.error)
                     .into(posterImage);
         }
     }

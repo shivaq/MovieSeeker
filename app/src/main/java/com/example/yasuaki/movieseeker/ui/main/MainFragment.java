@@ -47,7 +47,7 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
 
     @BindView(R.id.recyclerview_main)
     RecyclerView mRecyclerView;
-    @BindView(R.id.tv_error_message_trailer)
+    @BindView(R.id.tv_error_message)
     TextView mErrorMessageDisplay;
     @BindView(R.id.progress_loading)
     ProgressBar mProgressBar;
