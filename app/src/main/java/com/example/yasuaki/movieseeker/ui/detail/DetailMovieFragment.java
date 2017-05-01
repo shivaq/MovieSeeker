@@ -41,7 +41,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class DetailMovieFragment extends Fragment implements DetailMovieContract.DetailMvpView,
+public class DetailMovieFragment extends Fragment
+        implements DetailMovieContract.DetailMvpView,
         TrailerAdapter.TrailerAdapterOnClickListener {
 
     private static final String TAG = DetailMovieFragment.class.getSimpleName();
@@ -123,7 +124,7 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
         Uri backdropUri = NetworkUtils.buildUriForThumbnail(mMovie.getBackdropPath());
         Picasso.with(getActivity())
                 .load(backdropUri)
-                .placeholder(R.drawable.no_image)
+                .placeholder(R.drawable.no_image_w120px)
                 .error(R.drawable.error)
                 .into(movieBackdrop);
 
@@ -131,16 +132,15 @@ public class DetailMovieFragment extends Fragment implements DetailMovieContract
         Uri thumbnailUri = NetworkUtils.buildUriForThumbnail(mMovie.getThumbnailPath());
         Picasso.with(getActivity())
                 .load(thumbnailUri)
-                .placeholder(R.drawable.no_image)
+                .placeholder(R.drawable.no_image_w120px)
                 .error(R.drawable.error)
                 .resize(800, 800)
                 .centerInside()
                 .into(moviePoster);
 
-        String releaseDate = "Release Date \n" + mMovie.getReleaseDate();
-        tvReleaseDate.setText(releaseDate);
+        tvReleaseDate.setText(mMovie.getReleaseDate());
 
-        String userRating = "User rating \n" + String.valueOf(mMovie.getVoteAverage() + "/10");
+        String userRating = String.valueOf(mMovie.getVoteAverage() + "/10");
         tvUserRating.setText(userRating);
         tvSynopsis.setText(mMovie.getMovieOverView());
 

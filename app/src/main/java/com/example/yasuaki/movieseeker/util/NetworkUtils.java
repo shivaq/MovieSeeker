@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.util.Log;
 
 /**
  * These utilities will be used to communicate with the weather servers.
@@ -16,7 +17,7 @@ public final class NetworkUtils {
 
     private static final String YOUTUBE_URL = "https://www.youtube.com/";
     private static final String YOUTUBE_THUMBNAIL = "https://img.youtube.com/";
-//    watch?v={key}
+
     /**
      * Builds the URL to fetch the movie thumbnail
      */
@@ -32,19 +33,37 @@ public final class NetworkUtils {
 
     public static Uri buildUriForTrailer(String trailerKey){
 
-        return Uri.parse(YOUTUBE_URL).buildUpon()
+//        return Uri.parse(YOUTUBE_URL).buildUpon()
+//                .appendPath("watch")
+//                .appendQueryParameter("v", trailerKey)
+//                .build();
+
+        Uri uri = Uri.parse(YOUTUBE_URL).buildUpon()
                 .appendPath("watch")
                 .appendQueryParameter("v", trailerKey)
                 .build();
+        Log.d(TAG, "buildUriForTrailer: " + uri);
+
+        return uri;
     }
 
     public static Uri buildTrailerThumbnailUri(String trailerKey){
 
-        return Uri.parse(YOUTUBE_THUMBNAIL).buildUpon()
+//        return Uri.parse(YOUTUBE_THUMBNAIL).buildUpon()
+//                .appendPath("vi")
+//                .appendPath(trailerKey)
+//                .appendPath("1.jpg")
+//                .build();
+
+        Uri uri =  Uri.parse(YOUTUBE_THUMBNAIL).buildUpon()
                 .appendPath("vi")
                 .appendPath(trailerKey)
                 .appendPath("1.jpg")
                 .build();
+
+        Log.d(TAG, "buildTrailerThumbnailUri: " + uri);
+
+        return uri;
     }
 
     /**

@@ -33,7 +33,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterOnClickListener,
+public class MainFragment extends Fragment
+        implements MovieAdapter.MovieAdapterOnClickListener,
         SharedPreferences.OnSharedPreferenceChangeListener,
         MovieContract.MvpView{
 
@@ -152,7 +153,6 @@ public class MainFragment extends Fragment implements MovieAdapter.MovieAdapterO
         }
         return super.onOptionsItemSelected(item);
     }
-
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {

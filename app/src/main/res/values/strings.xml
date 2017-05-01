@@ -27,5 +27,7 @@
     <string name="error_network_offline_message">Network is offline</string>
     <string name="share_trailer_title">Share youtube</string>
     <string name="description_favorite_btn">register this movie to favorite</string>
+    <string name="release_date_label">Release Date</string>
+    <string name="user_rating_label">User rating</string>
 
 </resources>

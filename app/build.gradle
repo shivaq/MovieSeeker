@@ -66,6 +66,7 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$SUPPORT_LIBRARY_VERSION"
     compile "com.android.support:support-v4:$SUPPORT_LIBRARY_VERSION"
     compile "com.android.support:preference-v7:$SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support:support-annotations:$SUPPORT_LIBRARY_VERSION"
     compile "com.android.support.test.espresso:espresso-idling-resource:$ESPRESSO_VERSION"
 
     //constraint layout
@@ -89,7 +90,7 @@ dependencies {
     androidTestCompile "com.android.support.test:runner:$RUNNER_VERSION"
     androidTestCompile "com.android.support.test:rules:$RUNNER_VERSION"
 
-    // Dependencies for Android unit tests
+    //instrumented Test
     androidTestCompile "junit:junit:$JUNIT_VERSION"
     androidTestCompile "org.mockito:mockito-core:$MOCKITO_VERSION"
     androidTestCompile "com.google.dexmaker:dexmaker:$DEXMAKER_VERSION"
