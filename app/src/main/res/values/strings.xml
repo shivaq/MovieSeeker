@@ -1,33 +1,35 @@
 <resources>
-    <string name="app_name">MovieSeeker</string>
-    <string name="error_message">An error has occurred. Please try again by change sort order.</string>
+  <string name="app_name">MovieSeeker</string>
 
-    <!-- Preferences -->
-    <string name="pref_sort_by_popularity">Sort by most popular</string>
-    <string name="pref_sort_by_high_rating">Sort by top rated</string>
-    <string name="pref_sort_by_favorite">Sort by your favorite</string>
-    <string name="sort_order_popularity">popular</string>
-    <string name="sort_order_rating">top_rated</string>
-    <string name="sort_order_favorite">favorite</string>
+  <!-- Preferences -->
+  <string name="pref_sort_by_popularity">Sort by most popular</string>
+  <string name="pref_sort_by_high_rating">Sort by top rated</string>
+  <string name="pref_sort_by_favorite">Sort by your favorite</string>
+  <string name="sort_order_popularity">popular</string>
+  <string name="sort_order_rating">top_rated</string>
+  <string name="sort_order_favorite">favorite</string>
 
-    <string name="pref_sort_key">sort</string>
-    <string name="pref_sort_label">Sort order</string>
+  <string name="pref_sort_key">sort</string>
+  <string name="pref_sort_label">Sort order</string>
 
-    <string name="menu_setting">Setting</string>
-    <string name="menu_get_latest_data">Get the latest data</string>
+  <string name="menu_setting">Setting</string>
+  <string name="menu_get_latest_data">Get the latest data</string>
 
-    <string name="text_trailers_label">Trailers</string>
-    <string name="text_no_trailer">Sorry, there is no trailer.</string>
-    <string name="error_loading_trailer">There is a problem loading trailers.</string>
+  <string name="text_trailers_label">Trailers</string>
 
-    <string name="text_reviews_label">Reviews</string>
-    <string name="text_no_review">Sorry, there is no review.</string>
-    <string name="error_loading_reviews">There is a problem loading reviews.</string>
-    <string name="text_message_favorite">Click me!!</string>
-    <string name="error_network_offline_message">Network is offline</string>
-    <string name="share_trailer_title">Share youtube</string>
-    <string name="description_favorite_btn">register this movie to favorite</string>
-    <string name="release_date_label">Release Date</string>
-    <string name="user_rating_label">User rating</string>
+  <string name="text_reviews_label">Reviews</string>
+  <string name="text_message_favorite">Click me!!</string>
+  <string name="share_trailer_title">Share youtube</string>
+  <string name="description_favorite_btn">register this movie to favorite</string>
+  <string name="release_date_label">Release Date</string>
+  <string name="user_rating_label">User rating</string>
+
+  <!-- messages -->
+  <string name="error_message">An error has occurred. Please try again by change sort order.</string>
+  <string name="text_no_trailer">Sorry, there is no trailer.</string>
+  <string name="error_loading_trailer">There is a problem loading trailers.</string>
+  <string name="text_no_review">Sorry, there is no review.</string>
+  <string name="error_loading_reviews">There is a problem loading reviews.</string>
+  <string name="error_network_offline_message">Network is offline.</string>
 
 </resources>
